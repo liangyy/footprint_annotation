@@ -50,7 +50,7 @@ def get_motif(dirname, motif_name):
 def motif_score(seq, motif): # seq is in character
     # digit_seq = _to_digit(seq)
     llr_mat = np.log2(motif.pwm + 1e-6) - np.log2(np.ones(motif.pwm.shape) / 4)
-    llr = seq.T * llr_mat
+    llr = (seq * llr_mat).sum()
     return llr
 
 def bind_prior(llr, motif):
@@ -69,11 +69,16 @@ def _to_digit(seq):
 def get_seq(snp, region, seq):
     # seq = _get_from_fasta(region.chr, region.start, snp.end, genome)
     ref = seq
-    pos = region.start - snp.start
+    pos = snp.start - region.start
     if seq[pos] != snp.ref:
          print('Ref in SNP is {ref_snp} does not match Ref in fasta {ref_fa}. Skip!'.format(ref_snp=snp.ref, ref_fa=seq[pos]), file=sys.stderr)
          return None, None
     alt = seq[:pos] + snp.alt + seq[pos+1:]
+    print(snp.alt, snp.ref)
+    print(alt)
+    print(seq)
+    print(ref)
+    print(pos)
     ref = _to_digit(ref)
     alt = _to_digit(alt)
     if region.strand == '-':
