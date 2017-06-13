@@ -1,0 +1,4 @@
+Chrom	Start	End	Ref	Alt	Prediction	ID	Type	Sample	GERP	Eigen	CADD13_PHRED	phyloP46wayAllElements
+chr1	14435037	14435037	G	C	dnv_proband	1	SNV	NA	-6.57	0.149007007	0.665	-2.283
+chr1	14456750	14456750	A	G	dnv_proband	2	SNV	NA	-6.57	0.149007007	0.665	-2.283
+chr1	15058578	15058578	G	A	dnv_proband	2	SNV	NA	-6.57	0.149007007	0.665	-2.283
