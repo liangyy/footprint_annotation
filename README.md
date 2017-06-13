@@ -14,7 +14,7 @@ Annotate SNV with the predicted effect of TF binding (based on the result of [th
 * **Procedure**:
   1. Get the list of SNPs that fall into footprint region (BED file from [this website](http://genome.grid.wayne.edu/centisnps/))
   2. Calculate the score change for each motif-SNP pair
-* **Output**: a file containing the following columns `motif    SNP_id    off_site    binding(ref/alt)    ref.LLR    alt.LLR    footprint_source`
+* **Output**: a file containing the following columns `motif    SNP_id    off_site    binding(ref/alt)    ref.LLR    alt.LLR    footprint_source    ref.EstPrior    alt.EstPrior`
 
 ## Strategy 2 -- Posterior Probability
 
@@ -26,5 +26,3 @@ Annotate SNV with the predicted effect of TF binding (based on the result of [th
   4. Evaluate the performance of CENTIPEDE model by comparing motif score and posterior probability (see [here](https://github.com/piquelab/which_gen_vars/blob/master/src/runCentipedeOnAll.R#L60-L79))
   5. Run CENTIPEDE model on SNP list with the same window size and keep all SNPs that have posterior probability greater than 0.99 in either reference or alternative (see detail [here](https://github.com/piquelab/which_gen_vars/blob/master/src/runCentipedeOnAll.R#L141-L146))
 * **Output**: a file containing the following columns `motif    SNP_id    off_site    binding(ref/alt)    ref.Posterior    alt.Posterior    ref.Prior    alt.Prior    footprint_source`
-
-

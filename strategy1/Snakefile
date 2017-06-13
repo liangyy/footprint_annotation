@@ -1,0 +1,27 @@
+# This is the snakemake file that implements the strategy 1 described in README.md
+#
+# get_footprint_snp: footprint bed, snp_list --> snp_in_footprint (snp_id, motif_name)
+
+rule get_footprint_snp:
+    input:
+        footprint_bed = '',
+        snp_list = ''
+    output:
+        'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz'
+    shell:
+        'bedtools intersect -a <(tail -n +2 {input.snp_list}) -b <(zcat < {input.footprint_bed}) -wb | gzip > {output[0]}'
+
+rule get_motif_scores:
+    input:
+        footprint_snp = 'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz'
+    params:
+        motif_folder =
+        genome_fasta =
+        ncol_of_snp_list =
+    output:
+        'data/output.{footprint_name}.{snp_name}.bed.gz'
+    shell:
+        'python scripts/get_motif_scores.py --motif_folder {params.motif_folder} \
+        --footprint_snp {input.footprint_snp} \
+        --genome {params.genome_fasta} \
+        -ncol {params.ncol_of_snp_list}'
