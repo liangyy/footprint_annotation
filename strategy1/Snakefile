@@ -4,8 +4,8 @@
 
 rule get_footprint_snp:
     input:
-        footprint_bed = '',
-        snp_list = ''
+        footprint_bed = config['footprint_bed'][wildcards.footprint_name],
+        snp_list = config['snp_list'][wildcards.snp_name]['path']
     output:
         'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz'
     shell:
@@ -15,9 +15,9 @@ rule get_motif_scores:
     input:
         footprint_snp = 'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz'
     params:
-        motif_folder =
-        genome_fasta =
-        ncol_of_snp_list =
+        motif_folder = config['motif_folder']
+        genome_fasta = config['genome']
+        ncol_of_snp_list = config['snp_list'][wildcards.snp_name]['ncol_of_snp_list']
     output:
         'data/output.{footprint_name}.{snp_name}.bed.gz'
     shell:
