@@ -56,8 +56,11 @@ with gzip.open(args.footprint_snp,'rb') as f:
             # prior = footprint_lib.bind_prior(llr, motif)
             llrs.append(llr)
             # priors.append(prior)
-        o.write('{idx}\t{llr_ref}\t{llr_alt}\t{motif_name}'.format(idx=snp.idx,
+        o.write('{idx}\t{llr_ref}\t{llr_alt}\t{motif_name}\t{motif_chr}\t{motif_start}\t{motif_end}'.format(idx=snp.idx,
                                                                 llr_ref=llrs[0],
                                                                 llr_alt=llrs[1],
-                                                                motif_name=region.motif) + '\n')
+                                                                motif_name=region.motif,
+                                                                motif_chr=region.chr,
+                                                                motif_start=region.start + 1,
+                                                                motif_end=region.end + 1) + '\n')
 o.close()
