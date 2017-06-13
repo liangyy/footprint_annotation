@@ -1,7 +1,7 @@
 footprint_bed:
-  test_footprint: '../footprintRegions/m00001.gz'
+  m00001: '../footprintRegions/m00001.gz'
 snp_list:
-  test_snp:
+  m00001:
     path: '../snpLists/m00001.txt'
     ncol_of_snp_list: 13
 motif_folder: '../recalibratedMotifs/'
