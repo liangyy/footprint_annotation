@@ -1,0 +1,8 @@
+footprint_bed:
+  test_footprint: '../footprintRegions/m00001.gz'
+snp_list:
+  test_snp:
+    path: '../snpLists/m00001.txt'
+    ncol_of_snp_list: 13
+motif_folder: '../recalibratedMotifs/'
+genome: '/project2/xinhe/yanyul/databases/hg19/hg19.fa'
