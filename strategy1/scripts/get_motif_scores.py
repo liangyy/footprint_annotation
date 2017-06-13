@@ -17,8 +17,8 @@ parser.add_argument('--footprint_snp', help='''
     Footprint SNP file obtained by intersectin SNP list with files in footprint
     region files downloaded here, http://genome.grid.wayne.edu/centisnps/bytissue/
 ''')
-parser.add_argument('--ncol', type=int, help='''
-    Number of columns in original input SNP file
+parser.add_argument('--footprint_seq', type=int, help='''
+    Sequence TAB file containing sequence extracted from reference genome
 ''')
 args = parser.parse_args()
 
@@ -27,13 +27,21 @@ import os
 if '../scripts/' not in sys.path:
     sys.path.insert(0, '../scripts/')
 import footprint_lib
-
 import gzip
 
-with gzip.open(args.footprint_snp,'r') as f:
+f = gzip.open(args.footprint_seq,'rb')
+file_content = f.readlines()
+ref_seqs = []
+for i in file_content:
+    i = i.decode()
+    ref_seqs.append(i.split('\t')[-1])
+
+with gzip.open(args.footprint_snp,'rb') as f:
+    counter = 0
     for line in f:
         snp, region = footprint_lib.read_bed_line(line.decode(), args.ncol)
-        ref, alt = footprint_lib.get_seq(snp, region, args.genome)
+        ref, alt = footprint_lib.get_seq(snp, region, ref_seqs[counter])
+        counter += 1
         if ref is None:
             continue
         llrs = []

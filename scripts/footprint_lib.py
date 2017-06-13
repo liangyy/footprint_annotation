@@ -8,7 +8,7 @@ class SNP:
         self.end = end
         self.ref = ref
         self.alt = alt
-        self.idx = idx
+        self.idx = self.idx
 
 class Footprint:
     def __init__(self, chrm, start, end, motif, strand, bind_prior):
@@ -66,8 +66,8 @@ def _to_digit(seq):
         digit[i, dic[seq[i]]] = 1
     return digit
 
-def get_seq(snp, region, genome):
-    seq = _get_from_fasta(region.chr, region.start, snp.end, genome)
+def get_seq(snp, region, seq):
+    # seq = _get_from_fasta(region.chr, region.start, snp.end, genome)
     ref = seq
     pos = region.start - snp.start
     if seq[pos] != snp.ref:
