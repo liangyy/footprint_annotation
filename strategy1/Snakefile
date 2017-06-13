@@ -4,8 +4,8 @@
 
 rule get_footprint_snp:
     input:
-        footprint_bed = config['footprint_bed'][wildcards.footprint_name],
-        snp_list = config['snp_list'][wildcards.snp_name]['path']
+        footprint_bed = lambda wildcards: config['footprint_bed'][wildcards.footprint_name],
+        snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['path']
     output:
         'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz'
     shell:
@@ -15,13 +15,13 @@ rule get_motif_scores:
     input:
         footprint_snp = 'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz'
     params:
-        motif_folder = config['motif_folder']
-        genome_fasta = config['genome']
-        ncol_of_snp_list = config['snp_list'][wildcards.snp_name]['ncol_of_snp_list']
+        motif_folder = config['motif_folder'],
+        genome_fasta = config['genome'],
+        ncol_of_snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['ncol_of_snp_list']
     output:
         'data/output.{footprint_name}.{snp_name}.bed.gz'
     shell:
         'python scripts/get_motif_scores.py --motif_folder {params.motif_folder} \
         --footprint_snp {input.footprint_snp} \
         --genome {params.genome_fasta} \
-        -ncol {params.ncol_of_snp_list}'
+        --ncol {params.ncol_of_snp_list}'

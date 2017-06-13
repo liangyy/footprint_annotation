@@ -24,15 +24,15 @@ args = parser.parse_args()
 
 import sys
 import os
-if '../scipts/' not in sys.path:
-    sys.path.insert(0, 'scripts/')
+if '../scripts/' not in sys.path:
+    sys.path.insert(0, '../scripts/')
 import footprint_lib
 
 import gzip
 
 with gzip.open(args.footprint_snp,'r') as f:
     for line in f:
-        snp, region = footprint_lib.read_bed_line(line, args.ncol)
+        snp, region = footprint_lib.read_bed_line(line.decode(), args.ncol)
         ref, alt = footprint_lib.get_seq(snp, region, args.genome)
         if ref is None:
             continue
