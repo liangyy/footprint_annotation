@@ -32,12 +32,12 @@ def read_bed_line(line, ncol):
     footprint = Footprint(line[0], int(line[1]), int(line[2]), line[3], line[5], float(line[-2]))
     return snp, footprint
 
-def get_motif(dir, motif_name):
-    f = open(os.sep.join(dir, '{motif_name}.pwm'.format(motif_name=motif_name)), 'r')
+def get_motif(dirname, motif_name):
+    f = open(os.sep.join([dirname, '{motif_name}.pwm'.format(motif_name=motif_name)]), 'r')
     lines = f.readlines()
-    priors = lines[1].split('\t')[-9:]
+    priors = lines[1].strip().split('\t')[-9:]
     priors = [ float(i) for i in priors ]
-    llrs = lines[3].split('\t')[-9:]
+    llrs = lines[3].strip().split('\t')[-9:]
     llrs = [ float(i) for i in llrs ]
     lines = lines[5:]
     pwm = []
@@ -50,7 +50,7 @@ def get_motif(dir, motif_name):
 def motif_score(seq, motif): # seq is in character
     # digit_seq = _to_digit(seq)
     llr_mat = np.log2(motif.pwm + 1e-6) - np.log2(np.ones(motif.pwm.shape) / 4)
-    llr = digit_seq.T * score_mat
+    llr = seq.T * llr_mat
     return llr
 
 def bind_prior(llr, motif):

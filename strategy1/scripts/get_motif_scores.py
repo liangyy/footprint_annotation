@@ -34,7 +34,7 @@ file_content = f.readlines()
 ref_seqs = []
 for i in file_content:
     i = i.strip()
-    ref_seqs.append(i.split('\t')[-1])
+    ref_seqs.append(i.split('\t')[-1].upper())
 
 with gzip.open(args.footprint_snp,'rb') as f:
     counter = 0
@@ -47,7 +47,7 @@ with gzip.open(args.footprint_snp,'rb') as f:
         llrs = []
         priors = []
         for i in (ref, alt):
-            motif = footprint_lib.get_motif(region.motif, args.motif_folder)
+            motif = footprint_lib.get_motif(args.motif_folder, region.motif)
             llr = footprint_lib.motif_score(i, motif)
             prior = footprint_lib.bind_prior(llr, motif)
             llrs.append(llr)
