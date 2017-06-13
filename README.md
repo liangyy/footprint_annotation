@@ -10,8 +10,11 @@ Annotate SNV with the predicted effect of TF binding (based on the result of [th
 
 ## Strategy 1 -- Motif Score
 
-
-
+* **Input**: motif files, SNP lists, genome file
+* **Procedure**:
+  1. Get the list of SNPs that fall into footprint region (BED file from [this website](http://genome.grid.wayne.edu/centisnps/)
+  2. Calculate the score change for each motif-SNP pair
+* **Output**: `motif  SNP_id  off_site  binding ref.LLR alt.LLR`
 
 ## Strategy 2 -- Posterior Probability
 
