@@ -8,7 +8,7 @@ class SNP:
         self.end = end
         self.ref = ref
         self.alt = alt
-        self.idx = self.idx
+        self.idx = idx
 
 class Footprint:
     def __init__(self, chrm, start, end, motif, strand, bind_prior):

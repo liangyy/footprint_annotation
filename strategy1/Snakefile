@@ -18,19 +18,20 @@ rule get_seq:
         genome_fasta = config['genome'],
         ncol_of_snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['ncol_of_snp_list']
     output:
-        'data/seq.{footprint_name}.{snp_name}.tab.gz'
+        'data/seq.{footprint_name}.{snp_name}.tab'
     shell:
-        '''bedtools getfasta -fi {params.genome_fasta} -bed <(zcat {input.footprint_snp} | awk -F"\t" '{{$(1+{params.ncol_of_snp_list}"\t"$(2+{params.ncol_of_snp_list})"\t"$(3+{params.ncol_of_snp_list})}}) -tab -fo {output[0]}'''
+        '''bedtools getfasta -fi {params.genome_fasta} -bed <(zcat {input.footprint_snp} | awk -F"\\t" '{{print $(1+{params.ncol_of_snp_list})"\\t"$(2+{params.ncol_of_snp_list})"\\t"$(3+{params.ncol_of_snp_list})}}') -tab -fo {output[0]}'''
 rule get_motif_scores:
     input:
         footprint_snp = 'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz',
-        footprint_seq = 'data/seq.{footprint_name}.{snp_name}.tab.gz'
+        footprint_seq = 'data/seq.{footprint_name}.{snp_name}.tab'
     params:
         motif_folder = config['motif_folder'],
+        ncol_of_snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['ncol_of_snp_list']
     output:
         'data/output.{footprint_name}.{snp_name}.bed.gz'
     shell:
         'python scripts/get_motif_scores.py --motif_folder {params.motif_folder} \
         --footprint_snp {input.footprint_snp} \
-        --genome {params.genome_fasta} \
-        --footprint_seq {input.footprint_seq}'
+        --footprint_seq {input.footprint_seq} \
+        --ncol {params.ncol_of_snp_list}'

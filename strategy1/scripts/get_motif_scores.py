@@ -5,9 +5,6 @@ parser = argparse.ArgumentParser(prog='get_motif_scores.py', description='''
     the corresponding strand direction for both reference allele and alternative
     one along with the estimated prior probability of binding by interpolation
     (get the points from motif file)
-    ''')
-parser.add_argument('--genome', help='''
-    Genome fasta file that should extract sequence using coordinates
 ''')
 parser.add_argument('--motif_folder', help='''
     Motif folder that contains the motif files which should match with the input
@@ -17,8 +14,11 @@ parser.add_argument('--footprint_snp', help='''
     Footprint SNP file obtained by intersectin SNP list with files in footprint
     region files downloaded here, http://genome.grid.wayne.edu/centisnps/bytissue/
 ''')
-parser.add_argument('--footprint_seq', type=int, help='''
+parser.add_argument('--footprint_seq', help='''
     Sequence TAB file containing sequence extracted from reference genome
+''')
+parser.add_argument('--ncol', type=int, help='''
+    Number of columns in original input SNP list file
 ''')
 args = parser.parse_args()
 
@@ -29,11 +29,11 @@ if '../scripts/' not in sys.path:
 import footprint_lib
 import gzip
 
-f = gzip.open(args.footprint_seq,'rb')
+f = open(args.footprint_seq,'r')
 file_content = f.readlines()
 ref_seqs = []
 for i in file_content:
-    i = i.decode()
+    i = i.strip()
     ref_seqs.append(i.split('\t')[-1])
 
 with gzip.open(args.footprint_snp,'rb') as f:
