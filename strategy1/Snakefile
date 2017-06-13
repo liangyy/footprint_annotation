@@ -29,7 +29,7 @@ rule get_motif_scores:
         motif_folder = config['motif_folder'],
         ncol_of_snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['ncol_of_snp_list']
     output:
-        'data/output.{footprint_name}.{snp_name}.bed.gz'
+        'data/output.{footprint_name}.{snp_name}.bed'
     shell:
         'python scripts/get_motif_scores.py --motif_folder {params.motif_folder} \
         --footprint_snp {input.footprint_snp} \
