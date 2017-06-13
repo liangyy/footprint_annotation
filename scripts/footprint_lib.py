@@ -74,12 +74,6 @@ def get_seq(snp, region, seq):
          print('Ref in SNP is {ref_snp} does not match Ref in fasta {ref_fa}. Skip!'.format(ref_snp=snp.ref, ref_fa=seq[pos]), file=sys.stderr)
          return None, None
     alt = seq[:pos] + snp.alt + seq[pos+1:]
-    print(snp.alt, snp.ref)
-    print(alt)
-    print(seq)
-    print(ref)
-    print(pos)
-    print(region.strand)
     ref = _to_digit(ref)
     alt = _to_digit(alt)
     if region.strand == '-':

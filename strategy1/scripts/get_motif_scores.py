@@ -32,12 +32,13 @@ import gzip
 
 f = open(args.footprint_seq,'r')
 file_content = f.readlines()
+f.close()
 ref_seqs = []
 for i in file_content:
     i = i.strip().upper()
     ref_seqs.append(i.split('\t')[-1])
 
-o = open(args.out, 'w')
+o = gzip.open(args.out, 'wb')
 o.write('\t'.join(['SNP.ID', 'LLR.Ref', 'LLR.Alt', 'Prior.Ref', 'Prior.Alt']) + '\n')
 with gzip.open(args.footprint_snp,'rb') as f:
     counter = 0
@@ -60,3 +61,4 @@ with gzip.open(args.footprint_snp,'rb') as f:
                                                                                 llr_alt=llrs[1],
                                                                                 prior_ref=priors[0],
                                                                                 prior_alt=priors[1]) + '\n')
+o.close()
