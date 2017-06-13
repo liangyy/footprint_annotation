@@ -39,7 +39,7 @@ for i in file_content:
     ref_seqs.append(i.split('\t')[-1])
 
 o = open(args.out, 'w')
-o.write('\t'.join(['SNP.ID', 'LLR.Ref', 'LLR.Alt', 'Prior.Ref', 'Prior.Alt', 'Motif.ID']) + '\n')
+o.write('\t'.join(['SNP.ID', 'LLR.Ref', 'LLR.Alt', 'Motif.ID']) + '\n')
 with gzip.open(args.footprint_snp,'rb') as f:
     counter = 0
     for line in f:
