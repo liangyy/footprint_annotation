@@ -79,6 +79,7 @@ def get_seq(snp, region, seq):
     print(seq)
     print(ref)
     print(pos)
+    print(region.strand)
     ref = _to_digit(ref)
     alt = _to_digit(alt)
     if region.strand == '-':
