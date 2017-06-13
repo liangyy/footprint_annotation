@@ -39,7 +39,7 @@ for i in file_content:
     ref_seqs.append(i.split('\t')[-1])
 
 o = gzip.open(args.out, 'wb')
-o.write('\t'.join(['SNP.ID', 'LLR.Ref', 'LLR.Alt', 'Prior.Ref', 'Prior.Alt']) + '\n')
+o.write('\t'.join(['SNP.ID', 'LLR.Ref', 'LLR.Alt', 'Prior.Ref', 'Prior.Alt', 'Motif.ID']) + '\n')
 with gzip.open(args.footprint_snp,'rb') as f:
     counter = 0
     for line in f:
@@ -49,16 +49,15 @@ with gzip.open(args.footprint_snp,'rb') as f:
         if ref is None:
             continue
         llrs = []
-        priors = []
+        # priors = []
         for i in (ref, alt):
             motif = footprint_lib.get_motif(args.motif_folder, region.motif)
             llr = footprint_lib.motif_score(i, motif)
-            prior = footprint_lib.bind_prior(llr, motif)
+            # prior = footprint_lib.bind_prior(llr, motif)
             llrs.append(llr)
-            priors.append(prior)
-        o.write('{idx}\t{llr_ref}\t{llr_alt}\t{prior_ref}\t{prior_alt}'.format(idx=snp.idx,
-                                                                                llr_ref=llrs[0],
-                                                                                llr_alt=llrs[1],
-                                                                                prior_ref=priors[0],
-                                                                                prior_alt=priors[1]) + '\n')
+            # priors.append(prior)
+        o.write('{idx}\t{llr_ref}\t{llr_alt}\t{motif_name}'.format(idx=snp.idx,
+                                                                llr_ref=llrs[0],
+                                                                llr_alt=llrs[1],
+                                                                motif_name=region.motif) + '\n')
 o.close()
