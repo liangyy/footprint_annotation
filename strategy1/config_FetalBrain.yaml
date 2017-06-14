@@ -15,7 +15,7 @@ footprint_bed:
   SRX201815: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX201815.bed.gz'
 snp_list:
   ASD_060717:
-    path: '../snpLists/170607_for_Yanyu_mut_info.txt'
+    path: '../snpLists/170607_for_Yanyu_mut_info.SNVonly.txt'
     ncol_of_snp_list: 13
 motif_folder: '../recalibratedMotifs/'
 genome: '/project2/xinhe/yanyul/databases/hg19/hg19.fa'
