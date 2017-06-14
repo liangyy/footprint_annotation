@@ -8,7 +8,7 @@ rule preprocess_footprint:
     output:
         'data/preprocess.{footprint_name}.{snp_name}.bed.gz'
     shell:
-        'awk -F"\\t" '{{print $1"\\t"$2"\\t"$3+1"\\t"$4"\\t"$6"\\t"$13}}' | gzip > {output[0]}'
+        '''zcat {input[0]} | awk -F"\\t" '{{print $1"\\t"$2"\\t"$3+1"\\t"$4"\\t"$6"\\t"$13}}' | gzip > {output[0]}'''
 
 rule get_footprint_snp:
     input:
@@ -17,7 +17,7 @@ rule get_footprint_snp:
     output:
         'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz'
     shell:
-        'bedtools intersect -a <(tail -n +2 {input.snp_list} | awk -F"\\t" '{{print $1"\\t"$2-1"\\t"$3}}') -b <(zcat < {input.footprint_bed}) -wb | gzip > {output[0]}'
+        '''bedtools intersect -a <(tail -n +2 {input.snp_list} | awk -F"\\t" '{{print $1"\\t"$2-1"\\t"$3"\\t"$4"\\t"$5"\\t"$7}}') -b <(zcat < {input.footprint_bed}) -wb | gzip > {output[0]}'''
 
 rule get_seq:
     input:

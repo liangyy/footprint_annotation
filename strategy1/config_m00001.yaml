@@ -3,6 +3,6 @@ footprint_bed:
 snp_list:
   m00001:
     path: '../snpLists/m00001.txt'
-    ncol_of_snp_list: 13
+    ncol_of_snp_list: 6
 motif_folder: '../recalibratedMotifs/'
 genome: '/project2/xinhe/yanyul/databases/hg19/hg19.fa'

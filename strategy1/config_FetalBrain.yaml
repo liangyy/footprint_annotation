@@ -16,6 +16,6 @@ footprint_bed:
 snp_list:
   ASD_060717:
     path: '../snpLists/170607_for_Yanyu_mut_info.SNVonly.txt'
-    ncol_of_snp_list: 13
+    ncol_of_snp_list: 6
 motif_folder: '../recalibratedMotifs/'
 genome: '/project2/xinhe/yanyul/databases/hg19/hg19.fa'

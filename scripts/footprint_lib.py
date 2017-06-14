@@ -27,9 +27,9 @@ class Motif:
 
 def read_bed_line(line, ncol):
     line = line.split('\t')
-    snp = SNP(line[0], int(line[1]) - 1, int(line[2]), line[3], line[4], line[6])
+    snp = SNP(line[0], int(line[1]), int(line[2]), line[3], line[4], line[5])
     line = line[ncol : ]
-    footprint = Footprint(line[0], int(line[1]), int(line[2]), line[3], line[5], float(line[-2]))
+    footprint = Footprint(line[0], int(line[1]), int(line[2]), line[3], line[4], float(line[5]))
     return snp, footprint
 
 def get_motif(dirname, motif_name):
@@ -70,6 +70,7 @@ def get_seq(snp, region, seq):
     # seq = _get_from_fasta(region.chr, region.start, snp.end, genome)
     ref = seq
     pos = snp.start - region.start
+    # print(pos, snp.start, region.start)
     if seq[pos] != snp.ref:
          print('Ref in SNP is {ref_snp} does not match Ref in fasta {ref_fa}. Skip!'.format(ref_snp=snp.ref, ref_fa=seq[pos]), file=sys.stderr)
          return None, None
