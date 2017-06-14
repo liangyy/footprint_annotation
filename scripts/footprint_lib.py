@@ -80,4 +80,4 @@ def get_seq(snp, region, seq):
     if region.strand == '-':
         ref = ref[::-1,::-1]
         alt = alt[::-1,::-1]
-    return ref, alt
+    return ref, alt, pos + 1

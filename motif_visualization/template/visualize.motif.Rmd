@@ -1,0 +1,62 @@
+---
+title: "Motif Visualization"
+output:
+    html_document:
+        number_sections: true
+        toc: true
+        toc_depth: 3
+        toc_float: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r setup}
+knitr::opts_knit$set(root.dir = '../')
+```
+
+# Load Motifs
+
+```{r, echo=FALSE}
+source('../scripts/footprint_lib.R')
+motif_dir <- '../recalibratedMotifs/'
+greped_files <- dir(motif_dir)
+motifs.ind <- grepl('pwm', greped_files)
+motif_files <- greped_files[motifs.ind]
+motif_ids <- gsub('.pwm', '', motif_files)
+priors <- list()
+pwms <- list()
+entropys <- list()
+for(i in motif_ids){
+    filename <- paste0(motif_dir, '/', i, '.pwm')
+    re <- readMotif(filename)
+    priors[[i]] <- re$prior
+    pwms[[i]] <- re$pwm
+    entropys[[i]] <- 2 - apply(re$pwm, 1, entropyDiscrete)
+}
+```
+
+# PWM and Prior-LLR Plot
+
+```{r, echo=FALSE}
+library(seqLogo)
+library(bsselectR)
+plots <- list()
+envir <- '../'
+for(i in names(pwms)){
+    plot1 <- paste0('plot/seqLogo.', i, '.png')
+    plot2 <- paste0('plot/priorLLR.', i, '.png')
+    final <- paste0('plot/Merge.', i, '.png')
+    plot_pwm(plot1, t(pwms[[i]]))
+    plot_prior(plot2, priors[[i]])
+    system(paste0('convert \\( ', plot1, ' ', plot2, ' +append \\) -background none -append ', final))
+    plots[[i]] <- paste0(envir, final)
+}
+bsselect(plots, type = "img", selected = names(plots)[1],
+         live_search = TRUE, show_tick = TRUE, height = 3, width = 5, 
+         frame_height = 400, frame_width = 1000)
+```
+
+# Save Entropy Per Position
+
+```{r}
+saveRDS(entropys, file = '{outname}')
+```

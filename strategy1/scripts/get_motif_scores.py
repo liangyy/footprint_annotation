@@ -39,28 +39,27 @@ for i in file_content:
     ref_seqs.append(i.split('\t')[-1])
 
 o = open(args.out, 'w')
-o.write('\t'.join(['SNP.ID', 'LLR.Ref', 'LLR.Alt', 'Motif.ID', 'Motif.Chr', 'Motif.Start', 'Motif.End']) + '\n')
+o.write('\t'.join(['SNP.ID', 'LLR.Ref', 'LLR.Alt', 'Motif.ID', 'Motif.Chr', 'Motif.Start', 'Motif.End', 'Relative.Pos']) + '\n')
 with gzip.open(args.footprint_snp,'rb') as f:
     counter = 0
     for line in f:
         snp, region = footprint_lib.read_bed_line(line.decode(), args.ncol)
-        ref, alt = footprint_lib.get_seq(snp, region, ref_seqs[counter])
+        ref, alt, relative_pos = footprint_lib.get_seq(snp, region, ref_seqs[counter])
         counter += 1
         if ref is None:
             continue
         llrs = []
-        # priors = []
         for i in (ref, alt):
             motif = footprint_lib.get_motif(args.motif_folder, region.motif)
             llr = footprint_lib.motif_score(i, motif)
             # prior = footprint_lib.bind_prior(llr, motif)
             llrs.append(llr)
-            # priors.append(prior)
-        o.write('{idx}\t{llr_ref}\t{llr_alt}\t{motif_name}\t{motif_chr}\t{motif_start}\t{motif_end}'.format(idx=snp.idx,
+        o.write('{idx}\t{llr_ref}\t{llr_alt}\t{motif_name}\t{motif_chr}\t{motif_start}\t{motif_end}\t{re_pos}'.format(idx=snp.idx,
                                                                 llr_ref=llrs[0],
                                                                 llr_alt=llrs[1],
                                                                 motif_name=region.motif,
                                                                 motif_chr=region.chr,
                                                                 motif_start=region.start + 1,
-                                                                motif_end=region.end + 1) + '\n')
+                                                                motif_end=region.end + 1,
+                                                                re_pos=relative_pos) + '\n')
 o.close()
