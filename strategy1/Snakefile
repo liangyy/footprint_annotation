@@ -2,14 +2,22 @@
 #
 # get_footprint_snp: footprint bed, snp_list --> snp_in_footprint (snp_id, motif_name)
 
+rule preprocess_footprint:
+    input:
+        lambda wildcards: config['footprint_bed'][wildcards.footprint_name]
+    output:
+        'data/preprocess.{footprint_name}.{snp_name}.bed.gz'
+    shell:
+        'awk -F"\\t" '{{print $1"\\t"$2"\\t"$3+1"\\t"$4"\\t"$6"\\t"$13}}' | gzip > {output[0]}'
+
 rule get_footprint_snp:
     input:
-        footprint_bed = lambda wildcards: config['footprint_bed'][wildcards.footprint_name],
+        footprint_bed = 'data/preprocess.{footprint_name}.{snp_name}.bed.gz',
         snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['path']
     output:
         'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz'
     shell:
-        'bedtools intersect -a <(tail -n +2 {input.snp_list}) -b <(zcat < {input.footprint_bed}) -wb | gzip > {output[0]}'
+        'bedtools intersect -a <(tail -n +2 {input.snp_list} | awk -F"\\t" '{{print $1"\\t"$2-1"\\t"$3}}') -b <(zcat < {input.footprint_bed}) -wb | gzip > {output[0]}'
 
 rule get_seq:
     input:
@@ -20,7 +28,7 @@ rule get_seq:
     output:
         'data/seq.{footprint_name}.{snp_name}.tab'
     shell:
-        '''bedtools getfasta -fi {params.genome_fasta} -bed <(zcat {input.footprint_snp} | awk -F"\\t" '{{print $(1+{params.ncol_of_snp_list})"\\t"$(2+{params.ncol_of_snp_list})"\\t"$(3+{params.ncol_of_snp_list})+1}}') -tab -fo {output[0]}'''
+        '''bedtools getfasta -fi {params.genome_fasta} -bed <(zcat {input.footprint_snp} | awk -F"\\t" '{{print $(1+{params.ncol_of_snp_list})"\\t"$(2+{params.ncol_of_snp_list})"\\t"$(3+{params.ncol_of_snp_list})}}') -tab -fo {output[0]}'''
 rule get_motif_scores:
     input:
         footprint_snp = 'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz',
