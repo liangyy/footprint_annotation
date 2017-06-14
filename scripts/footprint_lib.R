@@ -21,6 +21,6 @@ plot_pwm <- function(plot1, pwm){
 
 plot_prior <- function(plot2, prior){
     png(plot2, width = 400, height = 400)
-    ggplot(prior) + geom_point(aes(x = Motif.LLR, y = Binding.Prior))
+    print(ggplot(prior) + geom_point(aes(x = Motif.LLR, y = Binding.Prior)))
     dev.off()
 }

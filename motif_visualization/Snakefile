@@ -7,7 +7,7 @@
 
 rule read_motif:
     params:
-        lambda wildcards: config[wildcards.motif_folder]
+        lambda wildcards: config[wildcards.motif_folder],
         'data/entropy.{motif_folder}.rds'
     output:
         rmd = temp('report/visualize.{motif_folder}.Rmd')
@@ -53,6 +53,7 @@ for(i in motif_ids){{
 ```{{r, echo=FALSE}}
 library(seqLogo)
 library(bsselectR)
+library(ggplot2)
 plots <- list()
 envir <- '{envir}'
 for(i in names(pwms)){{
@@ -61,7 +62,8 @@ for(i in names(pwms)){{
     final <- paste0('plot/Merge.', i, '.png')
     plot_pwm(plot1, t(pwms[[i]]))
     plot_prior(plot2, priors[[i]])
-    system(paste0('convert \\( ', plot1, ' ', plot2, ' +append \\) -background none -append ', final))
+    # print(system('pwd'))
+    system(paste0('convert \\\\( ', plot1, ' ', plot2, ' +append \\\\) -background none -append ', final))
     plots[[i]] <- paste0(envir, final)
 }}
 bsselect(plots, type = "img", selected = names(plots)[1],
@@ -71,7 +73,7 @@ bsselect(plots, type = "img", selected = names(plots)[1],
 
 # Save Entropy Per Position
 
-```{r}
+```{{r}}
 saveRDS(entropys, file = '{outname}')
 ```
 '''.format(envir='../', motif_folder=params[0], outname=params[1])
