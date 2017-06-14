@@ -1,0 +1,21 @@
+footprint_bed:
+  SRX026914: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX026914.bed.gz'
+  SRX027076: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX027076.bed.gz'
+  SRX027083: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX027083.bed.gz'
+  SRX027085: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX027085.bed.gz'
+  SRX027086: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX027086.bed.gz'
+  SRX027089: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX027089.bed.gz'
+  SRX027091: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX027091.bed.gz'
+  SRX040380: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX040380.bed.gz'
+  SRX040395: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX040395.bed.gz'
+  SRX062364: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX062364.bed.gz'
+  SRX121276: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX121276.bed.gz'
+  SRX121277: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX121277.bed.gz'
+  SRX121278: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX121278.bed.gz'
+  SRX201815: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX201815.bed.gz'
+snp_list:
+  ASD_060717:
+    path: '../snpLists/170607_for_Yanyu_mut_info.txt'
+    ncol_of_snp_list: 13
+motif_folder: '../recalibratedMotifs/'
+genome: '/project2/xinhe/yanyul/databases/hg19/hg19.fa'
