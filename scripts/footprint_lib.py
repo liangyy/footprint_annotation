@@ -83,4 +83,4 @@ def get_seq(snp, region, seq):
         pos = region.end - region.start - pos
     else:
         pos = pos + 1
-    return ref, alt,
+    return ref, alt, pos
