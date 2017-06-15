@@ -39,7 +39,7 @@ for i in file_content:
     ref_seqs.append(i.split('\t')[-1])
 
 o = open(args.out, 'w')
-o.write('\t'.join(['SNP.ID', 'LLR.Ref', 'LLR.Alt', 'Motif.ID', 'Motif.Chr', 'Motif.Start', 'Motif.End', 'Relative.Pos']) + '\n')
+o.write('\t'.join(['SNP.ID', 'LLR.Ref', 'LLR.Alt', 'Motif.ID', 'Motif.Chr', 'Motif.Start', 'Motif.End', 'Relative.Pos', 'LogRatioPrior.Ref', 'LogRatioPrior.Alt']) + '\n')
 with gzip.open(args.footprint_snp,'rb') as f:
     counter = 0
     for line in f:
@@ -49,17 +49,21 @@ with gzip.open(args.footprint_snp,'rb') as f:
         if ref is None:
             continue
         llrs = []
+        lrpriors = []
         for i in (ref, alt):
             motif = footprint_lib.get_motif(args.motif_folder, region.motif)
             llr = footprint_lib.motif_score(i, motif)
-            # prior = footprint_lib.bind_prior(llr, motif)
+            lrprior = footprint_lib.bind_prior(llr, motif)
             llrs.append(llr)
-        o.write('{idx}\t{llr_ref}\t{llr_alt}\t{motif_name}\t{motif_chr}\t{motif_start}\t{motif_end}\t{re_pos}'.format(idx=snp.idx,
+            lrpriors.append(lrprior)
+        o.write('{idx}\t{llr_ref}\t{llr_alt}\t{motif_name}\t{motif_chr}\t{motif_start}\t{motif_end}\t{re_pos}\t{lrprior_ref}\t{lrprior_alt}'.format(idx=snp.idx,
                                                                 llr_ref=llrs[0],
                                                                 llr_alt=llrs[1],
                                                                 motif_name=region.motif,
                                                                 motif_chr=region.chr,
                                                                 motif_start=region.start + 1,
                                                                 motif_end=region.end + 1,
-                                                                re_pos=relative_pos) + '\n')
+                                                                re_pos=relative_pos,
+                                                                lrprior_ref=lrpriors[0],
+                                                                lrprior_alt=lrpriors[1]) + '\n')
 o.close()

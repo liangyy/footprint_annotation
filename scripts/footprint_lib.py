@@ -20,10 +20,11 @@ class Footprint:
         self.bind_prior = bind_prior
 
 class Motif:
-    def __init__(self, pwm, priors, llrs):
+    def __init__(self, pwm, priors, llrs, motif_name):
         self.pwm = pwm
         self.priors = priors
         self.llrs = llrs
+        self.name = motif_name
 
 def read_bed_line(line, ncol):
     line = line.split('\t')
@@ -44,7 +45,7 @@ def get_motif(dirname, motif_name):
     for line in lines: # A, C, G, T in order
         pwm.append([ float(i) for i in line.split('\t') ])
     pwm = np.array(pwm)
-    motif = Motif(pwm, priors, llrs)
+    motif = Motif(pwm, priors, llrs, motif_name)
     return motif
 
 def motif_score(seq, motif): # seq is in character
@@ -54,10 +55,14 @@ def motif_score(seq, motif): # seq is in character
     return llr
 
 def bind_prior(llr, motif):
-    xp = motif.llrs
-    fp = motif.priors
-    prior = np.interp(llr, xp, fp)
-    return prior
+    y = np.log(motif.priors) - np.log(1 - motif.priors)
+    x = motif.llrs
+    slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+    r_square = r_value ** 2
+    if r_square < 0.99:
+        print('R^2 = {r} is less than 0.99. Skip this motif {name}'.format(r=r_square, name=motif.name))
+    log_ratio_prior = llr * slope + intercept
+    return log_ratio_prior
 
 def _to_digit(seq):
     digit = np.zeros((len(seq), 4))
