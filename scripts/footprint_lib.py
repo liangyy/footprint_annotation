@@ -1,5 +1,6 @@
 import os, sys
 import numpy as np
+from scipy import stats
 
 class SNP:
     def __init__(self, chrm, start, end, ref, alt, idx):
@@ -45,7 +46,7 @@ def get_motif(dirname, motif_name):
     for line in lines: # A, C, G, T in order
         pwm.append([ float(i) for i in line.split('\t') ])
     pwm = np.array(pwm)
-    motif = Motif(pwm, priors, llrs, motif_name)
+    motif = Motif(pwm, np.array(priors), np.array(llrs), motif_name)
     return motif
 
 def motif_score(seq, motif): # seq is in character
@@ -60,7 +61,8 @@ def bind_prior(llr, motif):
     slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
     r_square = r_value ** 2
     if r_square < 0.99:
-        print('R^2 = {r} is less than 0.99. Skip this motif {name}'.format(r=r_square, name=motif.name))
+        print('R^2 = {r} is less than 0.99. Skip this motif {name}'.format(r=r_square, name=motif.name), file=sys.stderr)
+        return None
     log_ratio_prior = llr * slope + intercept
     return log_ratio_prior
 
