@@ -83,7 +83,7 @@ As the [paper](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.
 mydata.ag <- c()
 for(i in unique(mydata$SNP.ID)){
     temp <- mydata[mydata$SNP.ID == i,]
-    bind_prior <- pmax(temp$LogRatioPrior.Ref, temp$LogRatioPrior.Alt) > log(0.99/0.01)
+    bind_prior <- pmax(temp$LogRatioPrior.Ref, temp$LogRatioPrior.Alt) > log(0.5/0.5)
     fold_change <- abs(temp$LogRatioPrior.Ref - temp$LogRatioPrior.Alt) > log(20)
     both <- sum(bind_prior & fold_change)
     if(both == 0){
