@@ -1,0 +1,151 @@
+---
+title: "Footprint SNP Annotation with Strategy 1"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+---
+
+<style>
+pre code, pre, code {
+    white-space: pre !important;
+    overflow-x: scroll !important;
+    word-break: keep-all !important;
+    word-wrap: initial !important;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width=2000)
+```
+
+# Codes and Reference
+
+* [My codes](https://github.com/liangyy/footprint_annotation)
+* [Reference paper](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005875)
+* [Paper's code](https://github.com/piquelab/which_gen_vars)
+
+# Annotation Procedure
+
+Motif score (`LLR` term in data table) is defined as:
+$$\begin{align*}
+    \text{Score}(seq) = \log_2 \frac{\Pr(seq|motif)}{\Pr(seq|random)}
+\end{align*}$$
+, where $\Pr(seq|random) = (\frac{1}{4})^{|seq|}$.
+
+We can recover prior probability during recalibration (note that it is not exactly the same as the prior probability in the final model because in final step another CENTIPEDE model is trained using the candidate sequences with experimental data, but they should be close).  Prior - Score relation is given for each recalibrated motif ($\log \frac{\pi}{1 - \pi} = \beta_0 + \beta_1 \text{Score}$). With linear regression on `logit(prior) ~ score` we can get prior probability of binding from motif score. 
+
+# Load Data
+
+In the [paper](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005875), there are 14 fetal brain DNase-seq footprint results downloaded [here](http://genome.grid.wayne.edu/centisnps/bytissue/). The annotated data is loaded.
+
+## Annotation
+
+```{r, echo=FALSE, warning=FALSE}
+mydata <- c()
+file_str <- c('SRX026914-SRX027076-SRX027083-SRX027085-SRX027086-SRX027089-SRX027091-SRX040380-SRX040395-SRX062364-SRX121276-SRX121277-SRX121278-SRX201815')
+file_ids <- strsplit(file_str, '-')[[1]]
+for(i in file_ids){
+    temp <- read.table(paste0('../data/output.', i, '.ASD_060717.bed'), sep = '\t', header = T)
+    temp$filename <- i
+    mydata <- rbind(mydata, temp)
+}
+```
+
+## SNP List
+
+SNP list from Yuwen (analysis will only focus on SNV).
+
+```{r}
+snp <- read.table('../../snpLists/170607_for_Yanyu_mut_info.txt', sep = '\t', header = T)
+```
+
+## Motif Information
+
+Here we load the data about the entropy per site for each motif 
+
+```{r}
+motif_entropy <- readRDS('../../motif_visualization/data/entropy.recalibratedMotifs.rds')
+```
+
+# Footprint SNP and Binding Variant
+
+As the [paper](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005875) proposed, we define footprint SNP and binding variant as follow:
+
+* Footprint SNP: 
+    - SNPs that fall in footprint region but are not binding variant
+* Binding Variant: 
+    - Fall in footprint region
+    - Prior probability of binding for either allele is greater than 0.99
+    - Fold change of prior probability is greater than 20
+
+## Binding Variant
+
+```{r}
+mydata.ag <- c()
+for(i in unique(mydata$SNP.ID)){
+    temp <- mydata[mydata$SNP.ID == i,]
+    bind_prior <- pmax(temp$LogRatioPrior.Ref, temp$LogRatioPrior.Alt) > log(0.99/0.01)
+    fold_change <- abs(temp$LogRatioPrior.Ref - temp$LogRatioPrior.Alt) > log(20)
+    both <- sum(bind_prior & fold_change)
+    if(both == 0){
+        temp <- temp[order(abs(temp$LogRatioPrior.Ref - temp$LogRatioPrior.Alt), decreasing = T)[1],]
+        temp$binding_variant.ind <- FALSE
+    }else{
+        temp <- temp[bind_prior & fold_change, ]
+        temp <- temp[order(abs(temp$LogRatioPrior.Ref - temp$LogRatioPrior.Alt), decreasing = T)[1],]
+        temp$binding_variant.ind <- TRUE
+    }
+    temp$entropy <- motif_entropy[[as.character(temp$Motif.ID)]][temp$Relative.Pos]
+    mydata.ag <- rbind(mydata.ag, temp)
+}
+```
+
+## Footprint SNP
+
+```{r}
+mydata.ag$footprint_snp.ind <- !mydata.ag$binding_variant.ind
+```
+
+## Prior Probability and Annotation
+
+```{r}
+mydata.ag$phenotype <- snp[mydata.ag$SNP.ID, 'Prediction']
+ggplot(mydata.ag) + geom_point(aes(x = LogRatioPrior.Ref, y = LogRatioPrior.Alt, color = binding_variant.ind, shape = phenotype))
+```
+
+# Enrichment Analysis
+
+Binomial test is done with the overall number of SNVs in proband and sibling as background.
+
+```{r}
+background_p = sum(snp$Type == 'SNV' & snp$Prediction == 'dnv_proband') / sum(snp$Type == 'SNV')
+mydata.ag$phenotype <- snp[mydata.ag$SNP.ID, 'Prediction']
+mydata.ag$ref <- snp[mydata.ag$SNP.ID, 'Ref']
+mydata.ag$alt <- snp[mydata.ag$SNP.ID, 'Alt']
+bv.count <- table(mydata.ag[mydata.ag$binding_variant.ind, 'phenotype'])
+fs.count <- table(mydata.ag[mydata.ag$footprint_snp.ind, 'phenotype'])
+bv.test <- binom.test(bv.count[1], sum(bv.count), p = background_p, alternative = 'greater')
+fs.test <- binom.test(fs.count[1], sum(fs.count), p = background_p, alternative = 'greater')
+test_result <- data.frame(proband = c(bv.count[1], fs.count[1]), sibling = c(bv.count[2], fs.count[2]), p.value = c(bv.test$p.value, fs.test$p.value))
+rownames(test_result) <- c('binding.variant', 'footprint.snp')
+```
+
+```{r, results='asis'}
+library(pander)
+panderOptions('knitr.auto.asis', FALSE)
+pander(test_result)
+```
+
+# List of Binding Variants
+
+## Proband
+
+```{r}
+cols <- c('SNP.ID','Motif.ID', 'Relative.Pos', 'entropy', 'ref', 'alt', 'LogRatioPrior.Ref', 'LogRatioPrior.Alt')
+mydata.ag[mydata.ag$binding_variant.ind & mydata.ag$phenotype == 'dnv_proband', cols]
+```
+
+## Sibling
+
+```{r}
+mydata.ag[mydata.ag$binding_variant.ind & mydata.ag$phenotype == 'dnv_sibling', cols]
+```

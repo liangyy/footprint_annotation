@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+<meta name="date" content="2017-06-15" />
+
+<title>Footprint SNP Annotation with Strategy 1</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Footprint Annotation of SNP</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/liangyy/footprint_annotation">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Footprint SNP Annotation with Strategy 1</h1>
+<h4 class="date"><em>June 15, 2017</em></h4>
+
+</div>
+
+
+<style>
+pre code, pre, code {
+    white-space: pre !important;
+    overflow-x: scroll !important;
+    word-break: keep-all !important;
+    word-wrap: initial !important;
+}
+</style>
+<div id="codes-and-reference" class="section level1">
+<h1>Codes and Reference</h1>
+<ul>
+<li><a href="https://github.com/liangyy/footprint_annotation">My codes</a></li>
+<li><a href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005875">Reference paper</a></li>
+<li><a href="https://github.com/piquelab/which_gen_vars">Paper’s code</a></li>
+</ul>
+</div>
+<div id="annotation-procedure" class="section level1">
+<h1>Annotation Procedure</h1>
+<p>Motif score (<code>LLR</code> term in data table) is defined as: <span class="math display">\[\begin{align*}
+    \text{Score}(seq) = \log_2 \frac{\Pr(seq|motif)}{\Pr(seq|random)}
+\end{align*}\]</span> , where <span class="math inline">\(\Pr(seq|random) = (\frac{1}{4})^{|seq|}\)</span>.</p>
+<p>We can recover prior probability during recalibration (note that it is not exactly the same as the prior probability in the final model because in final step another CENTIPEDE model is trained using the candidate sequences with experimental data, but they should be close). Prior - Score relation is given for each recalibrated motif (<span class="math inline">\(\log \frac{\pi}{1 - \pi} = \beta_0 + \beta_1 \text{Score}\)</span>). With linear regression on <code>logit(prior) ~ score</code> we can get prior probability of binding from motif score.</p>
+</div>
+<div id="load-data" class="section level1">
+<h1>Load Data</h1>
+<p>In the <a href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005875">paper</a>, there are 14 fetal brain DNase-seq footprint results downloaded <a href="http://genome.grid.wayne.edu/centisnps/bytissue/">here</a>. The annotated data is loaded.</p>
+<div id="annotation" class="section level2">
+<h2>Annotation</h2>
+</div>
+<div id="snp-list" class="section level2">
+<h2>SNP List</h2>
+<p>SNP list from Yuwen (analysis will only focus on SNV).</p>
+<pre class="r"><code>snp &lt;- read.table(&#39;../../snpLists/170607_for_Yanyu_mut_info.txt&#39;, sep = &#39;\t&#39;, header = T)</code></pre>
+</div>
+<div id="motif-information" class="section level2">
+<h2>Motif Information</h2>
+<p>Here we load the data about the entropy per site for each motif</p>
+<pre class="r"><code>motif_entropy &lt;- readRDS(&#39;../../motif_visualization/data/entropy.recalibratedMotifs.rds&#39;)</code></pre>
+</div>
+</div>
+<div id="footprint-snp-and-binding-variant" class="section level1">
+<h1>Footprint SNP and Binding Variant</h1>
+<p>As the <a href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005875">paper</a> proposed, we define footprint SNP and binding variant as follow:</p>
+<ul>
+<li>Footprint SNP:
+<ul>
+<li>SNPs that fall in footprint region but are not binding variant</li>
+</ul></li>
+<li>Binding Variant:
+<ul>
+<li>Fall in footprint region</li>
+<li>Prior probability of binding for either allele is greater than 0.99</li>
+<li>Fold change of prior probability is greater than 20</li>
+</ul></li>
+</ul>
+<div id="binding-variant" class="section level2">
+<h2>Binding Variant</h2>
+<pre class="r"><code>mydata.ag &lt;- c()
+for(i in unique(mydata$SNP.ID)){
+    temp &lt;- mydata[mydata$SNP.ID == i,]
+    bind_prior &lt;- pmax(temp$LogRatioPrior.Ref, temp$LogRatioPrior.Alt) &gt; log(0.99/0.01)
+    fold_change &lt;- abs(temp$LogRatioPrior.Ref - temp$LogRatioPrior.Alt) &gt; log(20)
+    both &lt;- sum(bind_prior &amp; fold_change)
+    if(both == 0){
+        temp &lt;- temp[order(abs(temp$LogRatioPrior.Ref - temp$LogRatioPrior.Alt), decreasing = T)[1],]
+        temp$binding_variant.ind &lt;- FALSE
+    }else{
+        temp &lt;- temp[bind_prior &amp; fold_change, ]
+        temp &lt;- temp[order(abs(temp$LogRatioPrior.Ref - temp$LogRatioPrior.Alt), decreasing = T)[1],]
+        temp$binding_variant.ind &lt;- TRUE
+    }
+    temp$entropy &lt;- motif_entropy[[as.character(temp$Motif.ID)]][temp$Relative.Pos]
+    mydata.ag &lt;- rbind(mydata.ag, temp)
+}</code></pre>
+</div>
+<div id="footprint-snp" class="section level2">
+<h2>Footprint SNP</h2>
+<pre class="r"><code>mydata.ag$footprint_snp.ind &lt;- !mydata.ag$binding_variant.ind</code></pre>
+</div>
+<div id="prior-probability-and-annotation" class="section level2">
+<h2>Prior Probability and Annotation</h2>
+<pre class="r"><code>mydata.ag$phenotype &lt;- snp[mydata.ag$SNP.ID, &#39;Prediction&#39;]
+ggplot(mydata.ag) + geom_point(aes(x = LogRatioPrior.Ref, y = LogRatioPrior.Alt, color = binding_variant.ind, shape = phenotype))</code></pre>
+<p><img src="footprint_snp_strategy1_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+</div>
+<div id="enrichment-analysis" class="section level1">
+<h1>Enrichment Analysis</h1>
+<p>Binomial test is done with the overall number of SNVs in proband and sibling as background.</p>
+<pre class="r"><code>background_p = sum(snp$Type == &#39;SNV&#39; &amp; snp$Prediction == &#39;dnv_proband&#39;) / sum(snp$Type == &#39;SNV&#39;)
+mydata.ag$phenotype &lt;- snp[mydata.ag$SNP.ID, &#39;Prediction&#39;]
+mydata.ag$ref &lt;- snp[mydata.ag$SNP.ID, &#39;Ref&#39;]
+mydata.ag$alt &lt;- snp[mydata.ag$SNP.ID, &#39;Alt&#39;]
+bv.count &lt;- table(mydata.ag[mydata.ag$binding_variant.ind, &#39;phenotype&#39;])
+fs.count &lt;- table(mydata.ag[mydata.ag$footprint_snp.ind, &#39;phenotype&#39;])
+bv.test &lt;- binom.test(bv.count[1], sum(bv.count), p = background_p, alternative = &#39;greater&#39;)
+fs.test &lt;- binom.test(fs.count[1], sum(fs.count), p = background_p, alternative = &#39;greater&#39;)
+test_result &lt;- data.frame(proband = c(bv.count[1], fs.count[1]), sibling = c(bv.count[2], fs.count[2]), p.value = c(bv.test$p.value, fs.test$p.value))
+rownames(test_result) &lt;- c(&#39;binding.variant&#39;, &#39;footprint.snp&#39;)</code></pre>
+<pre class="r"><code>library(pander)
+panderOptions(&#39;knitr.auto.asis&#39;, FALSE)
+pander(test_result)</code></pre>
+<table style="width:72%;">
+<colgroup>
+<col width="30%" />
+<col width="13%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"> </th>
+<th align="center">proband</th>
+<th align="center">sibling</th>
+<th align="center">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong>binding.variant</strong></td>
+<td align="center">36</td>
+<td align="center">44</td>
+<td align="center">0.274</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>footprint.snp</strong></td>
+<td align="center">495</td>
+<td align="center">852</td>
+<td align="center">0.9995</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="list-of-binding-variants" class="section level1">
+<h1>List of Binding Variants</h1>
+<div id="proband" class="section level2">
+<h2>Proband</h2>
+<pre class="r"><code>cols &lt;- c(&#39;SNP.ID&#39;,&#39;Motif.ID&#39;, &#39;Relative.Pos&#39;, &#39;entropy&#39;, &#39;ref&#39;, &#39;alt&#39;, &#39;LogRatioPrior.Ref&#39;, &#39;LogRatioPrior.Alt&#39;)
+mydata.ag[mydata.ag$binding_variant.ind &amp; mydata.ag$phenotype == &#39;dnv_proband&#39;, cols]</code></pre>
+<pre><code>##      SNP.ID Motif.ID Relative.Pos   entropy ref alt LogRatioPrior.Ref LogRatioPrior.Alt
+## 30     1355   M00084           28 1.8771639   C   T          6.034927        -2.4385871
+## 56     3603   M01714           12 1.7461780   C   T          5.671023        -0.9201730
+## 143    9218   M00084           21 0.8689223   G   C          4.183780         9.8614439
+## 194   12261   M00084           21 0.8689223   A   G          7.366078        11.2888553
+## 203   13385   M01925           21 1.9582373   G   A          6.774377        -1.0061039
+## 237   14283   M00084           25 1.5871104   G   A          4.996710        -2.4600265
+## 251   14881   M01509           16 1.5343766   G   A          7.611410         3.2110777
+## 9226  17685   M00807            2 1.6670044   G   A          8.270070         2.1939433
+## 288   18010   M00797            5 0.5165080   G   A          4.816206        -0.2390860
+## 345   20506   M00280            7 1.9400879   G   A          5.597880        -2.1251344
+## 6355   4139   M01961            7 1.9881729   C   G          6.231948       -12.7022057
+## 3210   9149   M01303            6 1.9999359   C   T          7.307715       -11.6192220
+## 1190  11320  PBM0203           15 1.8111229   G   A          6.613514         0.7139703
+## 1269  14685   M01068            9 1.9405353   G   A         10.834427         1.8792256
+## 3376  16768   M01303            8 1.5985656   G   A         14.748282        10.7620738
+## 3379  17077   M01303            6 1.9999359   C   A          8.902000       -10.0249373
+## 2089   1573   M01118           11 1.9243168   C   T          8.733199        -0.3576012
+## 2162   7501   M00766           17 1.2845076   G   A          5.834107         1.7018385
+## 3034   1514   M01335            5 0.8814204   T   A          8.031602         3.4294305
+## 3061   2093   M01303           13 1.4433938   C   G         11.440425         6.9144941
+## 3079   3404   M01532           39 0.7247598   A   G         16.131375        11.7933100
+## 3086   3960   M01122            9 1.1532701   C   A          8.293577         4.3463969
+## 7602   4789   M01219            7 0.9358663   G   A          7.462182         2.6228604
+## 3232  10322   M00008            6 1.8103056   G   A          6.839688         0.6913610
+## 3242  10886   M01068           14 1.8937655   G   A          7.671307         0.7505114
+## 3261  11879   M00404            8 1.8474190   T   G          6.247738        -0.4962465
+## 3315  14071   M00451           30 1.6452066   A   G          8.128684         3.4388537
+## 3383  17227   M01597           11 1.9360126   G   C          8.276714        -1.9925463
+## 3408  18436   M01118           11 1.9243168   C   G          5.386178        -2.6008755
+## 3413  18969   M00451           24 1.4826539   A   G         11.741829         7.3786814
+## 7492   1313   M01837           10 0.8692086   T   A          5.360720        -0.9848862
+## 7502   1498   M01504            9 1.4060160   T   C          8.750713         1.5478762
+## 7547   2597   M01504            9 1.4060160   A   G         10.346013         3.1431760
+## 7599   4689   M01504           11 1.8477507   T   G         13.684103         4.3974496
+## 7728   9652   M00078           17 0.8920722   A   C          5.094875         1.7932938
+## 7925  19093   M01532           33 1.5969361   A   T         11.722000        -7.0900685</code></pre>
+</div>
+<div id="sibling" class="section level2">
+<h2>Sibling</h2>
+<pre class="r"><code>mydata.ag[mydata.ag$binding_variant.ind &amp; mydata.ag$phenotype == &#39;dnv_sibling&#39;, cols]</code></pre>
+<pre><code>##       SNP.ID Motif.ID Relative.Pos   entropy ref alt LogRatioPrior.Ref LogRatioPrior.Alt
+## 351    20979   M01714            5 0.4630280   G   A         5.3972527        2.00853666
+## 1467   24541   M01068           12 1.9639209   C   A         8.7263856      -10.19505921
+## 462    25101   M01175           10 1.8230149   C   A         5.6884407      -13.21316114
+## 473    25238   M00084           28 1.8771639   G   A         7.7309105       -0.74260401
+## 5848   26862   M00244            6 1.7464740   A   G        -0.5643192        4.88896990
+## 531    27230   M00084           22 1.1181328   C   G         8.5363565        3.29979736
+## 1616   30714 MA0162.1            5 1.8737468   C   T         6.7292694      -12.18480984
+## 611    31352   M01925           22 1.9380524   C   T         6.8924844       15.66934696
+## 8779   44583   M01118            3 1.9361772   G   A         5.8024781      -13.11939394
+## 10942  46710   M01820            2 1.4564349   C   T         1.6920131        5.24842472
+## 1408   21650   M01068            8 1.9361285   C   T        11.2694179        2.33235766
+## 1554   27038   M01068            3 1.0236657   C   G        10.4044718        6.59315137
+## 1565   28448   M00114           12 1.4894717   C   T         5.1839671        0.37874094
+## 9534   30569   M01925           22 1.9380524   T   C         5.4499417       -3.32692084
+## 1738   35116   M01068            3 1.0236657   G   A        10.8344272        5.91868201
+## 3959   36228   M01597            6 1.9999359   G   A         8.6449153      -10.28782915
+## 11442  22374   M01564           11 1.4287563   G   A         4.9686300        1.47350103
+## 3572   23706   M00451           28 1.7027981   G   A        11.9266853        7.23450248
+## 3601   24633   M00008            6 1.8103056   C   T         6.0256391       -0.12268794
+## 8158   25158  PBM0203            9 1.2627148   C   T         5.6868853        2.06765993
+## 3654   25801   M01104            8 1.8823280   G   A         6.4246924      -12.47778534
+## 6856   26395   M01961            8 1.6581801   C   G         6.2319480       -1.52381533
+## 3706   28067   M01737            7 1.5454389   A   G         5.9336054        1.38047570
+## 3707   28250   M01219            6 1.8996402   C   T         7.6723014        0.15009043
+## 3727   29114   M01068            7 1.9575122   C   G         6.9929989      -11.92802334
+## 3736   29461   M00451           30 1.6452066   G   A         7.2218366       11.91166657
+## 3776   30620   M01303            6 1.9999359   G   T         7.2316086      -11.69532858
+## 3857   33242   M01068           15 0.6675571   T   C         5.5775884       10.40447180
+## 4091   38827   M01104            3 1.5658410   G   A         4.6312696       -0.54686068
+## 4148   41701   M01175           10 1.8230149   G   C         5.6884407       -1.95770099
+## 4166   42394   M01219            7 0.9358663   G   A         7.2710774        2.43175556
+## 4170   42561   M01118            9 1.8782834   G   A         5.1992335       -1.01434411
+## 4201   44121   M01256           18 0.5929753   C   A         4.5989786        1.22788163
+## 4229   45941   M01303           12 1.9199620   G   A         9.7801384       -9.13247926
+## 5353   46911   M00451           28 1.7027981   C   T         5.5138801        0.82169723
+## 5854   27900   M01961            6 1.9882944   G   A         6.4388522       -3.48964764
+## 8053   23023   M01124           16 1.1631984   A   G         5.7004862       -0.37419550
+## 8100   24552   M00008            2 1.8547063   C   T         6.7255627       -0.79034088
+## 8347   30856   M01593            2 0.8084927   C   T         8.2008392        3.56976522
+## 8421   32796   M00321           18 0.8307730   G   T         6.7495294        1.12254233
+## 8615   38341   M01219           11 1.7984264   C   A         6.4137547       -0.07949471
+## 8818   46402   M01219           12 1.7796207   C   A         4.6237097       -2.56895954
+## 9888   43919   M00717            3 1.1676382   A   G         4.9978034        0.02782553
+## 14710  31084   M01714            9 1.8125349   C   A         4.6931249       -2.32452541</code></pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

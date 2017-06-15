@@ -1,0 +1,8 @@
+---
+title: "Home"
+# author: Yanyu Liang
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+* [Motif Visualization](../motif_visualization/report/visualize.recalibratedMotifs.html)
+* [Strategy 1](footprint_snp_strategy1.html)

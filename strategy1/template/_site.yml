@@ -1,0 +1,19 @@
+name: "footprint_annotation"
+output_dir: "../../docs"
+include: [".nojekyll"]
+exclude: ["include"]
+navbar:
+  title: "Footprint Annotation of SNP"
+  left:
+    - text: "Home"
+      href: index.html
+  right:
+    - icon: fa-github
+      href: https://github.com/liangyy/footprint_annotation
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cosmo
+    highlight: textmate
+    
