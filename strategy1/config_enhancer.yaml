@@ -1,5 +1,7 @@
 footprint_bed:
   enhancer: '../../../deep_variant/yanyu/deep_brain/data/Noonan_union.bed'
+  end_include: 0
+  view: 'cat'
 snp_list:
   ASD_060717:
     path: '../snpLists/170607_for_Yanyu_mut_info.SNVonly.txt'

@@ -2,13 +2,29 @@
 #
 # get_footprint_snp: footprint bed, snp_list --> snp_in_footprint (snp_id, motif_name)
 
+def get_all_footprint_data(config):
+    out = []
+    for i in config['footprint_bed'].keys():
+        if i in ['view', 'end_include']:
+            continue
+        out.append('data/output.{footprint_name}.{snp_name}.bed'.format(footprint_name=i, snp_name=str(list(config['snp_list'].keys())[0])))
+    print(out)
+    return out
+
+rule run_all_footprint:
+    input:
+        get_all_footprint_data(config)
+
 rule preprocess_footprint:
     input:
         lambda wildcards: config['footprint_bed'][wildcards.footprint_name]
+    params:
+        i = config['footprint_bed']['end_include'],
+        tool = config['footprint_bed']['view']
     output:
         'data/preprocess.{footprint_name}.{snp_name}.bed.gz'
     shell:
-        '''zcat {input[0]} | awk -F"\\t" '{{print $1"\\t"$2"\\t"$3+1"\\t"$4"\\t"$6"\\t"$13}}' | gzip > {output[0]}'''
+        '''{params.tool} {input[0]} | awk -F"\\t" '{{print $1"\\t"$2"\\t"$3+{params.i}"\\t"$4"\\t"$6"\\t"$13}}' | gzip > {output[0]}'''
 
 rule get_footprint_snp:
     input:
