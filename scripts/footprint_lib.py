@@ -73,14 +73,15 @@ def _to_digit(seq):
         digit[i, dic[seq[i]]] = 1
     return digit
 
-def get_seq(snp, region, seq):
+def get_seq(snp, region, seq, check_ref):
     # seq = _get_from_fasta(region.chr, region.start, snp.end, genome)
     ref = seq
     pos = snp.start - region.start
     # print(pos, snp.start, region.start)
-    if seq[pos] != snp.ref:
+    if seq[pos] != snp.ref and check_ref == '1':
          print('Ref in SNP is {ref_snp} does not match Ref in fasta {ref_fa}. Skip!'.format(ref_snp=snp.ref, ref_fa=seq[pos]), file=sys.stderr)
-         return None, None
+         return None, None, None
+    ref = seq[:pos] + snp.ref + seq[pos+1:]
     alt = seq[:pos] + snp.alt + seq[pos+1:]
     ref = _to_digit(ref)
     alt = _to_digit(alt)

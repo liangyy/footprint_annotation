@@ -20,6 +20,10 @@ parser.add_argument('--footprint_seq', help='''
 parser.add_argument('--ncol', type=int, help='''
     Number of columns in original input SNP list file
 ''')
+parser.add_argument('--check_ref', help='''
+    Set it to '1' if you want to check if the given position of extracted
+    sequence matches the reference allele
+''')
 parser.add_argument('--out')
 args = parser.parse_args()
 
@@ -44,7 +48,7 @@ with gzip.open(args.footprint_snp,'rb') as f:
     counter = 0
     for line in f:
         snp, region = footprint_lib.read_bed_line(line.decode(), args.ncol)
-        ref, alt, relative_pos = footprint_lib.get_seq(snp, region, ref_seqs[counter])
+        ref, alt, relative_pos = footprint_lib.get_seq(snp, region, ref_seqs[counter], args.check_ref)
         counter += 1
         if ref is None:
             continue

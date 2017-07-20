@@ -20,5 +20,6 @@ snp_list:
     path: '../snpLists/170607_for_Yanyu_mut_info.SNVonly.txt'
     ncol_of_snp_list: 6
     snp_view_method: 'cat'
+    check_ref: '1'  # Set it to '1' if you want to check if the listed ref allele matches the extracted sequence from genome assembly
 motif_folder: '../recalibratedMotifs/'
 genome: '/project2/xinhe/yanyul/databases/hg19/hg19.fa'

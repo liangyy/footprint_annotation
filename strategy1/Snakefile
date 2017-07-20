@@ -42,7 +42,8 @@ rule get_seq:
         footprint_snp = 'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz' # ATTENTION! in input footprinting region file, both start and end are included (0-based)!
     params:
         genome_fasta = config['genome'],
-        ncol_of_snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['ncol_of_snp_list']
+        ncol_of_snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['ncol_of_snp_list'],
+        check_ref = lambda wildcards: config['snp_list'][wildcards.snp_name]['check_ref']
     output:
         'data/seq.{footprint_name}.{snp_name}.tab'
     shell:
