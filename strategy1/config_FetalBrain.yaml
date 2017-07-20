@@ -13,11 +13,12 @@ footprint_bed:
   SRX121277: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX121277.bed.gz'
   SRX121278: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX121278.bed.gz'
   SRX201815: '../footprintRegions/EpiUwRmapDNaseFetal.Brain.SRX201815.bed.gz'
-  end_include: 1 # 1 for include ; 0 for not include (in original input bed file) 
+  end_include: 1 # 1 for include ; 0 for not include (in original input bed file)
   view: 'zcat'
 snp_list:
   ASD_060717:
     path: '../snpLists/170607_for_Yanyu_mut_info.SNVonly.txt'
     ncol_of_snp_list: 6
+    snp_view_method: 'cat'
 motif_folder: '../recalibratedMotifs/'
 genome: '/project2/xinhe/yanyul/databases/hg19/hg19.fa'
