@@ -33,9 +33,10 @@ rule get_footprint_snp:
     output:
         'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz'
     params:
-        snp_view_method = lambda wildcards: config['snp_list'][wildcards.snp_name]['snp_view_method']
+        snp_view_method = lambda wildcards: config['snp_list'][wildcards.snp_name]['snp_view_method'],
+        read_first_line = lambda wildcards: config['snp_list'][wildcards.snp_name]['read_first_line']
     shell:
-        '''bedtools intersect -a <({params.snp_view_method} {input.snp_list} | tail -n +2  | awk -F"\\t" '{{print $1"\\t"$2-1"\\t"$3"\\t"$4"\\t"$5"\\t"$7}}') -b <(zcat < {input.footprint_bed}) -wb | gzip > {output[0]}'''
+        '''bedtools intersect -a <({params.snp_view_method} {input.snp_list} {params.read_first_line} | awk -F"\\t" '{{print $1"\\t"$2-1"\\t"$3"\\t"$4"\\t"$5"\\t"$7}}') -b <(zcat < {input.footprint_bed}) -wb | gzip > {output[0]}'''
 
 rule get_seq:
     input:
