@@ -1,0 +1,23 @@
+experiments:
+  E081:
+    fastq: 'something'
+    bed: 'something'
+  NSC_27d:
+    fastq: 'something'
+    bed: 'something'
+  NSC_41d_1:
+    fastq: 'something'
+    bed: 'something'
+  NSC_41d_2:
+    fastq: 'something'
+    bed: 'something'
+variants:
+  yuwen: 'something'
+motifs:
+  recalMotifs: 'something'
+genome_assembly:
+  fasta: 'something'
+  size: 'something'
+active_motifs:
+  top: 0.2  # select motifs that lead to top percentage of matches (at least one)
+  bf: 1000 

@@ -1,0 +1,129 @@
+# This module implements the strategy2 for footprint annotation task.
+# Recall that footprint annotation takes a list of variants and predicts whether
+# it locates in footprint regions and whether it alters binding affinity
+
+# In strategy2, we takes an experiment and learns a CENTIPEDE model for each
+# motif-experiment pair. Motifs are taken from recalibrated one in the paper
+# Which genetic variants in DNase-seq footprints are more likely to alter binding?
+
+rule align_fastq2sai:
+    input:
+        fastq = lambda wildcards: config['experiments'][wildcards.sample]['fastq']
+    output:
+        sai = temp('temp/align/{sample}.sai')
+    params:
+        ref = config['genome_assembly']['fasta'],
+    threads: config['ncpus']
+    shell:
+        'bwa aln -Y -l 32 -n 0.04 -k 2 -t {threads} {params.ref} {input.fastq} > {output.sai}'
+
+rule align_sai2sam:
+    input:
+        'temp/align/{sample}.sai',
+        lambda wildcards: config['experiments'][wildcards.sample]['fastq']
+    output:
+        temp('temp/align/{sample}.sam')
+    params:
+        ref = config['genome_assembly']['fasta']
+    shell:
+        'bwa samse -n 10 {params.ref} {input[0]} {input[1]} > {output[0]}'
+
+rule align_sam2bam:
+    input:
+        'temp/align/{sample}.sam'
+    output:
+        temp('temp/align/{sample}.bam')
+    shell:
+        'samtools view -Shb {input[0]} > {output[0]}'
+
+rule align_bam_sort:
+    input:
+        'temp/align/{sample}.bam'
+    output:
+        'data/align/{sample}.sorted.bam'
+    threads: config['ncpus']
+    shell:
+        'samtools sort -@ {threads} -m 4G -o {output[0]} {input[0]}'
+
+rule align_bam_index:
+    input:
+        'data/align/{sample}.sorted.bam'
+    output:
+        'data/align/{sample}.sorted.bai'
+    shell:
+        'samtools index {input[0]}'
+
+rule pile_fastq2mpile:
+    input:
+        'data/align/{sample}.sorted.bam',
+        'data/align/{sample}.sorted.bai',
+        config['genome_assembly']['fasta']
+    output:
+        'data/pile/{sample}.mpile.gz'
+    shell:
+        '''samtools view -b -q 10 {input[0]} | \
+        samtools mpileup -f {input[2]} - > {output[0]}'''
+
+rule scan_motif_score_in_region:
+    input:
+        motif_dir = config['motifs'][wildcards.motif_dir],
+        region = lambda wildcards: config['experiments'][wildcards.sample]['bed']
+    params:
+        lambda wilcards: config['genome_assembly']['fasta']
+    output:
+        'data/scan/{motif_dir}__{sample}.region.bed.gz'
+    shell:
+        'python scripts/scan_motif_in_region.py \
+        --genome {params[0]} \
+        --motif_dir {input[0]} \
+        --region {input[1]} \
+        --output {output[0]}'
+
+rule select_active_motifs:
+    input:
+        'data/scan/{motif_dir}__{sample}.region.bed.gz'
+    params:
+        lambda wildcards: config['active_motifs'][wildcards.method],
+    output:
+        'data/active_motifs/{motif_dir}__{sample}__{method}.active_list.txt'
+    shell:
+        'Rscript scripts/selectActiveMotifs.R \
+        --vanilla \
+        --score {input[0]} \
+        --method {wildcards.method} \
+        --param {params[0]} \
+        --output {output[0]}'
+
+rule report_scanning:
+    input:
+        'data/scan/{motif_dir}__{sample}.region.bed.gz',
+        'data/active_motifs/{motif_dir}__{sample}__{method}.active_list.txt'
+    output:
+        'report/scan.{motif_dir}__{sample}.region.Rmd'
+    run:
+        o = open(output[0], 'w')
+        rmd = '''
+something here
+plot each score distribution and indicating whether it is active
+'''.format(score = input[0],
+            active_list = input[1])
+        o.write(rmd)
+        o.close()
+
+rule train_centipede:
+    input:
+        motif_dir = lambda wildcards: config['motifs'][wildcards.motif_dir],
+        active_list = 'data/active_motifs/{motif_dir}__{sample}__{method}.active_list.txt',
+        mpile = 'data/pile/{sample}.mpile.gz'
+    output:
+        'model/{motif_dir}__{sample}__{method}'
+    shell:
+        'python wrapper_to_run_centipede.py \
+        --motif_dir {input[0]} \
+        --active_motifs {input.active_list} \
+        --mpile {input.mpile} \
+        --out_dir {output[0]}'
+
+rule predict_centipede:
+
+rule variant_in_bed:
