@@ -64,65 +64,82 @@ rule pile_fastq2mpile:
         '''samtools view -b -q 10 {input[0]} | \
         samtools mpileup -f {input[2]} - > {output[0]}'''
 
-rule scan_motif_score_in_region:
+rule scan_prepare_get_fasta:
     input:
-        motif_dir = config['motifs'][wildcards.motif_dir],
         region = lambda wildcards: config['experiments'][wildcards.sample]['bed']
     params:
-        lambda wilcards: config['genome_assembly']['fasta']
+        genome_fa = lambda wilcards: config['genome_assembly']['fasta'],
+        genome_size = lambda wilcards: config['genome_assembly']['size'],
+        extend_bed = lambda wildcards: config['active_motifs']['extend_bed']
     output:
-        'data/scan/{motif_dir}__{sample}.region.bed.gz'
+        'data/scan/{sample}.extend_{size}.fasta.gz'
     shell:
-        'python scripts/scan_motif_in_region.py \
-        --genome {params[0]} \
-        --motif_dir {input[0]} \
-        --region {input[1]} \
-        --output {output[0]}'
+        '''
+        # get sequences
+        bedtools getfasta -fi {params.genome_fa} \
+        -bed <(bedtools slop -i <(zcat {input.region}) -g {params.genome_size} -b {params.extend_bed}) \
+        -fo {output[0]}.temp
+        # compress
+        cat {output[0]}.temp | gzip > {output[0]}
+        rm {output[0]}.temp
+        '''
 
-rule select_active_motifs:
+import glob
+import ntpath
+def get_motif_files(motifs):
+    out = {}
+    for name in motifs.keys():
+        out[name] = {}
+        files = glob.glob('{name}/*'.format(name = motifs[name]))
+        for f in files:
+            fname = ntpath.basename(f)
+            out[name][fname] = f
+    return out
+
+
+motif_dic = get_motif_files(config['motifs'])
+
+rule scan_motif_score_in_region:
     input:
-        'data/scan/{motif_dir}__{sample}.region.bed.gz'
+        fasta = 'data/scan/{sample}.extend_{size}.fasta.gz'
     params:
-        lambda wildcards: config['active_motifs'][wildcards.method],
+        threshold = lambda wildcards: config['active_motifs']['score_threshold']
     output:
-        'data/active_motifs/{motif_dir}__{sample}__{method}.active_list.txt'
+        'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz'
     shell:
-        'Rscript scripts/selectActiveMotifs.R \
-        --vanilla \
-        --score {input[0]} \
-        --method {wildcards.method} \
-        --param {params[0]} \
-        --output {output[0]}'
+        '''
+        python scripts/scan_motif_in_region.py \
+        --fasta {input.fasta} \
+        --motif_name {wildcards.motif_name} \
+        --output {output[0]} \
+        --threshold {params.threshold} \
+        --motif_dir {wildcards.motif_dir}
+        '''
 
-rule report_scanning:
+rule scan_summarize:
     input:
-        'data/scan/{motif_dir}__{sample}.region.bed.gz',
-        'data/active_motifs/{motif_dir}__{sample}__{method}.active_list.txt'
+        lambda wildcards: get_all_region_scanning(config, wildcards.motif_dir)
     output:
-        'report/scan.{motif_dir}__{sample}.region.Rmd'
-    run:
-        o = open(output[0], 'w')
-        rmd = '''
-something here
-plot each score distribution and indicating whether it is active
-'''.format(score = input[0],
-            active_list = input[1])
-        o.write(rmd)
-        o.close()
+        'data/active_motifs/{motif_dir}__{sample}.extend_{size}.active_motif_list.txt'
+    shell:
+        '''
+        wc -l {input[0]} | sort -nr -k1 | sed 's/  //gc' > {output[0]}
+        '''
 
 rule train_centipede:
     input:
-        motif_dir = lambda wildcards: config['motifs'][wildcards.motif_dir],
-        active_list = 'data/active_motifs/{motif_dir}__{sample}__{method}.active_list.txt',
+        active_region = 'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz',
         mpile = 'data/pile/{sample}.mpile.gz'
+    params:
+        centipede = config['centipede']
     output:
-        'model/{motif_dir}__{sample}__{method}'
+        'model/{motif_dir}/{motif_name}__{sample}.extend_{size}.rds'
     shell:
-        'python wrapper_to_run_centipede.py \
-        --motif_dir {input[0]} \
-        --active_motifs {input.active_list} \
+        'Rscript train_centipede.R \
+        --active_region {input.motif_score} \
         --mpile {input.mpile} \
-        --out_dir {output[0]}'
+        --centipede_path {params.centipede} \
+        --output {output[0]}'
 
 rule predict_centipede:
 

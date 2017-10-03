@@ -1,7 +1,7 @@
 experiments:
   E081:
     fastq: 'something'
-    bed: 'something'
+    bed: 'something'  # ATTENTION: only take compressed bed file
   NSC_27d:
     fastq: 'something'
     bed: 'something'
@@ -19,5 +19,8 @@ genome_assembly:
   fasta: 'something'
   size: 'something'
 active_motifs:
-  top: 0.2  # select motifs that lead to top percentage of matches (at least one)
-  bf: 1000 
+  extend_bed: 50  # extend input region a little bit to consider some edge cases
+                  # where footprint peak is incompletely called
+  score_threshold: 10000  # log likelihood ratio (flat background base distribution)
+  occurence_threshold: 10000
+centipede: 'path of centipede script'

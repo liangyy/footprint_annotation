@@ -92,3 +92,19 @@ def get_seq(snp, region, seq, check_ref):
     else:
         pos = pos + 1
     return ref, alt, pos
+
+def scan_region(seq, motif, threshold):
+    seq_digit = _to_digit(seq)
+    seq_length = len(seq)
+    motif_length = motif.pwm.size[1]
+    out = []
+    for i in range(seq_length - motif_length + 1):
+        subseq_digit = seq_digit[i : i + motif_length, :]
+        subseqrev_digit = subseq_digit[::-1, ::-1]
+        forward_score = subseq_digit(subseq_digit, motif)
+        reverse_score = subseq_digit(subseqrev_digit, motif)
+        if forward_score > threshold:
+            out.append([i, forward_score, '+'])
+        if reverse_score > threshold:
+            out.append([i, reverse_score, '-'])
+    return out
