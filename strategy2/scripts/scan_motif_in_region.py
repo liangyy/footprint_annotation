@@ -44,7 +44,7 @@ with gzip.open(args.fasta, 'r') as f:
             start = int(re.search('>chr[0-9]+:([0-9]+)-').group(1))
         else:
             seq = i
-            passed_regions = scan_region(seq, motif, np.log2(args.threshold))
+            passed_regions = footprint_lib.scan_region(seq, motif, np.log2(args.threshold))
         for r in passed_regions:
             pos, score, strand = r
             rstart = str(start + pos)
