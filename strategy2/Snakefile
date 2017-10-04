@@ -92,7 +92,6 @@ rule scan_prepare_get_fasta:
     params:
         genome_fa = lambda wilcards: config['genome_assembly']['fasta'],
         genome_size = lambda wilcards: config['genome_assembly']['size'],
-        extend_bed = lambda wildcards: config['active_motifs']['extend_bed'],
         read_method = lambda wildcards: config['experiments'][wildcards.sample]['read_method']
     output:
         'data/scan/{sample}.extend_{size}.fasta.gz'
@@ -100,7 +99,7 @@ rule scan_prepare_get_fasta:
         '''
         # get sequences
         bedtools getfasta -fi {params.genome_fa} \
-        -bed <(bedtools slop -i <({params.read_method} {input.region}) -g {params.genome_size} -b {params.extend_bed}) \
+        -bed <(bedtools slop -i <({params.read_method} {input.region}) -g {params.genome_size} -b {wildcards.size}) \
         -fo {output[0]}.temp
         # compress
         cat {output[0]}.temp | gzip > {output[0]}
@@ -157,7 +156,7 @@ rule pile_postprocess_extend_region:
     input:
         'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz'
     params:
-        window_size = lambda wildcards: int(wildcards.win_size / 2),
+        window_size = lambda wildcards: int(int(wildcards.win_size) / 2),
         genome_size = config['genome_assembly']['size']
     output:
         temp('data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_region.bed.gz')
@@ -177,14 +176,14 @@ rule pile_postprocess_merge:
     input:
         'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_5_prime_count.bed.gz'
     output:
-        'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.region_merged.bed.gz'
+        'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.region_merged.5_prime_count.gz'
     shell:
         'bedtools merge -i {input[0]} -c 4 -o collapse | gzip > {output[0]}'
 
 rule train_centipede:
     input:
         active_region = 'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz',
-        five_prime_count = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.region_merged.5_prime_count.bed.gz'
+        five_prime_count = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.region_merged.5_prime_count.gz'
     params:
         centipede = config['centipede']['script']
     output:

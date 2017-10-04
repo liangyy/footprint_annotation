@@ -34,14 +34,16 @@ import numpy as np
 
 
 motif = footprint_lib.get_motif(args.motif_dir, args.motif_name)
+motif_length = motif.pwm.shape[0]
 out = gzip.open(args.output, 'w')
 with gzip.open(args.fasta, 'r') as f:
     for i in f:
+        i = i.decode()
         i = i.strip()
         if i[0] == '>':
-            header = i[1:]
-            chrm = re.search('>(ch[0-9+]):').group(1)
-            start = int(re.search('>chr[0-9]+:([0-9]+)-').group(1))
+            chrm = re.search('>(chr[0-9]+):', i).group(1)
+            start = int(re.search('>chr[0-9]+:([0-9]+)-', i).group(1))
+            continue
         else:
             seq = i
             passed_regions = footprint_lib.scan_region(seq, motif, np.log2(args.threshold))
@@ -49,6 +51,6 @@ with gzip.open(args.fasta, 'r') as f:
             pos, score, strand = r
             rstart = str(start + pos)
             rend = str(start + pos + motif_length)
-            out.write('\t'.join([chrm, rstart, rend, strand, motif.name, score]))
-            out.write('\n')
+            new_line = '\t'.join([chrm, rstart, rend, strand, motif.name, str(np.round(score, decimals = 4))]) + '\n'
+            out.write(new_line.encode('ascii')) 
 out.close()
