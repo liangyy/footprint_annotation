@@ -53,17 +53,6 @@ rule align_bam_index:
     shell:
         'samtools index {input[0]}'
 
-rule pile_fastq2mpile:
-    input:
-        'data/align/{sample}.sorted.bam',
-        'data/align/{sample}.sorted.bai',
-        config['genome_assembly']['fasta']
-    output:
-        'data/pile/{sample}.mpile.gz'
-    shell:
-        '''samtools view -b -q 10 {input[0]} | \
-        samtools mpileup -f {input[2]} - > {output[0]}'''
-
 rule scan_prepare_get_fasta:
     input:
         region = lambda wildcards: config['experiments'][wildcards.sample]['bed']
@@ -126,21 +115,71 @@ rule scan_summarize:
         wc -l {input[0]} | sort -nr -k1 | sed 's/  //gc' > {output[0]}
         '''
 
+rule pile_prepare:
+    input:
+        'data/align/{sample}.sorted.bam',
+        'data/align/{sample}.sorted.bai',
+        'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz'
+    output:
+        temp('data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}.extracted_for_pile.bam')
+    shell:
+        'bedtools intersect -a {input[0]} -b <(zcat {input[2]}) > {output[0]}'
+
+rule pile_do_pile:
+    input:
+        'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}.extracted_for_pile.bam',
+    output:
+        'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}.5_prime_count.bed.gz'
+    shell:
+        'bedtools genomecov -i {input[0]} -5 -d | gzip > {output[0]}'
+
+rule pile_postprocess_extend_region:
+    input:
+        'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz'
+    params:
+        window_size = lambda wildcards: int(wildcards.win_size / 2),
+        genome_size = config['genome_assembly']['size']
+    output:
+        temp('data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_region.bed.gz')
+    shell:
+        'bedtools slop -i <(zcat {input[0]}) -g {params.genome_size} -b {params.window_size} | gzip > {output[0]}'
+
+rule pile_postprocess_extract:
+    input:
+        extended_region = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_region.bed.gz',
+        score = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}.5_prime_count.bed.gz'
+    output:
+        temp('data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.5_prime_count.bed.gz')
+    shell:
+        'bedtools intersect -a {input.score} -b {input.extended_region} | gzip > {output[0]}'
+
+rule pile_postprocess_merge:
+    input:
+        'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.5_prime_count.bed.gz'
+    output:
+        'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.region_merged.bed.gz'
+    shell:
+        'bedtools merge -i {input[0]} -c 4 -o collapse | gzip > {output[0]}'
+
 rule train_centipede:
     input:
         active_region = 'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz',
-        mpile = 'data/pile/{sample}.mpile.gz'
+        five_prime_count = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.region_merged.5_prime_count.bed.gz'
     params:
-        centipede = config['centipede']
+        centipede = config['centipede']['script']
     output:
-        'model/{motif_dir}/{motif_name}__{sample}.extend_{size}.rds'
+        'model/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.rds'
+    log:
+        'logs/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.train.log'
     shell:
         'Rscript train_centipede.R \
         --active_region {input.motif_score} \
-        --mpile {input.mpile} \
+        --five_prime_count {input.five_prime_count} \
         --centipede_path {params.centipede} \
-        --output {output[0]}'
+        --output {output[0]} > \
+        {log}'
 
-rule predict_centipede:
-
-rule variant_in_bed:
+# rule predict_centipede:
+#
+#
+# rule variant_in_bed:

@@ -4,8 +4,8 @@ option_list <- list(
     make_option(c("-r", "--active_region"), type="character", default=NULL,
                 help="Regions of interest along with motif name and score",
                 metavar="character"),
-    make_option(c("-p", "--mpile"), type="character", default=NULL,
-                help="Pile-up file generated from sequencing experiment",
+    make_option(c("-f", "--five_prime_count"), type="character", default=NULL,
+                help="Five prime count from sequencing experiment",
                 metavar="character"),
     make_option(c("-o", "--output"), type="character", default=NULL,
                 help="Name of output RDS file",
@@ -23,3 +23,21 @@ if (opt$centipede_path == '') {
 } else {
   fitCentipede <- fitCentipede3
 }
+
+cutsite.readin <- read.table(opt$five_prime_count, sep = '\t', header = F)
+cutsite <- strsplit(cutsite.readin, ';')
+cutsite <- unlist(cutsite)
+n <- length(cutsite[[1]])
+class(cutsite) <- 'numeric'
+cutsite <- t(matrix(cutsite, nrow = n))
+pwm.readin <- read.table(opt$active_region, sep = '\t', header = F)
+pwm <- pwm.readin$V6
+
+
+model <- fitCentipede(Xlist=list(Seq=cutsite),Y=as.matrix(data.frame(Ict=1,Pwm=pwm)),
+												 DampLambda = 0.1, DampNegBin = 0.001,sweeps=200);
+
+ct <- cor.test(jitter(pwm), jitter(model$DataLogRatio), method = 'spearman')
+cat("#Spearman_p.val = ", ct$p.value, "_rho = ", ct$estimate, "\n")
+
+saveRDS(model, file = opt$output)

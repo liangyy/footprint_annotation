@@ -23,4 +23,6 @@ active_motifs:
                   # where footprint peak is incompletely called
   score_threshold: 10000  # log likelihood ratio (flat background base distribution)
   occurence_threshold: 10000
-centipede: 'path of centipede script'
+centipede:
+  script: 'path of centipede script'
+  window_size: 100
