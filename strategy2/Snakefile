@@ -6,6 +6,34 @@
 # motif-experiment pair. Motifs are taken from recalibrated one in the paper
 # Which genetic variants in DNase-seq footprints are more likely to alter binding?
 
+import glob
+import ntpath
+def get_motif_files(motifs):
+    out = {}
+    for name in motifs.keys():
+        out[name] = {}
+        files = glob.glob('{name}/*'.format(name = motifs[name]))
+        for f in files:
+            fname = ntpath.basename(f)
+            out[name][fname] = f
+    return out
+
+motif_dic = get_motif_files(config['motifs'])
+
+def get_test(config, motif_dic):
+    o = 'model/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.rds'.format(
+        motif_dir = config['motifs'].keys()[0],
+        motif_name = motif_dic.keys()[0],
+        sample = config['experiments'].keys()[0],
+        size = config['active_motifs']['extend_bed'],
+        win_size = config['centipede']['window_size']
+    )
+    return o
+
+rule test:
+    input:
+        get_test(config)
+
 rule align_fastq2sai:
     input:
         fastq = lambda wildcards: config['experiments'][wildcards.sample]['fastq']
@@ -73,21 +101,6 @@ rule scan_prepare_get_fasta:
         cat {output[0]}.temp | gzip > {output[0]}
         rm {output[0]}.temp
         '''
-
-import glob
-import ntpath
-def get_motif_files(motifs):
-    out = {}
-    for name in motifs.keys():
-        out[name] = {}
-        files = glob.glob('{name}/*'.format(name = motifs[name]))
-        for f in files:
-            fname = ntpath.basename(f)
-            out[name][fname] = f
-    return out
-
-
-motif_dic = get_motif_files(config['motifs'])
 
 rule scan_motif_score_in_region:
     input:
