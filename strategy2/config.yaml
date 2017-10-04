@@ -17,8 +17,8 @@ experiments:
 motifs:
   recalMotifs: '../recalibratedMotifs/'
 genome_assembly:
-  fasta: '/project2/xinhe/yanyul/databases/hg19_complete/hg19.fa'
-  size: '/project2/xinhe/yanyul/databases/hg19_complete/hg19.chrom.sizes'
+  fasta: '/project2/xinhe/yanyul/databases/hg19/hg19.fa'
+  size: '/project2/xinhe/yanyul/databases/hg19/hg19.chrom.sizes'
 active_motifs:
   extend_bed: 50  # extend input region a little bit to consider some edge cases
                   # where footprint peak is incompletely called

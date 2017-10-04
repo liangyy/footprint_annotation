@@ -8,6 +8,8 @@
 
 import glob
 import ntpath
+import re
+
 def get_motif_files(motifs):
     out = {}
     for name in motifs.keys():
@@ -21,10 +23,13 @@ def get_motif_files(motifs):
 motif_dic = get_motif_files(config['motifs'])
 
 def get_test(config, motif_dic):
+    motif_dir_name = list(motif_dic.keys())[0]
+    motif_name = list(motif_dic[motif_dir_name].keys())[0]
+    motif_name = re.sub('.pwm', '', motif_name)
     o = 'model/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.rds'.format(
-        motif_dir = config['motifs'].keys()[0],
-        motif_name = motif_dic.keys()[0],
-        sample = config['experiments'].keys()[0],
+        motif_dir = list(config['motifs'].keys())[0],
+        motif_name = motif_name,
+        sample = list(config['experiments'].keys())[0],
         size = config['active_motifs']['extend_bed'],
         win_size = config['centipede']['window_size']
     )
@@ -32,7 +37,7 @@ def get_test(config, motif_dic):
 
 rule test:
     input:
-        get_test(config)
+        get_test(config, motif_dic)
 
 rule align_fastq2sai:
     input:
@@ -77,7 +82,7 @@ rule align_bam_index:
     input:
         'data/align/{sample}.sorted.bam'
     output:
-        'data/align/{sample}.sorted.bai'
+        'data/align/{sample}.sorted.bam.bai'
     shell:
         'samtools index {input[0]}'
 
@@ -106,7 +111,8 @@ rule scan_motif_score_in_region:
     input:
         fasta = 'data/scan/{sample}.extend_{size}.fasta.gz'
     params:
-        threshold = lambda wildcards: config['active_motifs']['score_threshold']
+        threshold = lambda wildcards: config['active_motifs']['score_threshold'],
+        motif_dir = lambda wildcards: config['motifs'][wildcards.motif_dir]
     output:
         'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz'
     shell:
@@ -116,7 +122,7 @@ rule scan_motif_score_in_region:
         --motif_name {wildcards.motif_name} \
         --output {output[0]} \
         --threshold {params.threshold} \
-        --motif_dir {wildcards.motif_dir}
+        --motif_dir {params.motif_dir}
         '''
 
 rule scan_summarize:
@@ -132,7 +138,7 @@ rule scan_summarize:
 rule pile_prepare:
     input:
         'data/align/{sample}.sorted.bam',
-        'data/align/{sample}.sorted.bai',
+        'data/align/{sample}.sorted.bam.bai',
         'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz'
     output:
         temp('data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}.extracted_for_pile.bam')
@@ -163,13 +169,13 @@ rule pile_postprocess_extract:
         extended_region = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_region.bed.gz',
         score = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}.5_prime_count.bed.gz'
     output:
-        temp('data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.5_prime_count.bed.gz')
+        temp('data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_5_prime_count.bed.gz')
     shell:
         'bedtools intersect -a {input.score} -b {input.extended_region} | gzip > {output[0]}'
 
 rule pile_postprocess_merge:
     input:
-        'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.5_prime_count.bed.gz'
+        'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_5_prime_count.bed.gz'
     output:
         'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.region_merged.bed.gz'
     shell:
@@ -187,7 +193,7 @@ rule train_centipede:
         'logs/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.train.log'
     shell:
         'Rscript train_centipede.R \
-        --active_region {input.motif_score} \
+        --active_region {input.active_region} \
         --five_prime_count {input.five_prime_count} \
         --centipede_path {params.centipede} \
         --output {output[0]} > \

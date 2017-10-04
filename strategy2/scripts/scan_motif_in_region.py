@@ -26,16 +26,16 @@ parser.add_argument('--threshold', type=float, help='''
 
 args = parser.parse_args()
 
-import os, re
-if '../scripts/' not in os.path:
-    os.append('../scripts/')
+import sys, re, gzip
+if '../scripts/' not in sys.path:
+    sys.path.append('../scripts/')
 import footprint_lib
 import numpy as np
 
 
 motif = footprint_lib.get_motif(args.motif_dir, args.motif_name)
-out = open(args.output, 'w')
-with open(args.fasta, 'r') as f:
+out = gzip.open(args.output, 'w')
+with gzip.open(args.fasta, 'r') as f:
     for i in f:
         i = i.strip()
         if i[0] == '>':
