@@ -1,28 +1,30 @@
 experiments:
   E081:
-    fastq: 'something'
-    bed: 'something'  # ATTENTION: only take compressed bed file
-  NSC_27d:
-    fastq: 'something'
-    bed: 'something'
-  NSC_41d_1:
-    fastq: 'something'
-    bed: 'something'
-  NSC_41d_2:
-    fastq: 'something'
-    bed: 'something'
-variants:
-  yuwen: 'something'
+    fastq: '../../../deep_variant/yanyu/deep_brain/evaluate_by_DGF/SRX062364/SRR203400.fastq.gz'
+    bed: '/project2/xinhe/yanyul/deep_variant/yanyu/deep_brain/data/E081-DNase.macs2.narrowPeak.sorted.intersect'  # ATTENTION: only take compressed bed file
+    read_method: 'cat'
+#  NSC_27:
+#     fastq: 'something'
+#    bed: 'something'
+#  NSC_41d_1:
+#    fastq: 'something'
+#    bed: 'something'
+#  NSC_41d_2:
+#    fastq: 'something'
+#    bed: 'something'
+# variants:
+#   yuwen: 'something'
 motifs:
-  recalMotifs: 'something'
+  recalMotifs: '../recalibratedMotifs/'
 genome_assembly:
-  fasta: 'something'
-  size: 'something'
+  fasta: '/project2/xinhe/yanyul/databases/hg19_complete/hg19.fa'
+  size: '/project2/xinhe/yanyul/databases/hg19_complete/hg19.chrom.sizes'
 active_motifs:
   extend_bed: 50  # extend input region a little bit to consider some edge cases
                   # where footprint peak is incompletely called
   score_threshold: 10000  # log likelihood ratio (flat background base distribution)
   occurence_threshold: 10000
 centipede:
-  script: 'path of centipede script'
+  script: ''
   window_size: 100
+ncpus: 1

@@ -59,14 +59,15 @@ rule scan_prepare_get_fasta:
     params:
         genome_fa = lambda wilcards: config['genome_assembly']['fasta'],
         genome_size = lambda wilcards: config['genome_assembly']['size'],
-        extend_bed = lambda wildcards: config['active_motifs']['extend_bed']
+        extend_bed = lambda wildcards: config['active_motifs']['extend_bed'],
+        read_method = lambda wildcards: config['experiments'][wildcards.sample]['read_method']
     output:
         'data/scan/{sample}.extend_{size}.fasta.gz'
     shell:
         '''
         # get sequences
         bedtools getfasta -fi {params.genome_fa} \
-        -bed <(bedtools slop -i <(zcat {input.region}) -g {params.genome_size} -b {params.extend_bed}) \
+        -bed <(bedtools slop -i <({params.read_method} {input.region}) -g {params.genome_size} -b {params.extend_bed}) \
         -fo {output[0]}.temp
         # compress
         cat {output[0]}.temp | gzip > {output[0]}
