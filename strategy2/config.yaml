@@ -1,7 +1,7 @@
 experiments:
   E081:
     fastq: '../../../deep_variant/yanyu/deep_brain/evaluate_by_DGF/SRX062364/SRR203400.fastq.gz'
-    bed: '/project2/xinhe/yanyul/deep_variant/yanyu/deep_brain/data/E081-DNase.macs2.narrowPeak.sorted.intersect'  # ATTENTION: only take compressed bed file
+    bed: '/project2/xinhe/yanyul/deep_variant/yanyu/deep_brain/data/E081-DNase.macs2.narrowPeak.sorted'  # ATTENTION: only take compressed bed file
     read_method: 'cat'
 #  NSC_27:
 #     fastq: 'something'

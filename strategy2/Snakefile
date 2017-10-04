@@ -114,6 +114,8 @@ rule scan_motif_score_in_region:
         motif_dir = lambda wildcards: config['motifs'][wildcards.motif_dir]
     output:
         'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz'
+    log: 
+        'logs/{motif_dir}/{motif_name}__{sample}.extend_{size}.scan.log'
     shell:
         '''
         python scripts/scan_motif_in_region.py \
@@ -121,7 +123,8 @@ rule scan_motif_score_in_region:
         --motif_name {wildcards.motif_name} \
         --output {output[0]} \
         --threshold {params.threshold} \
-        --motif_dir {params.motif_dir}
+        --motif_dir {params.motif_dir} > \
+        {log}
         '''
 
 rule scan_summarize:
