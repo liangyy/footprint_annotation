@@ -26,6 +26,7 @@ def get_test(config, motif_dic):
     motif_dir_name = list(motif_dic.keys())[0]
     motif_name = list(motif_dic[motif_dir_name].keys())[0]
     motif_name = re.sub('.pwm', '', motif_name)
+    motif_name = 'M01017'
     o = 'model/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.rds'.format(
         motif_dir = list(config['motifs'].keys())[0],
         motif_name = motif_name,
@@ -150,10 +151,12 @@ rule pile_prepare:
 rule pile_do_pile:
     input:
         'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}.extracted_for_pile.bam',
+    params:
+        config['genome_assembly']['size']
     output:
         'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}.5_prime_count.bed.gz'
     shell:
-        'bedtools genomecov -i {input[0]} -5 -d | gzip > {output[0]}'
+        'bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} | gzip > {output[0]}'
 
 rule pile_postprocess_extend_region:
     input:

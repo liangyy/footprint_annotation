@@ -42,8 +42,8 @@ with gzip.open(args.fasta, 'r') as f:
         i = i.strip()
         if i[0] == '>':
             print(i)
-            chrm = re.search('>(chr[0-9]+):', i).group(1)
-            start = int(re.search('>chr[0-9]+:([0-9]+)-', i).group(1))
+            chrm = re.search('>(chr[0-9XY]+):', i).group(1)
+            start = int(re.search('>chr[0-9XY]+:([0-9]+)-', i).group(1))
             continue
         else:
             seq = i
