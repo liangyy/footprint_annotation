@@ -174,9 +174,9 @@ rule pile_postprocess_extract:
         extended_region = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_region.bed.gz',
         score = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}.5_prime_count.bed.gz'
     output:
-        temp('data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_5_prime_count.bed.gz')
+        'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_5_prime_count.bed.gz'
     shell:
-        'bedtools intersect -a {input.score} -b {input.extended_region} | gzip > {output[0]}'
+        'bedtools intersect -a {input.score} -b {input.extended_region} -wb | gzip > {output[0]}'
 
 rule pile_postprocess_merge:
     input:
@@ -189,7 +189,7 @@ rule pile_postprocess_merge:
 rule train_centipede:
     input:
         active_region = 'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz',
-        five_prime_count = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.region_merged.5_prime_count.gz'
+        five_prime_count = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_5_prime_count.bed.gz'
     params:
         centipede = config['centipede']['script']
     output:
