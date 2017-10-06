@@ -26,7 +26,7 @@ def get_test(config, motif_dic):
     motif_dir_name = list(motif_dic.keys())[0]
     motif_name = list(motif_dic[motif_dir_name].keys())[0]
     motif_name = re.sub('.pwm', '', motif_name)
-    motif_name = 'M01017'
+    motif_name = 'MA0100.1'
     o = 'model/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.rds'.format(
         motif_dir = list(config['motifs'].keys())[0],
         motif_name = motif_name,
@@ -165,13 +165,13 @@ rule pile_postprocess_extend_region:
         window_size = lambda wildcards: int(int(wildcards.win_size) / 2),
         genome_size = config['genome_assembly']['size']
     output:
-        temp('data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_region.bed.gz')
+        'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_region.gz'
     shell:
         'bedtools slop -i <(zcat {input[0]}) -g {params.genome_size} -b {params.window_size} | gzip > {output[0]}'
 
 rule pile_postprocess_extract:
     input:
-        extended_region = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_region.bed.gz',
+        extended_region = 'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_region.gz',
         score = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}.5_prime_count.bed.gz'
     output:
         'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_5_prime_count.bed.gz'
@@ -188,7 +188,7 @@ rule pile_postprocess_extract:
 
 rule train_centipede:
     input:
-        active_region = 'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_region.bed.gz',
+        active_region = 'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_region.gz',
         five_prime_count = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_5_prime_count.bed.gz'
     params:
         centipede = config['centipede']['script']
@@ -197,7 +197,7 @@ rule train_centipede:
     log:
         'logs/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.train.log'
     shell:
-        'Rscript train_centipede.R \
+        'Rscript scripts/train_centipede.R \
         --active_region {input.active_region} \
         --five_prime_count {input.five_prime_count} \
         --centipede_path {params.centipede} \
