@@ -20,10 +20,12 @@ genome_assembly:
   fasta: '/project2/xinhe/yanyul/databases/hg19/hg19.fa'
   size: '/project2/xinhe/yanyul/databases/hg19/hg19.chrom.sizes'
 active_motifs:
-  extend_bed: 50  # extend input region a little bit to consider some edge cases
-                  # where footprint peak is incompletely called
-  score_threshold: 10000  # log likelihood ratio (flat background base distribution)
-  occurence_threshold: 10000
+  # scanning_mode: 'fimo'
+  fimo_threshold: 1e-5
+  # extend_bed: 50  # extend input region a little bit to consider some edge cases
+  #                 # where footprint peak is incompletely called
+  # score_threshold: 10000  # log likelihood ratio (flat background base distribution)
+  # occurence_threshold: 10000
 centipede:
   script: '/scratch/midway2/xinhe/which_gen_vars/src/fitCentipedeV2.R'
   window_size: 100
