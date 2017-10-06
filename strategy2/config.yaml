@@ -25,6 +25,6 @@ active_motifs:
   score_threshold: 10000  # log likelihood ratio (flat background base distribution)
   occurence_threshold: 10000
 centipede:
-  script: ''
+  script: '/scratch/midway2/xinhe/which_gen_vars/src/fitCentipedeV2.R'
   window_size: 100
 ncpus: 1

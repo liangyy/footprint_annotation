@@ -22,6 +22,10 @@ library(dplyr)
 library(tidyr)
 convertSignalToScore <- function(start, end, score) {
   out <- c()
+  dup.ind <- duplicated(start)
+  start <- start[!dup.ind]
+  end <- end[!dup.ind]
+  score <- score[!dup.ind]
   for(i in 1 : length(start)) {
     n <- end[i] - start[i]
     out <- c(out, rep(score[i], n))
@@ -30,9 +34,10 @@ convertSignalToScore <- function(start, end, score) {
   return(out)
 }
 
-if (opt$centipede_path == '') {
+if (opt$centipede_path == 'NO') {
   library(CENTIPEDE)
 } else {
+    source(opt$centipede_path)
   fitCentipede <- fitCentipede3
 }
 
@@ -53,15 +58,23 @@ pwm <- pwm.readin %>%
   group_by(id) %>%
   summarise(pwm.score = V6[1]) %>%
   ungroup()
-cusite <- cutsite %>%
-  inner_join(pwm, )
-pwm <- pwm.readin$V6
+cutsite <- cutsite %>%
+  inner_join(pwm, by = 'id')
+# pwm <- pwm.readin$V6
+cutsite.count <- strsplit(cutsite$count, ',')
+n <- length(cutsite.count[[1]])
+cutsite.count <- unlist(cutsite.count)
+class(cutsite.count) <- 'numeric'
+cutsite.count <- t(matrix(cutsite.count, nrow = n))
 
+model <- fitCentipede(
+  Xlist = list(Seq = cutsite.count),
+  Y = as.matrix(data.frame(Ict = 1,Pwm = cutsite$pwm.score)),
+  DampLambda = 0.1, 
+  DampNegBin = 0.001,
+  sweeps = 200)
 
-model <- fitCentipede(Xlist=list(Seq=cutsite),Y=as.matrix(data.frame(Ict=1,Pwm=pwm)),
-												 DampLambda = 0.1, DampNegBin = 0.001,sweeps=200);
-
-ct <- cor.test(jitter(pwm), jitter(model$DataLogRatio), method = 'spearman')
+ct <- cor.test(jitter(cutsite$pwm.score), jitter(model$LogRatios), method = 'spearman')
 cat("#Spearman_p.val = ", ct$p.value, "_rho = ", ct$estimate, "\n")
-
-saveRDS(model, file = opt$output)
+out <- list(model = model, data = cutsite)
+saveRDS(out, file = opt$output)
