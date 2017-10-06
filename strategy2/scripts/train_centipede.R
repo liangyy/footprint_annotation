@@ -18,6 +18,18 @@ option_list <- list(
 opt_parser <- OptionParser(option_list=option_list)
 opt <- parse_args(opt_parser)
 
+library(dplyr)
+library(tidyr)
+convertSignalToScore <- function(start, end, score) {
+  out <- c()
+  for(i in 1 : length(start)) {
+    n <- end[i] - start[i]
+    out <- c(out, rep(score[i], n))
+  }
+  out <- paste(out, collapse = ',')
+  return(out)
+}
+
 if (opt$centipede_path == '') {
   library(CENTIPEDE)
 } else {
@@ -25,12 +37,24 @@ if (opt$centipede_path == '') {
 }
 
 cutsite.readin <- read.table(opt$five_prime_count, sep = '\t', header = F)
-cutsite <- strsplit(cutsite.readin, ';')
-cutsite <- unlist(cutsite)
-n <- length(cutsite[[1]])
-class(cutsite) <- 'numeric'
-cutsite <- t(matrix(cutsite, nrow = n))
+cutsite <- cutsite.readin %>%
+  mutate(id = paste(V5, V6, V7, V8, V9)) %>%
+  group_by(id) %>%
+  summarise(count = convertSignalToScore(V2, V3, V4)) %>%
+  ungroup()
+# cutsite <- strsplit(cutsite.readin, ';')
+# cutsite <- unlist(cutsite)
+# n <- length(cutsite[[1]])
+# class(cutsite) <- 'numeric'
+# cutsite <- t(matrix(cutsite, nrow = n))
 pwm.readin <- read.table(opt$active_region, sep = '\t', header = F)
+pwm <- pwm.readin %>%
+  mutate(id = paste(V1, V2, V3, V4, V5)) %>%
+  group_by(id) %>%
+  summarise(pwm.score = V6[1]) %>%
+  ungroup()
+cusite <- cutsite %>%
+  inner_join(pwm, )
 pwm <- pwm.readin$V6
 
 

@@ -115,7 +115,7 @@ rule scan_motif_score_in_region:
         motif_dir = lambda wildcards: config['motifs'][wildcards.motif_dir]
     output:
         'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz'
-    log: 
+    log:
         'logs/{motif_dir}/{motif_name}__{sample}.extend_{size}.scan.log'
     shell:
         '''
@@ -178,17 +178,17 @@ rule pile_postprocess_extract:
     shell:
         'bedtools intersect -a {input.score} -b {input.extended_region} -wb | gzip > {output[0]}'
 
-rule pile_postprocess_merge:
-    input:
-        'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_5_prime_count.bed.gz'
-    output:
-        'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.region_merged.5_prime_count.gz'
-    shell:
-        'bedtools merge -i {input[0]} -c 4 -o collapse | gzip > {output[0]}'
+# rule pile_postprocess_merge:
+#     input:
+#         'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_5_prime_count.bed.gz'
+#     output:
+#         'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.region_merged.5_prime_count.gz'
+#     shell:
+#         'bedtools merge -i {input[0]} -c 4 -o collapse | gzip > {output[0]}'
 
 rule train_centipede:
     input:
-        active_region = 'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}.active_region.bed.gz',
+        active_region = 'data/scan/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_region.bed.gz',
         five_prime_count = 'data/pile/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.active_5_prime_count.bed.gz'
     params:
         centipede = config['centipede']['script']
