@@ -128,11 +128,13 @@ rule scan_motif_score_in_region:
         '''
 
 rule scan_motif_score_in_genome_prepare:
+    params:
+        motif_dir = lambda wildcards: config['motifs'][wildcards.motif_dir]
     output:
         'data/motif_in_meme/{motif_dir}/{motif_name}.meme'
     shell:
         'python scripts/pwm2meme.py \
-        --motif_dir_in_pwm {wildcards.motif_dir} \
+        --motif_dir_in_pwm {params.motif_dir} \
         --motif_name_in_pwm {wildcards.motif_name} \
         --output_in_meme {output[0]}'
 
@@ -159,7 +161,7 @@ rule scan_motif_score_in_genome_gzip:
     output:
         'data/scan/{motif_dir}/{motif_name}__genome.active_region.bed.gz'
     shell:
-        'cat {input[0]} | gzip > {output[0]}'
+        '''cat {input[0]} | tail -n +2 | awk '{{print $2"\\t"$3-1"\\t"$4-1"\\t"$5"\\t"$6"\\t"$7"\\t"$1}}' | gzip > {output[0]}'''
 
 rule scan_summarize:
     input:
@@ -179,10 +181,11 @@ rule pile_prepare:
     output:
         temp('data/pile/{motif_dir}/{motif_name}__{sample}.extracted_for_pile.bam')
     shell:
-        'bedtools intersect -a {input[0]} -b <(zcat {input[2]}) > {output[0]}'
+        'bedtools intersect -a {input[0]} -b <(zcat {input[2]}) -wa > {output[0]}'
 
 rule pile_do_pile:
     input:
+        # 'data/align/{sample}.sorted.bam'
         'data/pile/{motif_dir}/{motif_name}__{sample}.extracted_for_pile.bam',
     params:
         config['genome_assembly']['size']
@@ -221,14 +224,14 @@ rule pile_postprocess_extract:
 
 rule train_centipede:
     input:
-        active_region = 'data/scan/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_region.gz',
+        active_region = 'data/scan/{motif_dir}/{motif_name}__genome__window.{win_size}.active_region.gz',
         five_prime_count = 'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.bed.gz'
     params:
         centipede = config['centipede']['script']
     output:
-        'model/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.rds'
+        'model/{motif_dir}/{motif_name}__{sample}__window.{win_size}.rds'
     log:
-        'logs/{motif_dir}/{motif_name}__{sample}.extend_{size}__window.{win_size}.train.log'
+        'logs/{motif_dir}/{motif_name}__{sample}__window.{win_size}.train.log'
     shell:
         'Rscript scripts/train_centipede.R \
         --active_region {input.active_region} \

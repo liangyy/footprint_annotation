@@ -43,7 +43,7 @@ if (opt$centipede_path == 'NO') {
 
 cutsite.readin <- read.table(opt$five_prime_count, sep = '\t', header = F)
 cutsite <- cutsite.readin %>%
-  mutate(id = paste(V5, V6, V7, V8, V9)) %>%
+  mutate(id = paste(V5, V6, V7, V8, V11)) %>%
   group_by(id) %>%
   summarise(count = convertSignalToScore(V2, V3, V4)) %>%
   ungroup()
@@ -54,9 +54,9 @@ cutsite <- cutsite.readin %>%
 # cutsite <- t(matrix(cutsite, nrow = n))
 pwm.readin <- read.table(opt$active_region, sep = '\t', header = F)
 pwm <- pwm.readin %>%
-  mutate(id = paste(V1, V2, V3, V4, V5)) %>%
+  mutate(id = paste(V1, V2, V3, V4, V7)) %>%
   group_by(id) %>%
-  summarise(pwm.score = V6[1]) %>%
+  summarise(pwm.score = V5[1]) %>%
   ungroup()
 cutsite <- cutsite %>%
   inner_join(pwm, by = 'id')

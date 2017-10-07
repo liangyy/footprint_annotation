@@ -17,11 +17,11 @@ experiments:
 motifs:
   recalMotifs: '../recalibratedMotifs/'
 genome_assembly:
-  fasta: '/project2/xinhe/yanyul/databases/hg19/hg19.fa'
+  fasta: '/scratch/midway2/xinhe/footprint_annotation/strategy2/hg19_upper.fa'
   size: '/project2/xinhe/yanyul/databases/hg19/hg19.chrom.sizes'
 active_motifs:
   # scanning_mode: 'fimo'
-  fimo_threshold: 1e-5
+  fimo_threshold: 1e-4
   # extend_bed: 50  # extend input region a little bit to consider some edge cases
   #                 # where footprint peak is incompletely called
   # score_threshold: 10000  # log likelihood ratio (flat background base distribution)

@@ -30,7 +30,8 @@ Background letter frequencies
 A 0.25 C 0.25 G 0.25 T 0.25
 
 MOTIF {motif_name}
-letter-probability matrix: alength= 4 w= {length}'''.format(
+letter-probability matrix: alength= 4 w= {length}
+'''.format(
                                                             length = width,
                                                             motif_name = args.motif_name_in_pwm)
 out.write(header)
