@@ -118,7 +118,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Summary of comparison in test</h1>
 <h4 class="author"><em>Yanyu Liang</em></h4>
-<h4 class="date"><em>07 October, 2017</em></h4>
+<h4 class="date"><em>08 October, 2017</em></h4>
 
 </div>
 
@@ -132,7 +132,7 @@ for(t in txts) {
     e &lt;- c(e, str_match(t, '__(.*).txt')[2])
     df &lt;- rbind(df, e)
 }
-colnames(df) &lt;- c('intersect', 'union', 'first', 'second')</code></pre>
+colnames(df) &lt;- c('intersect', 'union', 'first', 'second', 'data')</code></pre>
 <pre class="r"><code>library(pander)
 pander(df)</code></pre>
 <table>
@@ -149,15 +149,15 @@ pander(df)</code></pre>
 <th align="center">union</th>
 <th align="center">first</th>
 <th align="center">second</th>
-<th align="center">NA</th>
+<th align="center">data</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center">4777</td>
-<td align="center">20302</td>
+<td align="center">0</td>
+<td align="center">26444</td>
 <td align="center">15997</td>
-<td align="center">9082</td>
+<td align="center">10447</td>
 <td align="center">MA0100.1</td>
 </tr>
 </tbody>
