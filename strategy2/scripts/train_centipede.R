@@ -13,6 +13,9 @@ option_list <- list(
                 make_option(c("-s", "--signal"), type="character", default=NULL,
                             help="Name of output signal file",
                             metavar="character"),
+    make_option(c("-e", "--extend_win"), type="numeric", default=NULL,
+                help="Extended size for window (half of window size setup)",
+                metavar="character"),
     make_option(c('-c', '--centipede_path'), type='character', default=NULL,
                 help='The path of centipede script you want to use',
                 metavar="character")
@@ -86,6 +89,8 @@ signal <- out$data[out$model$PostPr > 0.99, ]
 signal.info <- unlist(strsplit(signal$id, ' '))
 signal.info <- t(matrix(signal.info, nrow = 5))
 signal.info <- data.frame(signal.info)
+signal.info$V2 <- signal.info$V2 + opt$extend_win
+signal.info$V3 <- signal.info$V3 - opt$extend_win
 signal.info$score <- signal$pwm.score
 gz1 <- gzfile(opt$signal, "w")
 write.table(signal.info, gz1, sep = '\t', col.names = F, row.names = F, quote = F)

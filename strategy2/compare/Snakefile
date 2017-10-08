@@ -2,46 +2,59 @@
 # reported by
 # "Which Genetics Variants in DNase-Seq Footprints Are More Likely to Alter Binding?"
 
+def get_input(config, title):
+    string = []
+    for i in config[title].keys():
+        string.append('temp/{title}__{pair_name}.txt'.format(pair_name = i, title = title))
+    return string
+    
+
+rule all:
+    input:
+        'summary/{title}.html'.format(title = list(config.keys())[0])
+
 rule compare:
     input:
-        first = config[wildcards.pair_name]['1'],
-        second = config[wildcards.pair_name]['2']
+        first = lambda wildcards: config[wildcards.title][wildcards.pair_name]['first'],
+        second = lambda wildcards: config[wildcards.title][wildcards.pair_name]['second']
     output:
-        temp('temp/{pair_name}.txt')
+        temp('temp/{title}__{pair_name}.txt')
     shell:
         '''
-        Rscript compare.R \
+        Rscript scripts/compare.R \
         --first {input.first} \
-        --second {input.second}
+        --second {input.second} \
+        --out {output[0]}
         '''
 
-def get_all_txt_in_str(config):
-    string = ''
-    for i in config.keys():
-        if i == 'title':
-            continue
-        else:
-            string = string + ',' + 'temp/{pair_name}.txt'.format(pair_name = i)
-    return string
+def get_all_txt_in_str(config, title):
+    string = []
+    for i in config[title].keys():
+        string.append('temp/{title}__{pair_name}.txt'.format(pair_name = i, title = title))
+    return ','.join(string)
 
 rule summary_rmd:
+    input:
+        lambda wildcards: get_input(config, wildcards.title)
     params:
-        get_all_txt_in_str(config)
+        lambda wildcards: get_all_txt_in_str(config, wildcards.title)
     output:
         temp('summary/{title}.Rmd')
     run:
-        '''---
+        rmd = '''---
 title: "Summary of comparison in {title}"
 author: Yanyu Liang
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
 
 ```{{r}}
+library(stringr)
 df <- data.frame()
-txts <- strsplit({str}, ',')[[1]]
+txts <- strsplit('{str}', ',')[[1]]
 for(t in txts) {{
     t <- paste0('../', t)
     e <- read.table(t, sep = '\t', header = F)
+    e <- c(e, str_match(t, '__(.*).txt')[2])
     df <- rbind(df, e)
 }}
 colnames(df) <- c('intersect', 'union', 'first', 'second')
@@ -52,3 +65,15 @@ library(pander)
 pander(df)
 ```
 '''.format(title = wildcards.title, str = params[0])
+        o = open(output[0], 'w')
+        o.write(rmd)
+        o.close()
+
+rule summary_html:
+    input:
+        lambda wildcards: get_input(config, wildcards.title),
+        'summary/{title}.Rmd'
+    output:
+        'summary/{title}.html'
+    shell:
+        '''Rscript -e "rmarkdown::render('{input[1]}')"'''

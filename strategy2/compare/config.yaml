@@ -1,4 +1,4 @@
-title: 'test'
-MA0100.1:
-  1: '/project2/xinhe/yanyul/repo/footprint_annotation/MA0100.1.SRX062364.bed'
-  2: '../footprint/recalMotifs_newnewnewnew/MA0100.1__E081__window.100.bed.gz'
+test:
+  MA0100.1:
+    first: '/project2/xinhe/yanyul/repo/footprint_annotation/MA0100.1.SRX062364.bed'
+    second: '../footprint/recalMotifs_newnewnewnew/MA0100.1__E081__window.100.bed.gz'

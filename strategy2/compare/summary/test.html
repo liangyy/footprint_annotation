@@ -123,11 +123,13 @@ $(document).ready(function () {
 </div>
 
 
-<pre class="r"><code>df &lt;- data.frame()
+<pre class="r"><code>library(stringr)
+df &lt;- data.frame()
 txts &lt;- strsplit('temp/test__MA0100.1.txt', ',')[[1]]
 for(t in txts) {
     t &lt;- paste0('../', t)
     e &lt;- read.table(t, sep = '  ', header = F)
+    e &lt;- c(e, str_match(t, '__(.*).txt')[2])
     df &lt;- rbind(df, e)
 }
 colnames(df) &lt;- c('intersect', 'union', 'first', 'second')</code></pre>
@@ -138,7 +140,8 @@ pander(df)</code></pre>
 <col width="16%"></col>
 <col width="11%"></col>
 <col width="11%"></col>
-<col width="11%"></col>
+<col width="12%"></col>
+<col width="13%"></col>
 </colgroup>
 <thead>
 <tr class="header">
@@ -146,6 +149,7 @@ pander(df)</code></pre>
 <th align="center">union</th>
 <th align="center">first</th>
 <th align="center">second</th>
+<th align="center">NA</th>
 </tr>
 </thead>
 <tbody>
@@ -154,6 +158,7 @@ pander(df)</code></pre>
 <td align="center">20302</td>
 <td align="center">15997</td>
 <td align="center">9082</td>
+<td align="center">MA0100.1</td>
 </tr>
 </tbody>
 </table>
