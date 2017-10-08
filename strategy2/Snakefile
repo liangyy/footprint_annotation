@@ -23,17 +23,21 @@ def get_motif_files(motifs):
 motif_dic = get_motif_files(config['motifs'])
 
 def get_test(config, motif_dic):
+    out = []
     motif_dir_name = list(motif_dic.keys())[0]
-    motif_name = list(motif_dic[motif_dir_name].keys())[0]
-    motif_name = re.sub('.pwm', '', motif_name)
-    motif_name = 'MA0100.1'
-    o = 'model/{motif_dir}/{motif_name}__{sample}__window.{win_size}.rds'.format(
-        motif_dir = list(config['motifs'].keys())[0],
-        motif_name = motif_name,
-        sample = list(config['experiments'].keys())[0],
-        win_size = config['centipede']['window_size']
-    )
-    return o
+    # motif_name = list(motif_dic[motif_dir_name].keys())[0]
+    # motif_name = re.sub('.pwm', '', motif_name)
+    # motif_name = 'MA0100.1'
+    names = config['test_motifs'].split(',')
+    for i in names:
+        o = 'model/{motif_dir}/{motif_name}__{sample}__window.{win_size}.rds'.format(
+            motif_dir = list(config['motifs'].keys())[0],
+            motif_name = i,
+            sample = list(config['experiments'].keys())[0],
+            win_size = config['centipede']['window_size']
+        )
+        out.append(o)
+    return out
 
 rule test:
     input:
@@ -227,6 +231,7 @@ rule train_centipede:
         active_region = 'data/scan/{motif_dir}/{motif_name}__genome__window.{win_size}.active_region.gz',
         five_prime_count = 'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.bed.gz'
     params:
+        window_size = lambda wildcards: int(int(wildcards.win_size) / 2),
         centipede = config['centipede']['script']
     output:
         'model/{motif_dir}/{motif_name}__{sample}__window.{win_size}.rds',
@@ -239,7 +244,7 @@ rule train_centipede:
         --five_prime_count {input.five_prime_count} \
         --centipede_path {params.centipede} \
         --signal {output[1]} \
-        --extend_win {wildcards.win_size}
+        --extend_win {params.window_size} \
         --output {output[0]} > \
         {log}'
 

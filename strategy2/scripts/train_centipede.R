@@ -85,12 +85,12 @@ cat("#Spearman_p.val = ", ct$p.value, "_rho = ", ct$estimate, "\n")
 out <- list(model = model, data = cutsite)
 saveRDS(out, file = opt$output)
 
-signal <- out$data[out$model$PostPr > 0.99, ]
+signal <- out$data[out$model$PostPr > 0.9, ]
 signal.info <- unlist(strsplit(signal$id, ' '))
 signal.info <- t(matrix(signal.info, nrow = 5))
 signal.info <- data.frame(signal.info)
-signal.info$V2 <- signal.info$V2 + opt$extend_win
-signal.info$V3 <- signal.info$V3 - opt$extend_win
+signal.info$X2 <- as.numeric(signal.info$X2) + opt$extend_win
+signal.info$X3 <- as.numeric(signal.info$X3) - opt$extend_win
 signal.info$score <- signal$pwm.score
 gz1 <- gzfile(opt$signal, "w")
 write.table(signal.info, gz1, sep = '\t', col.names = F, row.names = F, quote = F)

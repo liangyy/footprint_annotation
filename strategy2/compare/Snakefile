@@ -57,7 +57,7 @@ for(t in txts) {{
     e <- c(e, str_match(t, '__(.*).txt')[2])
     df <- rbind(df, e)
 }}
-colnames(df) <- c('intersect', 'union', 'first', 'second')
+colnames(df) <- c('intersect', 'union', 'first', 'second', 'data')
 ```
 
 ```{{r, result='asis'}}
