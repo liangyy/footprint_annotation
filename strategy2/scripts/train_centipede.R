@@ -10,6 +10,9 @@ option_list <- list(
     make_option(c("-o", "--output"), type="character", default=NULL,
                 help="Name of output RDS file",
                 metavar="character"),
+                make_option(c("-s", "--signal"), type="character", default=NULL,
+                            help="Name of output signal file",
+                            metavar="character"),
     make_option(c('-c', '--centipede_path'), type='character', default=NULL,
                 help='The path of centipede script you want to use',
                 metavar="character")
@@ -70,7 +73,7 @@ cutsite.count <- t(matrix(cutsite.count, nrow = n))
 model <- fitCentipede(
   Xlist = list(Seq = cutsite.count),
   Y = as.matrix(data.frame(Ict = 1,Pwm = cutsite$pwm.score)),
-  DampLambda = 0.1, 
+  DampLambda = 0.1,
   DampNegBin = 0.001,
   sweeps = 200)
 
@@ -78,3 +81,12 @@ ct <- cor.test(jitter(cutsite$pwm.score), jitter(model$LogRatios), method = 'spe
 cat("#Spearman_p.val = ", ct$p.value, "_rho = ", ct$estimate, "\n")
 out <- list(model = model, data = cutsite)
 saveRDS(out, file = opt$output)
+
+signal <- out$data[out$model$PostPr > 0.99, ]
+signal.info <- unlist(strsplit(signal$id, ' '))
+signal.info <- t(matrix(signal.info, nrow = 5))
+signal.info <- data.frame(signal.info)
+signal.info$score <- signal$pwm.score
+gz1 <- gzfile(opt$signal, "w")
+write.table(signal.info, gz1, sep = '\t', col.names = F, row.names = F, quote = F)
+close(gz1)

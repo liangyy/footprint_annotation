@@ -1,0 +1,54 @@
+# this submodule tends to compare strategy2 training result with the result
+# reported by
+# "Which Genetics Variants in DNase-Seq Footprints Are More Likely to Alter Binding?"
+
+rule compare:
+    input:
+        first = config[wildcards.pair_name]['1'],
+        second = config[wildcards.pair_name]['2']
+    output:
+        temp('temp/{pair_name}.txt')
+    shell:
+        '''
+        Rscript compare.R \
+        --first {input.first} \
+        --second {input.second}
+        '''
+
+def get_all_txt_in_str(config):
+    string = ''
+    for i in config.keys():
+        if i == 'title':
+            continue
+        else:
+            string = string + ',' + 'temp/{pair_name}.txt'.format(pair_name = i)
+    return string
+
+rule summary_rmd:
+    params:
+        get_all_txt_in_str(config)
+    output:
+        temp('summary/{title}.Rmd')
+    run:
+        '''---
+title: "Summary of comparison in {title}"
+author: Yanyu Liang
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{{r}}
+df <- data.frame()
+txts <- strsplit({str}, ',')[[1]]
+for(t in txts) {{
+    t <- paste0('../', t)
+    e <- read.table(t, sep = '\t', header = F)
+    df <- rbind(df, e)
+}}
+colnames(df) <- c('intersect', 'union', 'first', 'second')
+```
+
+```{{r, result='asis'}}
+library(pander)
+pander(df)
+```
+'''.format(title = wildcards.title, str = params[0])

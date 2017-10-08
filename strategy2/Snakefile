@@ -229,7 +229,8 @@ rule train_centipede:
     params:
         centipede = config['centipede']['script']
     output:
-        'model/{motif_dir}/{motif_name}__{sample}__window.{win_size}.rds'
+        'model/{motif_dir}/{motif_name}__{sample}__window.{win_size}.rds',
+        'footprint/{motif_dir}/{motif_name}__{sample}__window.{win_size}.bed.gz'
     log:
         'logs/{motif_dir}/{motif_name}__{sample}__window.{win_size}.train.log'
     shell:
@@ -237,6 +238,7 @@ rule train_centipede:
         --active_region {input.active_region} \
         --five_prime_count {input.five_prime_count} \
         --centipede_path {params.centipede} \
+        --signal {output[1]} \
         --output {output[0]} > \
         {log}'
 
