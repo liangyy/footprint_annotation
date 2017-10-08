@@ -201,14 +201,14 @@ rule pile_do_pile:
     params:
         config['genome_assembly']['size']
     output:
-        'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_region.bed.gz'
+        'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.5_prime_count.bed.gz'
     shell:
         'bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} | gzip > {output[0]}'
 
 rule pile_postprocess_extract:
     input:
         extended_region = 'data/scan/{motif_dir}/{motif_name}__genome__window.{win_size}.active_region.gz',
-        score = 'data/pile/{motif_dir}/{motif_name}__{sample}.5_prime_count.bed.gz'
+        score = 'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.5_prime_count.bed.gz'
     output:
         'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.bed.gz'
     shell:
