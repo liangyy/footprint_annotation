@@ -64,7 +64,8 @@ pwm <- pwm.readin %>%
 cutsite <- cutsite %>%
   inner_join(pwm, by = 'id')
 # pwm <- pwm.readin$V6
-cutsite.count <- strsplit(cutsite$count, ',')
+cutsite$V6 <- as.character(cutsite$V6)
+cutsite.count <- strsplit(cutsite$V6, ',')
 n <- length(cutsite.count[[1]])
 cutsite.count <- unlist(cutsite.count)
 class(cutsite.count) <- 'numeric'
@@ -86,8 +87,8 @@ signal <- out$data[out$model$PostPr > 0.9, ]
 signal.info <- unlist(strsplit(signal$id, ' '))
 signal.info <- t(matrix(signal.info, nrow = 5))
 signal.info <- data.frame(signal.info)
-signal.info$X2 <- as.numeric(signal.info$X2) + opt$extend_win
-signal.info$X3 <- as.numeric(signal.info$X3) - opt$extend_win
+signal.info$X2 <- as.numeric(as.character(signal.info$X2)) + opt$extend_win
+signal.info$X3 <- as.numeric(as.character(signal.info$X3)) - opt$extend_win
 signal.info$score <- signal$pwm.score
 gz1 <- gzfile(opt$signal, "w")
 write.table(signal.info, gz1, sep = '\t', col.names = F, row.names = F, quote = F)

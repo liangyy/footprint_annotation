@@ -19,6 +19,7 @@ for i in range(len(motif.priors)):
     if motif.priors[i] == 0.1:
         llr = motif.llrs[i]
 cmd = '''
-    cat {input} | awk -F"\\t" '{{$6 > {llr}}}' > {output}
+    zcat {input} | awk -F"\\t" '$5 > {llr}' | gzip > {output}
 '''.format(input = args.input, llr = llr, output = args.output)
+print(cmd)
 os.system(cmd)

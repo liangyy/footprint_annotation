@@ -161,7 +161,7 @@ rule scan_motif_score_in_genome:
 
 rule scan_motif_score_in_genome_gzip:
     input:
-        'data/scan/{motif_dir}/{motif_name}__genome.active_region_prior0.1.bed'
+        'data/scan/{motif_dir}/{motif_name}__genome.active_region.bed'
     output:
         'data/scan/{motif_dir}/{motif_name}__genome.active_region.bed.gz'
     shell:
@@ -178,7 +178,7 @@ rule scan_post_filtering:
         'python scripts/thresholding_by_motif_prior.py \
         --input {input[0]} \
         --motif_dir {params.motif_dir} \
-        --motif_name {wildcards.motif} \
+        --motif_name {wildcards.motif_name} \
         --output {output[0]}'
 
 

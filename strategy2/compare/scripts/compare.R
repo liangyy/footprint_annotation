@@ -21,9 +21,9 @@ first <- read.table(opt$first, sep = '\t', header = F)
 second <- read.table(opt$second, sep = '\t', header = F)
 
 first <- first %>%
-  mutate(id = paste(V1, V2, V3, V6, V4))
+  mutate(id = paste(V1, V2, V6, V4))
 second <- second %>%
-  mutate(id = paste(V1, V2, V3, V4, V5))
+  mutate(id = paste(V1, V2, V4, V5))
 i <- length(intersect(first$id, second$id))
 u <- length(union(first$id, second$id))
 f <- length(first$id)
