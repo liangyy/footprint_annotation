@@ -161,15 +161,30 @@ rule scan_motif_score_in_genome:
 
 rule scan_motif_score_in_genome_gzip:
     input:
-        'data/scan/{motif_dir}/{motif_name}__genome.active_region.bed'
+        'data/scan/{motif_dir}/{motif_name}__genome.active_region_prior0.1.bed'
     output:
         'data/scan/{motif_dir}/{motif_name}__genome.active_region.bed.gz'
     shell:
-        '''cat {input[0]} | tail -n +2 | awk '{{print $2"\\t"$3-1"\\t"$4-1"\\t"$5"\\t"$6"\\t"$7"\\t"$1}}' | gzip > {output[0]}'''
+        '''cat {input[0]} | tail -n +2 | awk '{{print $2"\\t"$3-1"\\t"$4"\\t"$5"\\t"$6"\\t"$7"\\t"$1}}' | gzip > {output[0]}'''
+
+rule scan_post_filtering:
+    input:
+        'data/scan/{motif_dir}/{motif_name}__genome.active_region.bed.gz'
+    output:
+        'data/scan/{motif_dir}/{motif_name}__genome.active_region_prior0.1.bed.gz'
+    params:
+        motif_dir = lambda wildcards: config['motifs'][wildcards.motif_dir]
+    shell:
+        'python scripts/thresholding_by_motif_prior.py \
+        --input {input[0]} \
+        --motif_dir {params.motif_dir} \
+        --motif_name {wildcards.motif} \
+        --output {output[0]}'
+
 
 rule scan_motif_score_in_genome_extend:
     input:
-        'data/scan/{motif_dir}/{motif_name}__genome.active_region.bed.gz'
+        'data/scan/{motif_dir}/{motif_name}__genome.active_region_prior0.1.bed.gz'
     params:
         window_size = lambda wildcards: int(int(wildcards.win_size) / 2),
         genome_size = config['genome_assembly']['size']
@@ -214,7 +229,7 @@ rule pile_postprocess_extract:
         extended_region = 'data/scan/{motif_dir}/{motif_name}__genome__window.{win_size}.active_region.gz',
         score = 'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.5_prime_count.bed.gz'
     output:
-        'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.bed.gz'
+        temp('data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.bed.gz')
     shell:
         'bedtools intersect -a {input.score} -b {input.extended_region} -wb | gzip > {output[0]}'
 
@@ -226,10 +241,18 @@ rule pile_postprocess_extract:
 #     shell:
 #         'bedtools merge -i {input[0]} -c 4 -o collapse | gzip > {output[0]}'
 
+rule pile_postprocess_formatting:
+    input:
+        'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.bed.gz'
+    output:
+        'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.formatted.bed.gz'
+    shell:
+        'python scripts/prepare_pile_in_region.py --pilein {input[0]} --output {output[0]}'
+
 rule train_centipede:
     input:
         active_region = 'data/scan/{motif_dir}/{motif_name}__genome__window.{win_size}.active_region.gz',
-        five_prime_count = 'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.bed.gz'
+        five_prime_count = 'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.formatted.bed.gz'
     params:
         window_size = lambda wildcards: int(int(wildcards.win_size) / 2),
         centipede = config['centipede']['script']
