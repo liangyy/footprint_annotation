@@ -125,8 +125,8 @@ $(document).ready(function () {
 
 <pre class="r"><code>library(stringr)
 df &lt;- c()
-txts &lt;- strsplit('temp/SRX062364__M00001.txt,temp/SRX062364__M00008.txt', ',')[[1]]
-fits &lt;- strsplit('temp/SRX062364__M00001.second_fitness,temp/SRX062364__M00008.second_fitness', ',')[[1]]
+txts &lt;- strsplit('temp/SRX062364__M00001.txt,temp/SRX062364__M00008.txt,temp/SRX062364__M00017.txt,temp/SRX062364__M00024.txt,temp/SRX062364__M00032.txt,temp/SRX062364__M00036.txt,temp/SRX062364__M00039.txt,temp/SRX062364__M00041.txt,temp/SRX062364__M00050.txt,temp/SRX062364__M00064.txt,temp/SRX062364__M00065.txt,temp/SRX062364__M00066.txt,temp/SRX062364__M00067.txt,temp/SRX062364__M00068.txt,temp/SRX062364__M00069.txt,temp/SRX062364__M00070.txt,temp/SRX062364__M00084.txt,temp/SRX062364__M00104.txt,temp/SRX062364__M00113.txt,temp/SRX062364__M00117.txt,temp/SRX062364__M00121.txt,temp/SRX062364__M00134.txt,temp/SRX062364__M00158.txt,temp/SRX062364__M00171.txt,temp/SRX062364__M00174.txt,temp/SRX062364__M00175.txt,temp/SRX062364__M00178.txt,temp/SRX062364__M00179.txt,temp/SRX062364__M00187.txt,temp/SRX062364__M00193.txt,temp/SRX062364__M00210.txt,temp/SRX062364__M00220.txt,temp/SRX062364__M00235.txt,temp/SRX062364__M00236.txt,temp/SRX062364__M00243.txt,temp/SRX062364__M00246.txt,temp/SRX062364__M00254.txt,temp/SRX062364__M00256.txt,temp/SRX062364__M00262.txt,temp/SRX062364__M00263.txt,temp/SRX062364__M00264.txt,temp/SRX062364__M00270.txt,temp/SRX062364__M00279.txt,temp/SRX062364__M00280.txt,temp/SRX062364__M00281.txt,temp/SRX062364__M00284.txt,temp/SRX062364__M00287.txt,temp/SRX062364__M00288.txt,temp/SRX062364__M00303.txt,temp/SRX062364__M00304.txt,temp/SRX062364__M00338.txt,temp/SRX062364__M00342.txt,temp/SRX062364__M00357.txt,temp/SRX062364__M00370.txt,temp/SRX062364__M00371.txt,temp/SRX062364__M00375.txt,temp/SRX062364__M00391.txt,temp/SRX062364__M00394.txt,temp/SRX062364__M00396.txt,temp/SRX062364__M00398.txt,temp/SRX062364__M00407.txt,temp/SRX062364__M00411.txt,temp/SRX062364__M00418.txt,temp/SRX062364__M00424.txt,temp/SRX062364__M00425.txt,temp/SRX062364__M00426.txt,temp/SRX062364__M00427.txt,temp/SRX062364__M00428.txt,temp/SRX062364__M00431.txt,temp/SRX062364__M00435.txt,temp/SRX062364__M00443.txt,temp/SRX062364__M00448.txt,temp/SRX062364__M00450.txt,temp/SRX062364__M00451.txt,temp/SRX062364__M00492.txt,temp/SRX062364__M00512.txt,temp/SRX062364__M00513.txt,temp/SRX062364__M00517.txt,temp/SRX062364__M00539.txt,temp/SRX062364__M00616.txt,temp/SRX062364__M00621.txt,temp/SRX062364__M00626.txt,temp/SRX062364__M00644.txt,temp/SRX062364__M00649.txt,temp/SRX062364__M00654.txt,temp/SRX062364__M00660.txt,temp/SRX062364__M00691.txt,temp/SRX062364__M00693.txt,temp/SRX062364__M00694.txt,temp/SRX062364__M00696.txt,temp/SRX062364__M00697.txt,temp/SRX062364__M00698.txt,temp/SRX062364__M00730.txt,temp/SRX062364__M00736.txt,temp/SRX062364__M00737.txt,temp/SRX062364__M00739.txt,temp/SRX062364__M00740.txt,temp/SRX062364__M00746.txt,temp/SRX062364__M00752.txt,temp/SRX062364__M00762.txt,temp/SRX062364__M00763.txt,temp/SRX062364__M00764.txt,temp/SRX062364__M00765.txt,temp/SRX062364__M00778.txt,temp/SRX062364__M00795.txt,temp/SRX062364__M00797.txt,temp/SRX062364__M00806.txt,temp/SRX062364__M00821.txt,temp/SRX062364__M00916.txt,temp/SRX062364__M00917.txt,temp/SRX062364__M00918.txt,temp/SRX062364__M00919.txt,temp/SRX062364__M00920.txt,temp/SRX062364__M00927.txt,temp/SRX062364__M00930.txt,temp/SRX062364__M00940.txt,temp/SRX062364__M00942.txt,temp/SRX062364__M00944.txt,temp/SRX062364__M00945.txt,temp/SRX062364__M00946.txt,temp/SRX062364__M00971.txt,temp/SRX062364__M00973.txt,temp/SRX062364__M00981.txt,temp/SRX062364__M00985.txt,temp/SRX062364__M00986.txt,temp/SRX062364__M00993.txt,temp/SRX062364__M01028.txt,temp/SRX062364__M01050.txt,temp/SRX062364__M01054.txt,temp/SRX062364__M01065.txt,temp/SRX062364__M01067.txt,temp/SRX062364__M01068.txt,temp/SRX062364__M01070.txt,temp/SRX062364__M01096.txt,temp/SRX062364__M01111.txt,temp/SRX062364__M01114.txt,temp/SRX062364__M01116.txt,temp/SRX062364__M01122.txt,temp/SRX062364__M01124.txt,temp/SRX062364__M01163.txt,temp/SRX062364__M01167.txt,temp/SRX062364__M01182.txt,temp/SRX062364__M01186.txt,temp/SRX062364__M01187.txt,temp/SRX062364__M01196.txt,temp/SRX062364__M01198.txt,temp/SRX062364__M01200.txt,temp/SRX062364__M01219.txt,temp/SRX062364__M01234.txt,temp/SRX062364__M01243.txt,temp/SRX062364__M01251.txt,temp/SRX062364__M01256.txt,temp/SRX062364__M01259.txt,temp/SRX062364__M01298.txt,temp/SRX062364__M01308.txt,temp/SRX062364__M01492.txt,temp/SRX062364__M01503.txt,temp/SRX062364__M01509.txt,temp/SRX062364__M01511.txt,temp/SRX062364__M01512.txt,temp/SRX062364__M01513.txt,temp/SRX062364__M01516.txt,temp/SRX062364__M01517.txt,temp/SRX062364__M01530.txt,temp/SRX062364__M01544.txt,temp/SRX062364__M01548.txt,temp/SRX062364__M01558.txt,temp/SRX062364__M01567.txt,temp/SRX062364__M01571.txt,temp/SRX062364__M01586.txt,temp/SRX062364__M01597.txt,temp/SRX062364__M01608.txt,temp/SRX062364__M01610.txt,temp/SRX062364__M01613.txt,temp/SRX062364__M01615.txt,temp/SRX062364__M01628.txt,temp/SRX062364__M01634.txt,temp/SRX062364__M01636.txt,temp/SRX062364__M01639.txt,temp/SRX062364__M01642.txt,temp/SRX062364__M01643.txt,temp/SRX062364__M01646.txt,temp/SRX062364__M01648.txt,temp/SRX062364__M01650.txt,temp/SRX062364__M01660.txt,temp/SRX062364__M01662.txt,temp/SRX062364__M01681.txt,temp/SRX062364__M01700.txt,temp/SRX062364__M01742.txt,temp/SRX062364__M01768.txt,temp/SRX062364__M01774.txt,temp/SRX062364__M01779.txt,temp/SRX062364__M01782.txt,temp/SRX062364__M01793.txt,temp/SRX062364__M01806.txt,temp/SRX062364__M01812.txt,temp/SRX062364__M01815.txt,temp/SRX062364__M01816.txt,temp/SRX062364__M01820.txt,temp/SRX062364__M01837.txt,temp/SRX062364__M01838.txt,temp/SRX062364__M01839.txt,temp/SRX062364__M01840.txt,temp/SRX062364__M01843.txt,temp/SRX062364__M01852.txt,temp/SRX062364__M01861.txt,temp/SRX062364__M01862.txt,temp/SRX062364__M01863.txt,temp/SRX062364__M01906.txt,temp/SRX062364__M01909.txt,temp/SRX062364__M01911.txt,temp/SRX062364__M01916.txt,temp/SRX062364__M01925.txt,temp/SRX062364__M01927.txt,temp/SRX062364__M01933.txt,temp/SRX062364__M01938.txt,temp/SRX062364__M01941.txt,temp/SRX062364__M01946.txt,temp/SRX062364__M01947.txt,temp/SRX062364__M01951.txt,temp/SRX062364__M01957.txt,temp/SRX062364__M01958.txt,temp/SRX062364__M01959.txt,temp/SRX062364__M01960.txt,temp/SRX062364__M01966.txt,temp/SRX062364__M01970.txt,temp/SRX062364__M01972.txt,temp/SRX062364__M01976.txt,temp/SRX062364__M01981.txt,temp/SRX062364__M01985.txt,temp/SRX062364__M01990.txt,temp/SRX062364__M02011.txt,temp/SRX062364__M02016.txt,temp/SRX062364__M02032.txt,temp/SRX062364__M02040.txt,temp/SRX062364__MA0007.1.txt,temp/SRX062364__MA0017.1.txt,temp/SRX062364__MA0018.2.txt,temp/SRX062364__MA0024.1.txt,temp/SRX062364__MA0028.1.txt,temp/SRX062364__MA0057.1.txt,temp/SRX062364__MA0059.1.txt,temp/SRX062364__MA0069.1.txt,temp/SRX062364__MA0079.2.txt,temp/SRX062364__MA0088.1.txt,temp/SRX062364__MA0091.1.txt,temp/SRX062364__MA0093.1.txt,temp/SRX062364__MA0100.1.txt,temp/SRX062364__MA0104.2.txt,temp/SRX062364__MA0114.1.txt,temp/SRX062364__MA0115.1.txt,temp/SRX062364__MA0119.1.txt,temp/SRX062364__MA0122.1.txt,temp/SRX062364__MA0138.2.txt,temp/SRX062364__MA0139.1.txt,temp/SRX062364__MA0140.1.txt,temp/SRX062364__MA0142.1.txt,temp/SRX062364__MA0150.1.txt,temp/SRX062364__MA0157.1.txt,temp/SRX062364__PBM0013.txt,temp/SRX062364__PBM0022.txt,temp/SRX062364__PBM0031.txt,temp/SRX062364__PBM0049.txt,temp/SRX062364__PBM0060.txt,temp/SRX062364__PBM0066.txt,temp/SRX062364__PBM0072.txt,temp/SRX062364__PBM0077.txt,temp/SRX062364__PBM0081.txt,temp/SRX062364__PBM0082.txt,temp/SRX062364__PBM0083.txt,temp/SRX062364__PBM0085.txt,temp/SRX062364__PBM0095.txt,temp/SRX062364__PBM0140.txt,temp/SRX062364__PBM0156.txt,temp/SRX062364__PBM0173.txt,temp/SRX062364__PBM0176.txt,temp/SRX062364__PBM0191.txt', ',')[[1]]
+fits &lt;- strsplit('temp/SRX062364__M00001.second_fitness,temp/SRX062364__M00008.second_fitness,temp/SRX062364__M00017.second_fitness,temp/SRX062364__M00024.second_fitness,temp/SRX062364__M00032.second_fitness,temp/SRX062364__M00036.second_fitness,temp/SRX062364__M00039.second_fitness,temp/SRX062364__M00041.second_fitness,temp/SRX062364__M00050.second_fitness,temp/SRX062364__M00064.second_fitness,temp/SRX062364__M00065.second_fitness,temp/SRX062364__M00066.second_fitness,temp/SRX062364__M00067.second_fitness,temp/SRX062364__M00068.second_fitness,temp/SRX062364__M00069.second_fitness,temp/SRX062364__M00070.second_fitness,temp/SRX062364__M00084.second_fitness,temp/SRX062364__M00104.second_fitness,temp/SRX062364__M00113.second_fitness,temp/SRX062364__M00117.second_fitness,temp/SRX062364__M00121.second_fitness,temp/SRX062364__M00134.second_fitness,temp/SRX062364__M00158.second_fitness,temp/SRX062364__M00171.second_fitness,temp/SRX062364__M00174.second_fitness,temp/SRX062364__M00175.second_fitness,temp/SRX062364__M00178.second_fitness,temp/SRX062364__M00179.second_fitness,temp/SRX062364__M00187.second_fitness,temp/SRX062364__M00193.second_fitness,temp/SRX062364__M00210.second_fitness,temp/SRX062364__M00220.second_fitness,temp/SRX062364__M00235.second_fitness,temp/SRX062364__M00236.second_fitness,temp/SRX062364__M00243.second_fitness,temp/SRX062364__M00246.second_fitness,temp/SRX062364__M00254.second_fitness,temp/SRX062364__M00256.second_fitness,temp/SRX062364__M00262.second_fitness,temp/SRX062364__M00263.second_fitness,temp/SRX062364__M00264.second_fitness,temp/SRX062364__M00270.second_fitness,temp/SRX062364__M00279.second_fitness,temp/SRX062364__M00280.second_fitness,temp/SRX062364__M00281.second_fitness,temp/SRX062364__M00284.second_fitness,temp/SRX062364__M00287.second_fitness,temp/SRX062364__M00288.second_fitness,temp/SRX062364__M00303.second_fitness,temp/SRX062364__M00304.second_fitness,temp/SRX062364__M00338.second_fitness,temp/SRX062364__M00342.second_fitness,temp/SRX062364__M00357.second_fitness,temp/SRX062364__M00370.second_fitness,temp/SRX062364__M00371.second_fitness,temp/SRX062364__M00375.second_fitness,temp/SRX062364__M00391.second_fitness,temp/SRX062364__M00394.second_fitness,temp/SRX062364__M00396.second_fitness,temp/SRX062364__M00398.second_fitness,temp/SRX062364__M00407.second_fitness,temp/SRX062364__M00411.second_fitness,temp/SRX062364__M00418.second_fitness,temp/SRX062364__M00424.second_fitness,temp/SRX062364__M00425.second_fitness,temp/SRX062364__M00426.second_fitness,temp/SRX062364__M00427.second_fitness,temp/SRX062364__M00428.second_fitness,temp/SRX062364__M00431.second_fitness,temp/SRX062364__M00435.second_fitness,temp/SRX062364__M00443.second_fitness,temp/SRX062364__M00448.second_fitness,temp/SRX062364__M00450.second_fitness,temp/SRX062364__M00451.second_fitness,temp/SRX062364__M00492.second_fitness,temp/SRX062364__M00512.second_fitness,temp/SRX062364__M00513.second_fitness,temp/SRX062364__M00517.second_fitness,temp/SRX062364__M00539.second_fitness,temp/SRX062364__M00616.second_fitness,temp/SRX062364__M00621.second_fitness,temp/SRX062364__M00626.second_fitness,temp/SRX062364__M00644.second_fitness,temp/SRX062364__M00649.second_fitness,temp/SRX062364__M00654.second_fitness,temp/SRX062364__M00660.second_fitness,temp/SRX062364__M00691.second_fitness,temp/SRX062364__M00693.second_fitness,temp/SRX062364__M00694.second_fitness,temp/SRX062364__M00696.second_fitness,temp/SRX062364__M00697.second_fitness,temp/SRX062364__M00698.second_fitness,temp/SRX062364__M00730.second_fitness,temp/SRX062364__M00736.second_fitness,temp/SRX062364__M00737.second_fitness,temp/SRX062364__M00739.second_fitness,temp/SRX062364__M00740.second_fitness,temp/SRX062364__M00746.second_fitness,temp/SRX062364__M00752.second_fitness,temp/SRX062364__M00762.second_fitness,temp/SRX062364__M00763.second_fitness,temp/SRX062364__M00764.second_fitness,temp/SRX062364__M00765.second_fitness,temp/SRX062364__M00778.second_fitness,temp/SRX062364__M00795.second_fitness,temp/SRX062364__M00797.second_fitness,temp/SRX062364__M00806.second_fitness,temp/SRX062364__M00821.second_fitness,temp/SRX062364__M00916.second_fitness,temp/SRX062364__M00917.second_fitness,temp/SRX062364__M00918.second_fitness,temp/SRX062364__M00919.second_fitness,temp/SRX062364__M00920.second_fitness,temp/SRX062364__M00927.second_fitness,temp/SRX062364__M00930.second_fitness,temp/SRX062364__M00940.second_fitness,temp/SRX062364__M00942.second_fitness,temp/SRX062364__M00944.second_fitness,temp/SRX062364__M00945.second_fitness,temp/SRX062364__M00946.second_fitness,temp/SRX062364__M00971.second_fitness,temp/SRX062364__M00973.second_fitness,temp/SRX062364__M00981.second_fitness,temp/SRX062364__M00985.second_fitness,temp/SRX062364__M00986.second_fitness,temp/SRX062364__M00993.second_fitness,temp/SRX062364__M01028.second_fitness,temp/SRX062364__M01050.second_fitness,temp/SRX062364__M01054.second_fitness,temp/SRX062364__M01065.second_fitness,temp/SRX062364__M01067.second_fitness,temp/SRX062364__M01068.second_fitness,temp/SRX062364__M01070.second_fitness,temp/SRX062364__M01096.second_fitness,temp/SRX062364__M01111.second_fitness,temp/SRX062364__M01114.second_fitness,temp/SRX062364__M01116.second_fitness,temp/SRX062364__M01122.second_fitness,temp/SRX062364__M01124.second_fitness,temp/SRX062364__M01163.second_fitness,temp/SRX062364__M01167.second_fitness,temp/SRX062364__M01182.second_fitness,temp/SRX062364__M01186.second_fitness,temp/SRX062364__M01187.second_fitness,temp/SRX062364__M01196.second_fitness,temp/SRX062364__M01198.second_fitness,temp/SRX062364__M01200.second_fitness,temp/SRX062364__M01219.second_fitness,temp/SRX062364__M01234.second_fitness,temp/SRX062364__M01243.second_fitness,temp/SRX062364__M01251.second_fitness,temp/SRX062364__M01256.second_fitness,temp/SRX062364__M01259.second_fitness,temp/SRX062364__M01298.second_fitness,temp/SRX062364__M01308.second_fitness,temp/SRX062364__M01492.second_fitness,temp/SRX062364__M01503.second_fitness,temp/SRX062364__M01509.second_fitness,temp/SRX062364__M01511.second_fitness,temp/SRX062364__M01512.second_fitness,temp/SRX062364__M01513.second_fitness,temp/SRX062364__M01516.second_fitness,temp/SRX062364__M01517.second_fitness,temp/SRX062364__M01530.second_fitness,temp/SRX062364__M01544.second_fitness,temp/SRX062364__M01548.second_fitness,temp/SRX062364__M01558.second_fitness,temp/SRX062364__M01567.second_fitness,temp/SRX062364__M01571.second_fitness,temp/SRX062364__M01586.second_fitness,temp/SRX062364__M01597.second_fitness,temp/SRX062364__M01608.second_fitness,temp/SRX062364__M01610.second_fitness,temp/SRX062364__M01613.second_fitness,temp/SRX062364__M01615.second_fitness,temp/SRX062364__M01628.second_fitness,temp/SRX062364__M01634.second_fitness,temp/SRX062364__M01636.second_fitness,temp/SRX062364__M01639.second_fitness,temp/SRX062364__M01642.second_fitness,temp/SRX062364__M01643.second_fitness,temp/SRX062364__M01646.second_fitness,temp/SRX062364__M01648.second_fitness,temp/SRX062364__M01650.second_fitness,temp/SRX062364__M01660.second_fitness,temp/SRX062364__M01662.second_fitness,temp/SRX062364__M01681.second_fitness,temp/SRX062364__M01700.second_fitness,temp/SRX062364__M01742.second_fitness,temp/SRX062364__M01768.second_fitness,temp/SRX062364__M01774.second_fitness,temp/SRX062364__M01779.second_fitness,temp/SRX062364__M01782.second_fitness,temp/SRX062364__M01793.second_fitness,temp/SRX062364__M01806.second_fitness,temp/SRX062364__M01812.second_fitness,temp/SRX062364__M01815.second_fitness,temp/SRX062364__M01816.second_fitness,temp/SRX062364__M01820.second_fitness,temp/SRX062364__M01837.second_fitness,temp/SRX062364__M01838.second_fitness,temp/SRX062364__M01839.second_fitness,temp/SRX062364__M01840.second_fitness,temp/SRX062364__M01843.second_fitness,temp/SRX062364__M01852.second_fitness,temp/SRX062364__M01861.second_fitness,temp/SRX062364__M01862.second_fitness,temp/SRX062364__M01863.second_fitness,temp/SRX062364__M01906.second_fitness,temp/SRX062364__M01909.second_fitness,temp/SRX062364__M01911.second_fitness,temp/SRX062364__M01916.second_fitness,temp/SRX062364__M01925.second_fitness,temp/SRX062364__M01927.second_fitness,temp/SRX062364__M01933.second_fitness,temp/SRX062364__M01938.second_fitness,temp/SRX062364__M01941.second_fitness,temp/SRX062364__M01946.second_fitness,temp/SRX062364__M01947.second_fitness,temp/SRX062364__M01951.second_fitness,temp/SRX062364__M01957.second_fitness,temp/SRX062364__M01958.second_fitness,temp/SRX062364__M01959.second_fitness,temp/SRX062364__M01960.second_fitness,temp/SRX062364__M01966.second_fitness,temp/SRX062364__M01970.second_fitness,temp/SRX062364__M01972.second_fitness,temp/SRX062364__M01976.second_fitness,temp/SRX062364__M01981.second_fitness,temp/SRX062364__M01985.second_fitness,temp/SRX062364__M01990.second_fitness,temp/SRX062364__M02011.second_fitness,temp/SRX062364__M02016.second_fitness,temp/SRX062364__M02032.second_fitness,temp/SRX062364__M02040.second_fitness,temp/SRX062364__MA0007.1.second_fitness,temp/SRX062364__MA0017.1.second_fitness,temp/SRX062364__MA0018.2.second_fitness,temp/SRX062364__MA0024.1.second_fitness,temp/SRX062364__MA0028.1.second_fitness,temp/SRX062364__MA0057.1.second_fitness,temp/SRX062364__MA0059.1.second_fitness,temp/SRX062364__MA0069.1.second_fitness,temp/SRX062364__MA0079.2.second_fitness,temp/SRX062364__MA0088.1.second_fitness,temp/SRX062364__MA0091.1.second_fitness,temp/SRX062364__MA0093.1.second_fitness,temp/SRX062364__MA0100.1.second_fitness,temp/SRX062364__MA0104.2.second_fitness,temp/SRX062364__MA0114.1.second_fitness,temp/SRX062364__MA0115.1.second_fitness,temp/SRX062364__MA0119.1.second_fitness,temp/SRX062364__MA0122.1.second_fitness,temp/SRX062364__MA0138.2.second_fitness,temp/SRX062364__MA0139.1.second_fitness,temp/SRX062364__MA0140.1.second_fitness,temp/SRX062364__MA0142.1.second_fitness,temp/SRX062364__MA0150.1.second_fitness,temp/SRX062364__MA0157.1.second_fitness,temp/SRX062364__PBM0013.second_fitness,temp/SRX062364__PBM0022.second_fitness,temp/SRX062364__PBM0031.second_fitness,temp/SRX062364__PBM0049.second_fitness,temp/SRX062364__PBM0060.second_fitness,temp/SRX062364__PBM0066.second_fitness,temp/SRX062364__PBM0072.second_fitness,temp/SRX062364__PBM0077.second_fitness,temp/SRX062364__PBM0081.second_fitness,temp/SRX062364__PBM0082.second_fitness,temp/SRX062364__PBM0083.second_fitness,temp/SRX062364__PBM0085.second_fitness,temp/SRX062364__PBM0095.second_fitness,temp/SRX062364__PBM0140.second_fitness,temp/SRX062364__PBM0156.second_fitness,temp/SRX062364__PBM0173.second_fitness,temp/SRX062364__PBM0176.second_fitness,temp/SRX062364__PBM0191.second_fitness', ',')[[1]]
 for(t in 1 : length(txts)) {
     f &lt;- fits[t]
     t &lt;- txts[t]
@@ -146,12 +146,12 @@ pander(df)</code></pre>
 <table>
 <colgroup>
 <col width="16%"></col>
-<col width="11%"></col>
-<col width="11%"></col>
 <col width="12%"></col>
+<col width="10%"></col>
 <col width="12%"></col>
-<col width="11%"></col>
-<col width="11%"></col>
+<col width="14%"></col>
+<col width="17%"></col>
+<col width="17%"></col>
 </colgroup>
 <thead>
 <tr class="header">
@@ -182,6 +182,2481 @@ pander(df)</code></pre>
 <td align="center">M00008</td>
 <td align="center">0</td>
 <td align="center">0.6924</td>
+</tr>
+<tr class="odd">
+<td align="center">4276</td>
+<td align="center">13348</td>
+<td align="center">8374</td>
+<td align="center">9250</td>
+<td align="center">M00017</td>
+<td align="center">0</td>
+<td align="center">0.724</td>
+</tr>
+<tr class="even">
+<td align="center">7712</td>
+<td align="center">18568</td>
+<td align="center">15237</td>
+<td align="center">11043</td>
+<td align="center">M00024</td>
+<td align="center">0</td>
+<td align="center">0.6472</td>
+</tr>
+<tr class="odd">
+<td align="center">1764</td>
+<td align="center">10106</td>
+<td align="center">7162</td>
+<td align="center">4708</td>
+<td align="center">M00032</td>
+<td align="center">0</td>
+<td align="center">0.6953</td>
+</tr>
+<tr class="even">
+<td align="center">1710</td>
+<td align="center">5585</td>
+<td align="center">4436</td>
+<td align="center">2859</td>
+<td align="center">M00036</td>
+<td align="center">0</td>
+<td align="center">0.6179</td>
+</tr>
+<tr class="odd">
+<td align="center">1669</td>
+<td align="center">3062</td>
+<td align="center">1895</td>
+<td align="center">2836</td>
+<td align="center">M00039</td>
+<td align="center">0</td>
+<td align="center">0.5854</td>
+</tr>
+<tr class="even">
+<td align="center">2706</td>
+<td align="center">17578</td>
+<td align="center">16989</td>
+<td align="center">3295</td>
+<td align="center">M00041</td>
+<td align="center">0</td>
+<td align="center">0.7764</td>
+</tr>
+<tr class="odd">
+<td align="center">3788</td>
+<td align="center">6068</td>
+<td align="center">5031</td>
+<td align="center">4825</td>
+<td align="center">M00050</td>
+<td align="center">0</td>
+<td align="center">0.5755</td>
+</tr>
+<tr class="even">
+<td align="center">2326</td>
+<td align="center">3956</td>
+<td align="center">2987</td>
+<td align="center">3295</td>
+<td align="center">M00064</td>
+<td align="center">0</td>
+<td align="center">0.6569</td>
+</tr>
+<tr class="odd">
+<td align="center">2797</td>
+<td align="center">6069</td>
+<td align="center">3930</td>
+<td align="center">4936</td>
+<td align="center">M00065</td>
+<td align="center">0</td>
+<td align="center">0.5263</td>
+</tr>
+<tr class="even">
+<td align="center">2442</td>
+<td align="center">5488</td>
+<td align="center">3466</td>
+<td align="center">4464</td>
+<td align="center">M00066</td>
+<td align="center">0</td>
+<td align="center">0.4951</td>
+</tr>
+<tr class="odd">
+<td align="center">2747</td>
+<td align="center">123739</td>
+<td align="center">2809</td>
+<td align="center">123677</td>
+<td align="center">M00067</td>
+<td align="center">0</td>
+<td align="center">0.3932</td>
+</tr>
+<tr class="even">
+<td align="center">823</td>
+<td align="center">5074</td>
+<td align="center">846</td>
+<td align="center">5051</td>
+<td align="center">M00068</td>
+<td align="center">0</td>
+<td align="center">0.6666</td>
+</tr>
+<tr class="odd">
+<td align="center">1137</td>
+<td align="center">5659</td>
+<td align="center">2083</td>
+<td align="center">4713</td>
+<td align="center">M00069</td>
+<td align="center">0</td>
+<td align="center">0.6993</td>
+</tr>
+<tr class="even">
+<td align="center">2472</td>
+<td align="center">5261</td>
+<td align="center">3361</td>
+<td align="center">4372</td>
+<td align="center">M00070</td>
+<td align="center">0</td>
+<td align="center">0.4777</td>
+</tr>
+<tr class="odd">
+<td align="center">6313</td>
+<td align="center">150226</td>
+<td align="center">6423</td>
+<td align="center">150116</td>
+<td align="center">M00084</td>
+<td align="center">0</td>
+<td align="center">0.7441</td>
+</tr>
+<tr class="even">
+<td align="center">3174</td>
+<td align="center">5626</td>
+<td align="center">4204</td>
+<td align="center">4596</td>
+<td align="center">M00104</td>
+<td align="center">0</td>
+<td align="center">0.6452</td>
+</tr>
+<tr class="odd">
+<td align="center">1843</td>
+<td align="center">6001</td>
+<td align="center">3778</td>
+<td align="center">4066</td>
+<td align="center">M00113</td>
+<td align="center">0</td>
+<td align="center">0.644</td>
+</tr>
+<tr class="even">
+<td align="center">502</td>
+<td align="center">1122</td>
+<td align="center">622</td>
+<td align="center">1002</td>
+<td align="center">M00117</td>
+<td align="center">0</td>
+<td align="center">0.7617</td>
+</tr>
+<tr class="odd">
+<td align="center">1364</td>
+<td align="center">3503</td>
+<td align="center">2276</td>
+<td align="center">2591</td>
+<td align="center">M00121</td>
+<td align="center">0</td>
+<td align="center">0.6546</td>
+</tr>
+<tr class="even">
+<td align="center">782</td>
+<td align="center">2094</td>
+<td align="center">1492</td>
+<td align="center">1384</td>
+<td align="center">M00134</td>
+<td align="center">0</td>
+<td align="center">0.7233</td>
+</tr>
+<tr class="odd">
+<td align="center">971</td>
+<td align="center">5080</td>
+<td align="center">4794</td>
+<td align="center">1257</td>
+<td align="center">M00158</td>
+<td align="center">0</td>
+<td align="center">0.7866</td>
+</tr>
+<tr class="even">
+<td align="center">1672</td>
+<td align="center">30079</td>
+<td align="center">2750</td>
+<td align="center">29001</td>
+<td align="center">M00171</td>
+<td align="center">0</td>
+<td align="center">0.3092</td>
+</tr>
+<tr class="odd">
+<td align="center">907</td>
+<td align="center">1431</td>
+<td align="center">1208</td>
+<td align="center">1130</td>
+<td align="center">M00174</td>
+<td align="center">0</td>
+<td align="center">0.5542</td>
+</tr>
+<tr class="even">
+<td align="center">5033</td>
+<td align="center">8638</td>
+<td align="center">7720</td>
+<td align="center">5951</td>
+<td align="center">M00175</td>
+<td align="center">0</td>
+<td align="center">0.7256</td>
+</tr>
+<tr class="odd">
+<td align="center">2073</td>
+<td align="center">7227</td>
+<td align="center">5421</td>
+<td align="center">3879</td>
+<td align="center">M00178</td>
+<td align="center">0</td>
+<td align="center">0.7206</td>
+</tr>
+<tr class="even">
+<td align="center">971</td>
+<td align="center">3186</td>
+<td align="center">2766</td>
+<td align="center">1391</td>
+<td align="center">M00179</td>
+<td align="center">0</td>
+<td align="center">0.6573</td>
+</tr>
+<tr class="odd">
+<td align="center">1407</td>
+<td align="center">4257</td>
+<td align="center">3134</td>
+<td align="center">2530</td>
+<td align="center">M00187</td>
+<td align="center">0</td>
+<td align="center">0.719</td>
+</tr>
+<tr class="even">
+<td align="center">4794</td>
+<td align="center">11123</td>
+<td align="center">9163</td>
+<td align="center">6754</td>
+<td align="center">M00193</td>
+<td align="center">0</td>
+<td align="center">0.3549</td>
+</tr>
+<tr class="odd">
+<td align="center">1732</td>
+<td align="center">2866</td>
+<td align="center">1860</td>
+<td align="center">2738</td>
+<td align="center">M00210</td>
+<td align="center">0</td>
+<td align="center">0.636</td>
+</tr>
+<tr class="even">
+<td align="center">1099</td>
+<td align="center">3665</td>
+<td align="center">3417</td>
+<td align="center">1347</td>
+<td align="center">M00220</td>
+<td align="center">0</td>
+<td align="center">0.6264</td>
+</tr>
+<tr class="odd">
+<td align="center">2683</td>
+<td align="center">17035</td>
+<td align="center">3695</td>
+<td align="center">16023</td>
+<td align="center">M00235</td>
+<td align="center">0</td>
+<td align="center">0.6607</td>
+</tr>
+<tr class="even">
+<td align="center">2430</td>
+<td align="center">8803</td>
+<td align="center">4527</td>
+<td align="center">6706</td>
+<td align="center">M00236</td>
+<td align="center">0</td>
+<td align="center">0.6834</td>
+</tr>
+<tr class="odd">
+<td align="center">3553</td>
+<td align="center">50030</td>
+<td align="center">4062</td>
+<td align="center">49521</td>
+<td align="center">M00243</td>
+<td align="center">0</td>
+<td align="center">0.682</td>
+</tr>
+<tr class="even">
+<td align="center">1629</td>
+<td align="center">26666</td>
+<td align="center">1904</td>
+<td align="center">26391</td>
+<td align="center">M00246</td>
+<td align="center">0</td>
+<td align="center">0.711</td>
+</tr>
+<tr class="odd">
+<td align="center">843</td>
+<td align="center">1981</td>
+<td align="center">1206</td>
+<td align="center">1618</td>
+<td align="center">M00254</td>
+<td align="center">0</td>
+<td align="center">0.7195</td>
+</tr>
+<tr class="even">
+<td align="center">1205</td>
+<td align="center">2070</td>
+<td align="center">1569</td>
+<td align="center">1706</td>
+<td align="center">M00256</td>
+<td align="center">0</td>
+<td align="center">0.8244</td>
+</tr>
+<tr class="odd">
+<td align="center">1816</td>
+<td align="center">5238</td>
+<td align="center">2253</td>
+<td align="center">4801</td>
+<td align="center">M00262</td>
+<td align="center">0</td>
+<td align="center">0.7614</td>
+</tr>
+<tr class="even">
+<td align="center">2516</td>
+<td align="center">21761</td>
+<td align="center">14894</td>
+<td align="center">9383</td>
+<td align="center">M00263</td>
+<td align="center">0</td>
+<td align="center">0.6446</td>
+</tr>
+<tr class="odd">
+<td align="center">1949</td>
+<td align="center">4154</td>
+<td align="center">2325</td>
+<td align="center">3778</td>
+<td align="center">M00264</td>
+<td align="center">0</td>
+<td align="center">0.7519</td>
+</tr>
+<tr class="even">
+<td align="center">8202</td>
+<td align="center">16642</td>
+<td align="center">11887</td>
+<td align="center">12957</td>
+<td align="center">M00270</td>
+<td align="center">0</td>
+<td align="center">0.6005</td>
+</tr>
+<tr class="odd">
+<td align="center">2629</td>
+<td align="center">6402</td>
+<td align="center">4356</td>
+<td align="center">4675</td>
+<td align="center">M00279</td>
+<td align="center">0</td>
+<td align="center">0.6743</td>
+</tr>
+<tr class="even">
+<td align="center">2540</td>
+<td align="center">5074</td>
+<td align="center">3457</td>
+<td align="center">4157</td>
+<td align="center">M00280</td>
+<td align="center">0</td>
+<td align="center">0.7023</td>
+</tr>
+<tr class="odd">
+<td align="center">5725</td>
+<td align="center">10450</td>
+<td align="center">7722</td>
+<td align="center">8453</td>
+<td align="center">M00281</td>
+<td align="center">0</td>
+<td align="center">0.6289</td>
+</tr>
+<tr class="even">
+<td align="center">843</td>
+<td align="center">1920</td>
+<td align="center">1219</td>
+<td align="center">1544</td>
+<td align="center">M00284</td>
+<td align="center">0</td>
+<td align="center">0.7539</td>
+</tr>
+<tr class="odd">
+<td align="center">1614</td>
+<td align="center">3719</td>
+<td align="center">2501</td>
+<td align="center">2832</td>
+<td align="center">M00287</td>
+<td align="center">0</td>
+<td align="center">0.7312</td>
+</tr>
+<tr class="even">
+<td align="center">1234</td>
+<td align="center">2133</td>
+<td align="center">1332</td>
+<td align="center">2035</td>
+<td align="center">M00288</td>
+<td align="center">0</td>
+<td align="center">0.7093</td>
+</tr>
+<tr class="odd">
+<td align="center">924</td>
+<td align="center">2348</td>
+<td align="center">1963</td>
+<td align="center">1309</td>
+<td align="center">M00303</td>
+<td align="center">0</td>
+<td align="center">0.7007</td>
+</tr>
+<tr class="even">
+<td align="center">5527</td>
+<td align="center">7280</td>
+<td align="center">6072</td>
+<td align="center">6735</td>
+<td align="center">M00304</td>
+<td align="center">0</td>
+<td align="center">0.5935</td>
+</tr>
+<tr class="odd">
+<td align="center">2402</td>
+<td align="center">7445</td>
+<td align="center">5325</td>
+<td align="center">4522</td>
+<td align="center">M00338</td>
+<td align="center">0</td>
+<td align="center">0.6978</td>
+</tr>
+<tr class="even">
+<td align="center">2123</td>
+<td align="center">3077</td>
+<td align="center">2525</td>
+<td align="center">2675</td>
+<td align="center">M00342</td>
+<td align="center">1.931e-209</td>
+<td align="center">0.1404</td>
+</tr>
+<tr class="odd">
+<td align="center">3373</td>
+<td align="center">6408</td>
+<td align="center">4783</td>
+<td align="center">4998</td>
+<td align="center">M00357</td>
+<td align="center">0</td>
+<td align="center">0.6515</td>
+</tr>
+<tr class="even">
+<td align="center">796</td>
+<td align="center">1462</td>
+<td align="center">953</td>
+<td align="center">1305</td>
+<td align="center">M00370</td>
+<td align="center">0</td>
+<td align="center">0.6231</td>
+</tr>
+<tr class="odd">
+<td align="center">796</td>
+<td align="center">1461</td>
+<td align="center">952</td>
+<td align="center">1305</td>
+<td align="center">M00371</td>
+<td align="center">0</td>
+<td align="center">0.6247</td>
+</tr>
+<tr class="even">
+<td align="center">749</td>
+<td align="center">2890</td>
+<td align="center">2617</td>
+<td align="center">1022</td>
+<td align="center">M00375</td>
+<td align="center">0</td>
+<td align="center">0.6188</td>
+</tr>
+<tr class="odd">
+<td align="center">3612</td>
+<td align="center">75067</td>
+<td align="center">7712</td>
+<td align="center">70967</td>
+<td align="center">M00391</td>
+<td align="center">0</td>
+<td align="center">0.3764</td>
+</tr>
+<tr class="even">
+<td align="center">2584</td>
+<td align="center">4073</td>
+<td align="center">3541</td>
+<td align="center">3116</td>
+<td align="center">M00394</td>
+<td align="center">0</td>
+<td align="center">0.2252</td>
+</tr>
+<tr class="odd">
+<td align="center">11018</td>
+<td align="center">18047</td>
+<td align="center">15372</td>
+<td align="center">13693</td>
+<td align="center">M00396</td>
+<td align="center">0</td>
+<td align="center">0.4158</td>
+</tr>
+<tr class="even">
+<td align="center">1985</td>
+<td align="center">5649</td>
+<td align="center">2476</td>
+<td align="center">5158</td>
+<td align="center">M00398</td>
+<td align="center">0</td>
+<td align="center">0.5839</td>
+</tr>
+<tr class="odd">
+<td align="center">2073</td>
+<td align="center">8245</td>
+<td align="center">2265</td>
+<td align="center">8053</td>
+<td align="center">M00407</td>
+<td align="center">0</td>
+<td align="center">0.7812</td>
+</tr>
+<tr class="even">
+<td align="center">400</td>
+<td align="center">1376</td>
+<td align="center">1160</td>
+<td align="center">616</td>
+<td align="center">M00411</td>
+<td align="center">0</td>
+<td align="center">0.7586</td>
+</tr>
+<tr class="odd">
+<td align="center">1408</td>
+<td align="center">1938</td>
+<td align="center">1677</td>
+<td align="center">1669</td>
+<td align="center">M00418</td>
+<td align="center">0</td>
+<td align="center">0.6928</td>
+</tr>
+<tr class="even">
+<td align="center">1472</td>
+<td align="center">12304</td>
+<td align="center">3196</td>
+<td align="center">10580</td>
+<td align="center">M00424</td>
+<td align="center">0</td>
+<td align="center">0.8375</td>
+</tr>
+<tr class="odd">
+<td align="center">7823</td>
+<td align="center">28725</td>
+<td align="center">26798</td>
+<td align="center">9750</td>
+<td align="center">M00425</td>
+<td align="center">0</td>
+<td align="center">0.6208</td>
+</tr>
+<tr class="even">
+<td align="center">7353</td>
+<td align="center">29306</td>
+<td align="center">27437</td>
+<td align="center">9222</td>
+<td align="center">M00426</td>
+<td align="center">0</td>
+<td align="center">0.6477</td>
+</tr>
+<tr class="odd">
+<td align="center">9826</td>
+<td align="center">27146</td>
+<td align="center">24659</td>
+<td align="center">12313</td>
+<td align="center">M00427</td>
+<td align="center">0</td>
+<td align="center">0.5685</td>
+</tr>
+<tr class="even">
+<td align="center">5065</td>
+<td align="center">25310</td>
+<td align="center">9919</td>
+<td align="center">20456</td>
+<td align="center">M00428</td>
+<td align="center">0</td>
+<td align="center">0.4962</td>
+</tr>
+<tr class="odd">
+<td align="center">9839</td>
+<td align="center">27020</td>
+<td align="center">24523</td>
+<td align="center">12336</td>
+<td align="center">M00431</td>
+<td align="center">0</td>
+<td align="center">0.6002</td>
+</tr>
+<tr class="even">
+<td align="center">1623</td>
+<td align="center">3732</td>
+<td align="center">1777</td>
+<td align="center">3578</td>
+<td align="center">M00435</td>
+<td align="center">0</td>
+<td align="center">0.6938</td>
+</tr>
+<tr class="odd">
+<td align="center">1807</td>
+<td align="center">10742</td>
+<td align="center">9961</td>
+<td align="center">2588</td>
+<td align="center">M00443</td>
+<td align="center">0</td>
+<td align="center">0.73</td>
+</tr>
+<tr class="even">
+<td align="center">649</td>
+<td align="center">1239</td>
+<td align="center">918</td>
+<td align="center">970</td>
+<td align="center">M00448</td>
+<td align="center">0</td>
+<td align="center">0.7831</td>
+</tr>
+<tr class="odd">
+<td align="center">646</td>
+<td align="center">1257</td>
+<td align="center">918</td>
+<td align="center">985</td>
+<td align="center">M00450</td>
+<td align="center">0</td>
+<td align="center">0.7822</td>
+</tr>
+<tr class="even">
+<td align="center">7652</td>
+<td align="center">42150</td>
+<td align="center">12942</td>
+<td align="center">36860</td>
+<td align="center">M00451</td>
+<td align="center">0</td>
+<td align="center">0.8343</td>
+</tr>
+<tr class="odd">
+<td align="center">10048</td>
+<td align="center">14135</td>
+<td align="center">12178</td>
+<td align="center">12005</td>
+<td align="center">M00492</td>
+<td align="center">0</td>
+<td align="center">0.5274</td>
+</tr>
+<tr class="even">
+<td align="center">949</td>
+<td align="center">4664</td>
+<td align="center">4334</td>
+<td align="center">1279</td>
+<td align="center">M00512</td>
+<td align="center">0</td>
+<td align="center">0.7621</td>
+</tr>
+<tr class="odd">
+<td align="center">2171</td>
+<td align="center">5484</td>
+<td align="center">3503</td>
+<td align="center">4152</td>
+<td align="center">M00513</td>
+<td align="center">0</td>
+<td align="center">0.6545</td>
+</tr>
+<tr class="even">
+<td align="center">1586</td>
+<td align="center">3003</td>
+<td align="center">2595</td>
+<td align="center">1994</td>
+<td align="center">M00517</td>
+<td align="center">0</td>
+<td align="center">0.7318</td>
+</tr>
+<tr class="odd">
+<td align="center">1667</td>
+<td align="center">4732</td>
+<td align="center">3539</td>
+<td align="center">2860</td>
+<td align="center">M00539</td>
+<td align="center">0</td>
+<td align="center">0.6238</td>
+</tr>
+<tr class="even">
+<td align="center">736</td>
+<td align="center">4555</td>
+<td align="center">936</td>
+<td align="center">4355</td>
+<td align="center">M00616</td>
+<td align="center">0</td>
+<td align="center">0.7564</td>
+</tr>
+<tr class="odd">
+<td align="center">653</td>
+<td align="center">1485</td>
+<td align="center">745</td>
+<td align="center">1393</td>
+<td align="center">M00621</td>
+<td align="center">0</td>
+<td align="center">0.7386</td>
+</tr>
+<tr class="even">
+<td align="center">879</td>
+<td align="center">1972</td>
+<td align="center">1209</td>
+<td align="center">1642</td>
+<td align="center">M00626</td>
+<td align="center">0</td>
+<td align="center">0.6233</td>
+</tr>
+<tr class="odd">
+<td align="center">44844</td>
+<td align="center">61279</td>
+<td align="center">53766</td>
+<td align="center">52357</td>
+<td align="center">M00644</td>
+<td align="center">0</td>
+<td align="center">0.5154</td>
+</tr>
+<tr class="even">
+<td align="center">26950</td>
+<td align="center">101415</td>
+<td align="center">39391</td>
+<td align="center">88974</td>
+<td align="center">M00649</td>
+<td align="center">0</td>
+<td align="center">0.7476</td>
+</tr>
+<tr class="odd">
+<td align="center">4528</td>
+<td align="center">22083</td>
+<td align="center">8457</td>
+<td align="center">18154</td>
+<td align="center">M00654</td>
+<td align="center">0</td>
+<td align="center">0.5411</td>
+</tr>
+<tr class="even">
+<td align="center">2899</td>
+<td align="center">7304</td>
+<td align="center">3111</td>
+<td align="center">7092</td>
+<td align="center">M00660</td>
+<td align="center">0</td>
+<td align="center">0.6243</td>
+</tr>
+<tr class="odd">
+<td align="center">1933</td>
+<td align="center">6223</td>
+<td align="center">3688</td>
+<td align="center">4468</td>
+<td align="center">M00691</td>
+<td align="center">0</td>
+<td align="center">0.593</td>
+</tr>
+<tr class="even">
+<td align="center">1820</td>
+<td align="center">7478</td>
+<td align="center">2136</td>
+<td align="center">7162</td>
+<td align="center">M00693</td>
+<td align="center">0</td>
+<td align="center">0.6163</td>
+</tr>
+<tr class="odd">
+<td align="center">3268</td>
+<td align="center">15578</td>
+<td align="center">14460</td>
+<td align="center">4386</td>
+<td align="center">M00694</td>
+<td align="center">0</td>
+<td align="center">0.6666</td>
+</tr>
+<tr class="even">
+<td align="center">15636</td>
+<td align="center">22217</td>
+<td align="center">19472</td>
+<td align="center">18381</td>
+<td align="center">M00696</td>
+<td align="center">0</td>
+<td align="center">0.2968</td>
+</tr>
+<tr class="odd">
+<td align="center">4792</td>
+<td align="center">15267</td>
+<td align="center">13404</td>
+<td align="center">6655</td>
+<td align="center">M00697</td>
+<td align="center">0</td>
+<td align="center">0.6201</td>
+</tr>
+<tr class="even">
+<td align="center">6918</td>
+<td align="center">14152</td>
+<td align="center">7710</td>
+<td align="center">13360</td>
+<td align="center">M00698</td>
+<td align="center">0</td>
+<td align="center">0.4045</td>
+</tr>
+<tr class="odd">
+<td align="center">2101</td>
+<td align="center">14803</td>
+<td align="center">2509</td>
+<td align="center">14395</td>
+<td align="center">M00730</td>
+<td align="center">0</td>
+<td align="center">0.5806</td>
+</tr>
+<tr class="even">
+<td align="center">12581</td>
+<td align="center">22273</td>
+<td align="center">15057</td>
+<td align="center">19797</td>
+<td align="center">M00736</td>
+<td align="center">0</td>
+<td align="center">0.5094</td>
+</tr>
+<tr class="odd">
+<td align="center">11394</td>
+<td align="center">28286</td>
+<td align="center">20628</td>
+<td align="center">19052</td>
+<td align="center">M00737</td>
+<td align="center">0</td>
+<td align="center">0.4844</td>
+</tr>
+<tr class="even">
+<td align="center">11022</td>
+<td align="center">20325</td>
+<td align="center">15063</td>
+<td align="center">16284</td>
+<td align="center">M00739</td>
+<td align="center">0</td>
+<td align="center">0.507</td>
+</tr>
+<tr class="odd">
+<td align="center">4016</td>
+<td align="center">24225</td>
+<td align="center">23192</td>
+<td align="center">5049</td>
+<td align="center">M00740</td>
+<td align="center">0</td>
+<td align="center">0.6095</td>
+</tr>
+<tr class="even">
+<td align="center">703</td>
+<td align="center">10484</td>
+<td align="center">9953</td>
+<td align="center">1234</td>
+<td align="center">M00746</td>
+<td align="center">0</td>
+<td align="center">0.8004</td>
+</tr>
+<tr class="odd">
+<td align="center">2049</td>
+<td align="center">16793</td>
+<td align="center">10843</td>
+<td align="center">7999</td>
+<td align="center">M00752</td>
+<td align="center">0</td>
+<td align="center">0.5866</td>
+</tr>
+<tr class="even">
+<td align="center">867</td>
+<td align="center">4849</td>
+<td align="center">4643</td>
+<td align="center">1073</td>
+<td align="center">M00762</td>
+<td align="center">0</td>
+<td align="center">0.7915</td>
+</tr>
+<tr class="odd">
+<td align="center">878</td>
+<td align="center">4555</td>
+<td align="center">4222</td>
+<td align="center">1211</td>
+<td align="center">M00763</td>
+<td align="center">0</td>
+<td align="center">0.771</td>
+</tr>
+<tr class="even">
+<td align="center">483</td>
+<td align="center">1292</td>
+<td align="center">1106</td>
+<td align="center">669</td>
+<td align="center">M00764</td>
+<td align="center">0</td>
+<td align="center">0.74</td>
+</tr>
+<tr class="odd">
+<td align="center">672</td>
+<td align="center">3994</td>
+<td align="center">3766</td>
+<td align="center">900</td>
+<td align="center">M00765</td>
+<td align="center">0</td>
+<td align="center">0.7856</td>
+</tr>
+<tr class="even">
+<td align="center">8222</td>
+<td align="center">19458</td>
+<td align="center">16540</td>
+<td align="center">11140</td>
+<td align="center">M00778</td>
+<td align="center">0</td>
+<td align="center">0.6344</td>
+</tr>
+<tr class="odd">
+<td align="center">1192</td>
+<td align="center">2091</td>
+<td align="center">1402</td>
+<td align="center">1881</td>
+<td align="center">M00795</td>
+<td align="center">0</td>
+<td align="center">0.3906</td>
+</tr>
+<tr class="even">
+<td align="center">5546</td>
+<td align="center">43213</td>
+<td align="center">6536</td>
+<td align="center">42223</td>
+<td align="center">M00797</td>
+<td align="center">0</td>
+<td align="center">0.6044</td>
+</tr>
+<tr class="odd">
+<td align="center">7799</td>
+<td align="center">17345</td>
+<td align="center">14160</td>
+<td align="center">10984</td>
+<td align="center">M00806</td>
+<td align="center">0</td>
+<td align="center">0.4168</td>
+</tr>
+<tr class="even">
+<td align="center">1345</td>
+<td align="center">3375</td>
+<td align="center">3095</td>
+<td align="center">1625</td>
+<td align="center">M00821</td>
+<td align="center">0</td>
+<td align="center">0.7872</td>
+</tr>
+<tr class="odd">
+<td align="center">3042</td>
+<td align="center">11484</td>
+<td align="center">7945</td>
+<td align="center">6581</td>
+<td align="center">M00916</td>
+<td align="center">0</td>
+<td align="center">0.6991</td>
+</tr>
+<tr class="even">
+<td align="center">2331</td>
+<td align="center">7437</td>
+<td align="center">5957</td>
+<td align="center">3811</td>
+<td align="center">M00917</td>
+<td align="center">0</td>
+<td align="center">0.7212</td>
+</tr>
+<tr class="odd">
+<td align="center">8880</td>
+<td align="center">23176</td>
+<td align="center">20025</td>
+<td align="center">12031</td>
+<td align="center">M00918</td>
+<td align="center">0</td>
+<td align="center">0.5556</td>
+</tr>
+<tr class="even">
+<td align="center">1481</td>
+<td align="center">9501</td>
+<td align="center">1754</td>
+<td align="center">9228</td>
+<td align="center">M00919</td>
+<td align="center">0</td>
+<td align="center">0.5881</td>
+</tr>
+<tr class="odd">
+<td align="center">5944</td>
+<td align="center">30845</td>
+<td align="center">7660</td>
+<td align="center">29129</td>
+<td align="center">M00920</td>
+<td align="center">0</td>
+<td align="center">0.5429</td>
+</tr>
+<tr class="even">
+<td align="center">2869</td>
+<td align="center">7103</td>
+<td align="center">3277</td>
+<td align="center">6695</td>
+<td align="center">M00927</td>
+<td align="center">0</td>
+<td align="center">0.513</td>
+</tr>
+<tr class="odd">
+<td align="center">2420</td>
+<td align="center">6851</td>
+<td align="center">6063</td>
+<td align="center">3208</td>
+<td align="center">M00930</td>
+<td align="center">0</td>
+<td align="center">0.493</td>
+</tr>
+<tr class="even">
+<td align="center">13450</td>
+<td align="center">22514</td>
+<td align="center">16540</td>
+<td align="center">19424</td>
+<td align="center">M00940</td>
+<td align="center">0</td>
+<td align="center">0.5976</td>
+</tr>
+<tr class="odd">
+<td align="center">3824</td>
+<td align="center">25647</td>
+<td align="center">24604</td>
+<td align="center">4867</td>
+<td align="center">M00942</td>
+<td align="center">0</td>
+<td align="center">0.7098</td>
+</tr>
+<tr class="even">
+<td align="center">2448</td>
+<td align="center">12117</td>
+<td align="center">10021</td>
+<td align="center">4544</td>
+<td align="center">M00944</td>
+<td align="center">0</td>
+<td align="center">0.6853</td>
+</tr>
+<tr class="odd">
+<td align="center">3216</td>
+<td align="center">7247</td>
+<td align="center">3444</td>
+<td align="center">7019</td>
+<td align="center">M00945</td>
+<td align="center">0</td>
+<td align="center">0.6026</td>
+</tr>
+<tr class="even">
+<td align="center">1928</td>
+<td align="center">6678</td>
+<td align="center">5200</td>
+<td align="center">3406</td>
+<td align="center">M00946</td>
+<td align="center">0</td>
+<td align="center">0.7284</td>
+</tr>
+<tr class="odd">
+<td align="center">5521</td>
+<td align="center">9276</td>
+<td align="center">8079</td>
+<td align="center">6718</td>
+<td align="center">M00971</td>
+<td align="center">0</td>
+<td align="center">0.6221</td>
+</tr>
+<tr class="even">
+<td align="center">8388</td>
+<td align="center">13910</td>
+<td align="center">11319</td>
+<td align="center">10979</td>
+<td align="center">M00973</td>
+<td align="center">0</td>
+<td align="center">0.6886</td>
+</tr>
+<tr class="odd">
+<td align="center">1580</td>
+<td align="center">5465</td>
+<td align="center">4817</td>
+<td align="center">2228</td>
+<td align="center">M00981</td>
+<td align="center">0</td>
+<td align="center">0.7457</td>
+</tr>
+<tr class="even">
+<td align="center">1250</td>
+<td align="center">3450</td>
+<td align="center">2445</td>
+<td align="center">2255</td>
+<td align="center">M00985</td>
+<td align="center">0</td>
+<td align="center">0.6542</td>
+</tr>
+<tr class="odd">
+<td align="center">12229</td>
+<td align="center">54945</td>
+<td align="center">16189</td>
+<td align="center">50985</td>
+<td align="center">M00986</td>
+<td align="center">0</td>
+<td align="center">0.6529</td>
+</tr>
+<tr class="even">
+<td align="center">1359</td>
+<td align="center">2703</td>
+<td align="center">1499</td>
+<td align="center">2563</td>
+<td align="center">M00993</td>
+<td align="center">0</td>
+<td align="center">0.5693</td>
+</tr>
+<tr class="odd">
+<td align="center">1326</td>
+<td align="center">2306</td>
+<td align="center">1707</td>
+<td align="center">1925</td>
+<td align="center">M01028</td>
+<td align="center">0</td>
+<td align="center">0.8163</td>
+</tr>
+<tr class="even">
+<td align="center">2652</td>
+<td align="center">4021</td>
+<td align="center">3138</td>
+<td align="center">3535</td>
+<td align="center">M01050</td>
+<td align="center">0</td>
+<td align="center">0.481</td>
+</tr>
+<tr class="odd">
+<td align="center">1819</td>
+<td align="center">2714</td>
+<td align="center">2012</td>
+<td align="center">2521</td>
+<td align="center">M01054</td>
+<td align="center">0</td>
+<td align="center">0.4011</td>
+</tr>
+<tr class="even">
+<td align="center">5919</td>
+<td align="center">11437</td>
+<td align="center">8565</td>
+<td align="center">8791</td>
+<td align="center">M01065</td>
+<td align="center">0</td>
+<td align="center">0.6461</td>
+</tr>
+<tr class="odd">
+<td align="center">180</td>
+<td align="center">697</td>
+<td align="center">225</td>
+<td align="center">652</td>
+<td align="center">M01067</td>
+<td align="center">0</td>
+<td align="center">0.5714</td>
+</tr>
+<tr class="even">
+<td align="center">4756</td>
+<td align="center">103189</td>
+<td align="center">4765</td>
+<td align="center">103180</td>
+<td align="center">M01068</td>
+<td align="center">0</td>
+<td align="center">0.7332</td>
+</tr>
+<tr class="odd">
+<td align="center">1960</td>
+<td align="center">3905</td>
+<td align="center">2412</td>
+<td align="center">3453</td>
+<td align="center">M01070</td>
+<td align="center">0</td>
+<td align="center">0.7498</td>
+</tr>
+<tr class="even">
+<td align="center">1367</td>
+<td align="center">9241</td>
+<td align="center">4080</td>
+<td align="center">6528</td>
+<td align="center">M01096</td>
+<td align="center">0</td>
+<td align="center">0.638</td>
+</tr>
+<tr class="odd">
+<td align="center">1928</td>
+<td align="center">2932</td>
+<td align="center">2311</td>
+<td align="center">2549</td>
+<td align="center">M01111</td>
+<td align="center">0</td>
+<td align="center">0.6952</td>
+</tr>
+<tr class="even">
+<td align="center">10722</td>
+<td align="center">23129</td>
+<td align="center">12256</td>
+<td align="center">21595</td>
+<td align="center">M01114</td>
+<td align="center">0</td>
+<td align="center">0.6389</td>
+</tr>
+<tr class="odd">
+<td align="center">1650</td>
+<td align="center">5838</td>
+<td align="center">5219</td>
+<td align="center">2269</td>
+<td align="center">M01116</td>
+<td align="center">0</td>
+<td align="center">0.5587</td>
+</tr>
+<tr class="even">
+<td align="center">2408</td>
+<td align="center">278371</td>
+<td align="center">2408</td>
+<td align="center">278371</td>
+<td align="center">M01122</td>
+<td align="center">0</td>
+<td align="center">0.7073</td>
+</tr>
+<tr class="odd">
+<td align="center">1520</td>
+<td align="center">3839</td>
+<td align="center">1730</td>
+<td align="center">3629</td>
+<td align="center">M01124</td>
+<td align="center">0</td>
+<td align="center">0.7335</td>
+</tr>
+<tr class="even">
+<td align="center">4974</td>
+<td align="center">12635</td>
+<td align="center">11517</td>
+<td align="center">6092</td>
+<td align="center">M01163</td>
+<td align="center">0</td>
+<td align="center">0.6783</td>
+</tr>
+<tr class="odd">
+<td align="center">3734</td>
+<td align="center">16197</td>
+<td align="center">15451</td>
+<td align="center">4480</td>
+<td align="center">M01167</td>
+<td align="center">0</td>
+<td align="center">0.7018</td>
+</tr>
+<tr class="even">
+<td align="center">2533</td>
+<td align="center">17510</td>
+<td align="center">16828</td>
+<td align="center">3215</td>
+<td align="center">M01182</td>
+<td align="center">0</td>
+<td align="center">0.7036</td>
+</tr>
+<tr class="odd">
+<td align="center">2413</td>
+<td align="center">6484</td>
+<td align="center">4240</td>
+<td align="center">4657</td>
+<td align="center">M01186</td>
+<td align="center">0</td>
+<td align="center">0.68</td>
+</tr>
+<tr class="even">
+<td align="center">1897</td>
+<td align="center">5757</td>
+<td align="center">3829</td>
+<td align="center">3825</td>
+<td align="center">M01187</td>
+<td align="center">0</td>
+<td align="center">0.6586</td>
+</tr>
+<tr class="odd">
+<td align="center">18114</td>
+<td align="center">35357</td>
+<td align="center">28861</td>
+<td align="center">24610</td>
+<td align="center">M01196</td>
+<td align="center">0</td>
+<td align="center">0.4381</td>
+</tr>
+<tr class="even">
+<td align="center">719</td>
+<td align="center">1549</td>
+<td align="center">1206</td>
+<td align="center">1062</td>
+<td align="center">M01198</td>
+<td align="center">0</td>
+<td align="center">0.6609</td>
+</tr>
+<tr class="odd">
+<td align="center">7075</td>
+<td align="center">16904</td>
+<td align="center">7635</td>
+<td align="center">16344</td>
+<td align="center">M01200</td>
+<td align="center">0</td>
+<td align="center">0.601</td>
+</tr>
+<tr class="even">
+<td align="center">16495</td>
+<td align="center">722254</td>
+<td align="center">16510</td>
+<td align="center">722239</td>
+<td align="center">M01219</td>
+<td align="center">0</td>
+<td align="center">0.7081</td>
+</tr>
+<tr class="odd">
+<td align="center">784</td>
+<td align="center">1070</td>
+<td align="center">864</td>
+<td align="center">990</td>
+<td align="center">M01234</td>
+<td align="center">0</td>
+<td align="center">0.5948</td>
+</tr>
+<tr class="even">
+<td align="center">348</td>
+<td align="center">3166</td>
+<td align="center">472</td>
+<td align="center">3042</td>
+<td align="center">M01243</td>
+<td align="center">0</td>
+<td align="center">0.5249</td>
+</tr>
+<tr class="odd">
+<td align="center">1907</td>
+<td align="center">3652</td>
+<td align="center">2754</td>
+<td align="center">2805</td>
+<td align="center">M01251</td>
+<td align="center">0</td>
+<td align="center">0.5071</td>
+</tr>
+<tr class="even">
+<td align="center">1716</td>
+<td align="center">3032</td>
+<td align="center">2093</td>
+<td align="center">2655</td>
+<td align="center">M01256</td>
+<td align="center">0</td>
+<td align="center">0.8236</td>
+</tr>
+<tr class="odd">
+<td align="center">7887</td>
+<td align="center">17383</td>
+<td align="center">8903</td>
+<td align="center">16367</td>
+<td align="center">M01259</td>
+<td align="center">0</td>
+<td align="center">0.5756</td>
+</tr>
+<tr class="even">
+<td align="center">4046</td>
+<td align="center">11428</td>
+<td align="center">9821</td>
+<td align="center">5653</td>
+<td align="center">M01298</td>
+<td align="center">0</td>
+<td align="center">0.6463</td>
+</tr>
+<tr class="odd">
+<td align="center">7099</td>
+<td align="center">10284</td>
+<td align="center">9063</td>
+<td align="center">8320</td>
+<td align="center">M01308</td>
+<td align="center">0</td>
+<td align="center">0.4592</td>
+</tr>
+<tr class="even">
+<td align="center">2748</td>
+<td align="center">7746</td>
+<td align="center">6568</td>
+<td align="center">3926</td>
+<td align="center">M01492</td>
+<td align="center">0</td>
+<td align="center">0.625</td>
+</tr>
+<tr class="odd">
+<td align="center">5804</td>
+<td align="center">20174</td>
+<td align="center">17417</td>
+<td align="center">8561</td>
+<td align="center">M01503</td>
+<td align="center">0</td>
+<td align="center">0.6012</td>
+</tr>
+<tr class="even">
+<td align="center">6006</td>
+<td align="center">183851</td>
+<td align="center">6189</td>
+<td align="center">183668</td>
+<td align="center">M01509</td>
+<td align="center">0</td>
+<td align="center">0.4185</td>
+</tr>
+<tr class="odd">
+<td align="center">3022</td>
+<td align="center">13469</td>
+<td align="center">12442</td>
+<td align="center">4049</td>
+<td align="center">M01511</td>
+<td align="center">0</td>
+<td align="center">0.6031</td>
+</tr>
+<tr class="even">
+<td align="center">12802</td>
+<td align="center">30385</td>
+<td align="center">22795</td>
+<td align="center">20392</td>
+<td align="center">M01512</td>
+<td align="center">0</td>
+<td align="center">0.5907</td>
+</tr>
+<tr class="odd">
+<td align="center">3914</td>
+<td align="center">11710</td>
+<td align="center">9664</td>
+<td align="center">5960</td>
+<td align="center">M01513</td>
+<td align="center">0</td>
+<td align="center">0.6177</td>
+</tr>
+<tr class="even">
+<td align="center">3438</td>
+<td align="center">11421</td>
+<td align="center">10155</td>
+<td align="center">4704</td>
+<td align="center">M01516</td>
+<td align="center">0</td>
+<td align="center">0.6196</td>
+</tr>
+<tr class="odd">
+<td align="center">5486</td>
+<td align="center">13231</td>
+<td align="center">10150</td>
+<td align="center">8567</td>
+<td align="center">M01517</td>
+<td align="center">0</td>
+<td align="center">0.6229</td>
+</tr>
+<tr class="even">
+<td align="center">3460</td>
+<td align="center">85419</td>
+<td align="center">3848</td>
+<td align="center">85031</td>
+<td align="center">M01530</td>
+<td align="center">0</td>
+<td align="center">0.6868</td>
+</tr>
+<tr class="odd">
+<td align="center">9765</td>
+<td align="center">25091</td>
+<td align="center">20165</td>
+<td align="center">14691</td>
+<td align="center">M01544</td>
+<td align="center">0</td>
+<td align="center">0.6273</td>
+</tr>
+<tr class="even">
+<td align="center">1417</td>
+<td align="center">4615</td>
+<td align="center">3797</td>
+<td align="center">2235</td>
+<td align="center">M01548</td>
+<td align="center">0</td>
+<td align="center">0.6838</td>
+</tr>
+<tr class="odd">
+<td align="center">1933</td>
+<td align="center">6159</td>
+<td align="center">5423</td>
+<td align="center">2669</td>
+<td align="center">M01558</td>
+<td align="center">0</td>
+<td align="center">0.6737</td>
+</tr>
+<tr class="even">
+<td align="center">4085</td>
+<td align="center">9650</td>
+<td align="center">7767</td>
+<td align="center">5968</td>
+<td align="center">M01567</td>
+<td align="center">0</td>
+<td align="center">0.6127</td>
+</tr>
+<tr class="odd">
+<td align="center">4448</td>
+<td align="center">10680</td>
+<td align="center">8037</td>
+<td align="center">7091</td>
+<td align="center">M01571</td>
+<td align="center">0</td>
+<td align="center">0.6307</td>
+</tr>
+<tr class="even">
+<td align="center">1222</td>
+<td align="center">3532</td>
+<td align="center">2547</td>
+<td align="center">2207</td>
+<td align="center">M01586</td>
+<td align="center">0</td>
+<td align="center">0.6659</td>
+</tr>
+<tr class="odd">
+<td align="center">2602</td>
+<td align="center">38256</td>
+<td align="center">2625</td>
+<td align="center">38233</td>
+<td align="center">M01597</td>
+<td align="center">0</td>
+<td align="center">0.7601</td>
+</tr>
+<tr class="even">
+<td align="center">698</td>
+<td align="center">13935</td>
+<td align="center">13656</td>
+<td align="center">977</td>
+<td align="center">M01608</td>
+<td align="center">2.698e-264</td>
+<td align="center">0.3183</td>
+</tr>
+<tr class="odd">
+<td align="center">3338</td>
+<td align="center">32054</td>
+<td align="center">30906</td>
+<td align="center">4486</td>
+<td align="center">M01610</td>
+<td align="center">0</td>
+<td align="center">0.7515</td>
+</tr>
+<tr class="even">
+<td align="center">12659</td>
+<td align="center">18161</td>
+<td align="center">14168</td>
+<td align="center">16652</td>
+<td align="center">M01613</td>
+<td align="center">0</td>
+<td align="center">0.6331</td>
+</tr>
+<tr class="odd">
+<td align="center">404</td>
+<td align="center">1845</td>
+<td align="center">1654</td>
+<td align="center">595</td>
+<td align="center">M01615</td>
+<td align="center">3.009e-182</td>
+<td align="center">0.2606</td>
+</tr>
+<tr class="even">
+<td align="center">2044</td>
+<td align="center">3576</td>
+<td align="center">2550</td>
+<td align="center">3070</td>
+<td align="center">M01628</td>
+<td align="center">0</td>
+<td align="center">0.1522</td>
+</tr>
+<tr class="odd">
+<td align="center">9653</td>
+<td align="center">24831</td>
+<td align="center">21652</td>
+<td align="center">12832</td>
+<td align="center">M01634</td>
+<td align="center">0</td>
+<td align="center">0.6529</td>
+</tr>
+<tr class="even">
+<td align="center">12856</td>
+<td align="center">23215</td>
+<td align="center">19790</td>
+<td align="center">16281</td>
+<td align="center">M01636</td>
+<td align="center">0</td>
+<td align="center">0.5411</td>
+</tr>
+<tr class="odd">
+<td align="center">7520</td>
+<td align="center">36421</td>
+<td align="center">11813</td>
+<td align="center">32128</td>
+<td align="center">M01639</td>
+<td align="center">0</td>
+<td align="center">0.5193</td>
+</tr>
+<tr class="even">
+<td align="center">2969</td>
+<td align="center">4682</td>
+<td align="center">3646</td>
+<td align="center">4005</td>
+<td align="center">M01642</td>
+<td align="center">0</td>
+<td align="center">0.5205</td>
+</tr>
+<tr class="odd">
+<td align="center">3434</td>
+<td align="center">162945</td>
+<td align="center">3436</td>
+<td align="center">162943</td>
+<td align="center">M01643</td>
+<td align="center">0</td>
+<td align="center">0.6213</td>
+</tr>
+<tr class="even">
+<td align="center">4350</td>
+<td align="center">6058</td>
+<td align="center">5333</td>
+<td align="center">5075</td>
+<td align="center">M01646</td>
+<td align="center">0</td>
+<td align="center">0.2825</td>
+</tr>
+<tr class="odd">
+<td align="center">4324</td>
+<td align="center">6181</td>
+<td align="center">4685</td>
+<td align="center">5820</td>
+<td align="center">M01648</td>
+<td align="center">0</td>
+<td align="center">0.6465</td>
+</tr>
+<tr class="even">
+<td align="center">664</td>
+<td align="center">1568</td>
+<td align="center">1307</td>
+<td align="center">925</td>
+<td align="center">M01650</td>
+<td align="center">0</td>
+<td align="center">0.7064</td>
+</tr>
+<tr class="odd">
+<td align="center">6074</td>
+<td align="center">24781</td>
+<td align="center">11275</td>
+<td align="center">19580</td>
+<td align="center">M01660</td>
+<td align="center">0</td>
+<td align="center">0.6074</td>
+</tr>
+<tr class="even">
+<td align="center">2053</td>
+<td align="center">9159</td>
+<td align="center">8552</td>
+<td align="center">2660</td>
+<td align="center">M01662</td>
+<td align="center">0</td>
+<td align="center">0.5791</td>
+</tr>
+<tr class="odd">
+<td align="center">4137</td>
+<td align="center">5871</td>
+<td align="center">4693</td>
+<td align="center">5315</td>
+<td align="center">M01681</td>
+<td align="center">0</td>
+<td align="center">0.4348</td>
+</tr>
+<tr class="even">
+<td align="center">1958</td>
+<td align="center">23382</td>
+<td align="center">17659</td>
+<td align="center">7681</td>
+<td align="center">M01700</td>
+<td align="center">0.1892</td>
+<td align="center">-0.004356</td>
+</tr>
+<tr class="odd">
+<td align="center">1418</td>
+<td align="center">9689</td>
+<td align="center">1519</td>
+<td align="center">9588</td>
+<td align="center">M01742</td>
+<td align="center">0</td>
+<td align="center">0.5212</td>
+</tr>
+<tr class="even">
+<td align="center">1056</td>
+<td align="center">2520</td>
+<td align="center">2256</td>
+<td align="center">1320</td>
+<td align="center">M01768</td>
+<td align="center">0</td>
+<td align="center">0.527</td>
+</tr>
+<tr class="odd">
+<td align="center">1227</td>
+<td align="center">1845</td>
+<td align="center">1626</td>
+<td align="center">1446</td>
+<td align="center">M01774</td>
+<td align="center">0</td>
+<td align="center">0.526</td>
+</tr>
+<tr class="even">
+<td align="center">919</td>
+<td align="center">1594</td>
+<td align="center">930</td>
+<td align="center">1583</td>
+<td align="center">M01779</td>
+<td align="center">0</td>
+<td align="center">0.3115</td>
+</tr>
+<tr class="odd">
+<td align="center">993</td>
+<td align="center">2017</td>
+<td align="center">1697</td>
+<td align="center">1313</td>
+<td align="center">M01782</td>
+<td align="center">0</td>
+<td align="center">0.6701</td>
+</tr>
+<tr class="even">
+<td align="center">1278</td>
+<td align="center">3824</td>
+<td align="center">2986</td>
+<td align="center">2116</td>
+<td align="center">M01793</td>
+<td align="center">0</td>
+<td align="center">0.6378</td>
+</tr>
+<tr class="odd">
+<td align="center">646</td>
+<td align="center">3993</td>
+<td align="center">3667</td>
+<td align="center">972</td>
+<td align="center">M01806</td>
+<td align="center">0</td>
+<td align="center">0.454</td>
+</tr>
+<tr class="even">
+<td align="center">1188</td>
+<td align="center">4394</td>
+<td align="center">2551</td>
+<td align="center">3031</td>
+<td align="center">M01812</td>
+<td align="center">0</td>
+<td align="center">0.6821</td>
+</tr>
+<tr class="odd">
+<td align="center">1349</td>
+<td align="center">2164</td>
+<td align="center">1676</td>
+<td align="center">1837</td>
+<td align="center">M01815</td>
+<td align="center">0</td>
+<td align="center">0.7287</td>
+</tr>
+<tr class="even">
+<td align="center">4300</td>
+<td align="center">51191</td>
+<td align="center">4301</td>
+<td align="center">51190</td>
+<td align="center">M01816</td>
+<td align="center">0</td>
+<td align="center">0.7494</td>
+</tr>
+<tr class="odd">
+<td align="center">2699</td>
+<td align="center">7224</td>
+<td align="center">4386</td>
+<td align="center">5537</td>
+<td align="center">M01820</td>
+<td align="center">0</td>
+<td align="center">0.6618</td>
+</tr>
+<tr class="even">
+<td align="center">2215</td>
+<td align="center">34545</td>
+<td align="center">2234</td>
+<td align="center">34526</td>
+<td align="center">M01837</td>
+<td align="center">0</td>
+<td align="center">0.6961</td>
+</tr>
+<tr class="odd">
+<td align="center">4494</td>
+<td align="center">21472</td>
+<td align="center">20392</td>
+<td align="center">5574</td>
+<td align="center">M01838</td>
+<td align="center">0</td>
+<td align="center">0.5964</td>
+</tr>
+<tr class="even">
+<td align="center">2897</td>
+<td align="center">51356</td>
+<td align="center">3617</td>
+<td align="center">50636</td>
+<td align="center">M01839</td>
+<td align="center">0</td>
+<td align="center">0.6133</td>
+</tr>
+<tr class="odd">
+<td align="center">10300</td>
+<td align="center">18365</td>
+<td align="center">14373</td>
+<td align="center">14292</td>
+<td align="center">M01840</td>
+<td align="center">0</td>
+<td align="center">0.6499</td>
+</tr>
+<tr class="even">
+<td align="center">1455</td>
+<td align="center">6924</td>
+<td align="center">4774</td>
+<td align="center">3605</td>
+<td align="center">M01843</td>
+<td align="center">0</td>
+<td align="center">0.7034</td>
+</tr>
+<tr class="odd">
+<td align="center">1374</td>
+<td align="center">11419</td>
+<td align="center">11049</td>
+<td align="center">1744</td>
+<td align="center">M01852</td>
+<td align="center">0</td>
+<td align="center">0.4164</td>
+</tr>
+<tr class="even">
+<td align="center">1996</td>
+<td align="center">5988</td>
+<td align="center">4535</td>
+<td align="center">3449</td>
+<td align="center">M01861</td>
+<td align="center">0</td>
+<td align="center">0.6284</td>
+</tr>
+<tr class="odd">
+<td align="center">2155</td>
+<td align="center">6282</td>
+<td align="center">4803</td>
+<td align="center">3634</td>
+<td align="center">M01862</td>
+<td align="center">0</td>
+<td align="center">0.7338</td>
+</tr>
+<tr class="even">
+<td align="center">2155</td>
+<td align="center">5652</td>
+<td align="center">3907</td>
+<td align="center">3900</td>
+<td align="center">M01863</td>
+<td align="center">0</td>
+<td align="center">0.6421</td>
+</tr>
+<tr class="odd">
+<td align="center">16698</td>
+<td align="center">27313</td>
+<td align="center">22818</td>
+<td align="center">21193</td>
+<td align="center">M01906</td>
+<td align="center">0</td>
+<td align="center">0.507</td>
+</tr>
+<tr class="even">
+<td align="center">4831</td>
+<td align="center">21598</td>
+<td align="center">5213</td>
+<td align="center">21216</td>
+<td align="center">M01909</td>
+<td align="center">0</td>
+<td align="center">0.6016</td>
+</tr>
+<tr class="odd">
+<td align="center">790</td>
+<td align="center">2234</td>
+<td align="center">1324</td>
+<td align="center">1700</td>
+<td align="center">M01911</td>
+<td align="center">0</td>
+<td align="center">0.5502</td>
+</tr>
+<tr class="even">
+<td align="center">1761</td>
+<td align="center">39063</td>
+<td align="center">1851</td>
+<td align="center">38973</td>
+<td align="center">M01916</td>
+<td align="center">0</td>
+<td align="center">0.6404</td>
+</tr>
+<tr class="odd">
+<td align="center">13163</td>
+<td align="center">152485</td>
+<td align="center">13500</td>
+<td align="center">152148</td>
+<td align="center">M01925</td>
+<td align="center">0</td>
+<td align="center">0.6834</td>
+</tr>
+<tr class="even">
+<td align="center">1282</td>
+<td align="center">3824</td>
+<td align="center">1572</td>
+<td align="center">3534</td>
+<td align="center">M01927</td>
+<td align="center">0</td>
+<td align="center">0.6166</td>
+</tr>
+<tr class="odd">
+<td align="center">6674</td>
+<td align="center">15398</td>
+<td align="center">13046</td>
+<td align="center">9026</td>
+<td align="center">M01933</td>
+<td align="center">0</td>
+<td align="center">0.5247</td>
+</tr>
+<tr class="even">
+<td align="center">527</td>
+<td align="center">15422</td>
+<td align="center">636</td>
+<td align="center">15313</td>
+<td align="center">M01938</td>
+<td align="center">0</td>
+<td align="center">0.4906</td>
+</tr>
+<tr class="odd">
+<td align="center">373</td>
+<td align="center">610</td>
+<td align="center">539</td>
+<td align="center">444</td>
+<td align="center">M01941</td>
+<td align="center">1.098e-105</td>
+<td align="center">0.2272</td>
+</tr>
+<tr class="even">
+<td align="center">614</td>
+<td align="center">10061</td>
+<td align="center">9864</td>
+<td align="center">811</td>
+<td align="center">M01946</td>
+<td align="center">8.876e-298</td>
+<td align="center">0.3334</td>
+</tr>
+<tr class="odd">
+<td align="center">7900</td>
+<td align="center">11435</td>
+<td align="center">9002</td>
+<td align="center">10333</td>
+<td align="center">M01947</td>
+<td align="center">0</td>
+<td align="center">0.5771</td>
+</tr>
+<tr class="even">
+<td align="center">874</td>
+<td align="center">8191</td>
+<td align="center">6076</td>
+<td align="center">2989</td>
+<td align="center">M01951</td>
+<td align="center">0</td>
+<td align="center">0.4136</td>
+</tr>
+<tr class="odd">
+<td align="center">6197</td>
+<td align="center">13191</td>
+<td align="center">9763</td>
+<td align="center">9625</td>
+<td align="center">M01957</td>
+<td align="center">0</td>
+<td align="center">0.6126</td>
+</tr>
+<tr class="even">
+<td align="center">5838</td>
+<td align="center">14004</td>
+<td align="center">7053</td>
+<td align="center">12789</td>
+<td align="center">M01958</td>
+<td align="center">0</td>
+<td align="center">0.5485</td>
+</tr>
+<tr class="odd">
+<td align="center">1946</td>
+<td align="center">10285</td>
+<td align="center">2434</td>
+<td align="center">9797</td>
+<td align="center">M01959</td>
+<td align="center">0</td>
+<td align="center">0.6326</td>
+</tr>
+<tr class="even">
+<td align="center">1086</td>
+<td align="center">5880</td>
+<td align="center">1279</td>
+<td align="center">5687</td>
+<td align="center">M01960</td>
+<td align="center">0</td>
+<td align="center">0.4505</td>
+</tr>
+<tr class="odd">
+<td align="center">3027</td>
+<td align="center">116425</td>
+<td align="center">3257</td>
+<td align="center">116195</td>
+<td align="center">M01966</td>
+<td align="center">0</td>
+<td align="center">0.6302</td>
+</tr>
+<tr class="even">
+<td align="center">4354</td>
+<td align="center">11406</td>
+<td align="center">5186</td>
+<td align="center">10574</td>
+<td align="center">M01970</td>
+<td align="center">0</td>
+<td align="center">0.5338</td>
+</tr>
+<tr class="odd">
+<td align="center">2879</td>
+<td align="center">51843</td>
+<td align="center">3146</td>
+<td align="center">51576</td>
+<td align="center">M01972</td>
+<td align="center">0</td>
+<td align="center">0.6988</td>
+</tr>
+<tr class="even">
+<td align="center">3518</td>
+<td align="center">15761</td>
+<td align="center">15024</td>
+<td align="center">4255</td>
+<td align="center">M01976</td>
+<td align="center">0</td>
+<td align="center">0.6459</td>
+</tr>
+<tr class="odd">
+<td align="center">4551</td>
+<td align="center">23313</td>
+<td align="center">22360</td>
+<td align="center">5504</td>
+<td align="center">M01981</td>
+<td align="center">0</td>
+<td align="center">0.6742</td>
+</tr>
+<tr class="even">
+<td align="center">5555</td>
+<td align="center">23315</td>
+<td align="center">22125</td>
+<td align="center">6745</td>
+<td align="center">M01985</td>
+<td align="center">0</td>
+<td align="center">0.6749</td>
+</tr>
+<tr class="odd">
+<td align="center">1880</td>
+<td align="center">10787</td>
+<td align="center">10466</td>
+<td align="center">2201</td>
+<td align="center">M01990</td>
+<td align="center">0</td>
+<td align="center">0.6224</td>
+</tr>
+<tr class="even">
+<td align="center">35795</td>
+<td align="center">77826</td>
+<td align="center">42846</td>
+<td align="center">70775</td>
+<td align="center">M02011</td>
+<td align="center">0</td>
+<td align="center">0.5674</td>
+</tr>
+<tr class="odd">
+<td align="center">544</td>
+<td align="center">1134</td>
+<td align="center">982</td>
+<td align="center">696</td>
+<td align="center">M02016</td>
+<td align="center">0</td>
+<td align="center">0.7794</td>
+</tr>
+<tr class="even">
+<td align="center">4389</td>
+<td align="center">9167</td>
+<td align="center">7276</td>
+<td align="center">6280</td>
+<td align="center">M02032</td>
+<td align="center">0</td>
+<td align="center">0.6027</td>
+</tr>
+<tr class="odd">
+<td align="center">5725</td>
+<td align="center">26624</td>
+<td align="center">24997</td>
+<td align="center">7352</td>
+<td align="center">M02040</td>
+<td align="center">0</td>
+<td align="center">0.6374</td>
+</tr>
+<tr class="even">
+<td align="center">666</td>
+<td align="center">4207</td>
+<td align="center">3694</td>
+<td align="center">1179</td>
+<td align="center">MA0007.1</td>
+<td align="center">0</td>
+<td align="center">0.766</td>
+</tr>
+<tr class="odd">
+<td align="center">971</td>
+<td align="center">5080</td>
+<td align="center">4794</td>
+<td align="center">1257</td>
+<td align="center">MA0017.1</td>
+<td align="center">0</td>
+<td align="center">0.7871</td>
+</tr>
+<tr class="even">
+<td align="center">1892</td>
+<td align="center">5087</td>
+<td align="center">4093</td>
+<td align="center">2886</td>
+<td align="center">MA0018.2</td>
+<td align="center">0</td>
+<td align="center">0.6087</td>
+</tr>
+<tr class="odd">
+<td align="center">3600</td>
+<td align="center">8904</td>
+<td align="center">7984</td>
+<td align="center">4520</td>
+<td align="center">MA0024.1</td>
+<td align="center">0</td>
+<td align="center">0.6322</td>
+</tr>
+<tr class="even">
+<td align="center">7661</td>
+<td align="center">15332</td>
+<td align="center">13073</td>
+<td align="center">9920</td>
+<td align="center">MA0028.1</td>
+<td align="center">0</td>
+<td align="center">0.5839</td>
+</tr>
+<tr class="odd">
+<td align="center">2289</td>
+<td align="center">18232</td>
+<td align="center">2295</td>
+<td align="center">18226</td>
+<td align="center">MA0057.1</td>
+<td align="center">0</td>
+<td align="center">0.7609</td>
+</tr>
+<tr class="even">
+<td align="center">2664</td>
+<td align="center">11272</td>
+<td align="center">10478</td>
+<td align="center">3458</td>
+<td align="center">MA0059.1</td>
+<td align="center">0</td>
+<td align="center">0.7212</td>
+</tr>
+<tr class="odd">
+<td align="center">2049</td>
+<td align="center">4060</td>
+<td align="center">2298</td>
+<td align="center">3811</td>
+<td align="center">MA0069.1</td>
+<td align="center">0</td>
+<td align="center">0.683</td>
+</tr>
+<tr class="even">
+<td align="center">1844</td>
+<td align="center">102829</td>
+<td align="center">1844</td>
+<td align="center">102829</td>
+<td align="center">MA0079.2</td>
+<td align="center">0</td>
+<td align="center">0.7417</td>
+</tr>
+<tr class="odd">
+<td align="center">1680</td>
+<td align="center">3840</td>
+<td align="center">2469</td>
+<td align="center">3051</td>
+<td align="center">MA0088.1</td>
+<td align="center">0</td>
+<td align="center">0.7626</td>
+</tr>
+<tr class="even">
+<td align="center">1830</td>
+<td align="center">3044</td>
+<td align="center">2151</td>
+<td align="center">2723</td>
+<td align="center">MA0091.1</td>
+<td align="center">0</td>
+<td align="center">0.7235</td>
+</tr>
+<tr class="odd">
+<td align="center">8461</td>
+<td align="center">16343</td>
+<td align="center">13740</td>
+<td align="center">11064</td>
+<td align="center">MA0093.1</td>
+<td align="center">0</td>
+<td align="center">0.5874</td>
+</tr>
+<tr class="even">
+<td align="center">8456</td>
+<td align="center">17988</td>
+<td align="center">15997</td>
+<td align="center">10447</td>
+<td align="center">MA0100.1</td>
+<td align="center">0</td>
+<td align="center">0.5811</td>
+</tr>
+<tr class="odd">
+<td align="center">879</td>
+<td align="center">2000</td>
+<td align="center">985</td>
+<td align="center">1894</td>
+<td align="center">MA0104.2</td>
+<td align="center">0</td>
+<td align="center">0.7128</td>
+</tr>
+<tr class="even">
+<td align="center">444</td>
+<td align="center">834</td>
+<td align="center">720</td>
+<td align="center">558</td>
+<td align="center">MA0114.1</td>
+<td align="center">0</td>
+<td align="center">0.7412</td>
+</tr>
+<tr class="odd">
+<td align="center">1510</td>
+<td align="center">4466</td>
+<td align="center">3963</td>
+<td align="center">2013</td>
+<td align="center">MA0115.1</td>
+<td align="center">0</td>
+<td align="center">0.7658</td>
+</tr>
+<tr class="even">
+<td align="center">18114</td>
+<td align="center">35357</td>
+<td align="center">28861</td>
+<td align="center">24610</td>
+<td align="center">MA0119.1</td>
+<td align="center">0</td>
+<td align="center">0.4379</td>
+</tr>
+<tr class="odd">
+<td align="center">1485</td>
+<td align="center">2460</td>
+<td align="center">2189</td>
+<td align="center">1756</td>
+<td align="center">MA0122.1</td>
+<td align="center">1.225e-147</td>
+<td align="center">0.1473</td>
+</tr>
+<tr class="even">
+<td align="center">1</td>
+<td align="center">552</td>
+<td align="center">550</td>
+<td align="center">3</td>
+<td align="center">MA0138.2</td>
+<td align="center">2.776e-132</td>
+<td align="center">0.3283</td>
+</tr>
+<tr class="odd">
+<td align="center">7855</td>
+<td align="center">17276</td>
+<td align="center">8848</td>
+<td align="center">16283</td>
+<td align="center">MA0139.1</td>
+<td align="center">0</td>
+<td align="center">0.5632</td>
+</tr>
+<tr class="even">
+<td align="center">958</td>
+<td align="center">2226</td>
+<td align="center">1628</td>
+<td align="center">1556</td>
+<td align="center">MA0140.1</td>
+<td align="center">0</td>
+<td align="center">0.7557</td>
+</tr>
+<tr class="odd">
+<td align="center">1946</td>
+<td align="center">4027</td>
+<td align="center">2191</td>
+<td align="center">3782</td>
+<td align="center">MA0142.1</td>
+<td align="center">0</td>
+<td align="center">0.7333</td>
+</tr>
+<tr class="even">
+<td align="center">805</td>
+<td align="center">1204</td>
+<td align="center">1054</td>
+<td align="center">955</td>
+<td align="center">MA0150.1</td>
+<td align="center">0</td>
+<td align="center">0.7441</td>
+</tr>
+<tr class="odd">
+<td align="center">7549</td>
+<td align="center">11424</td>
+<td align="center">10026</td>
+<td align="center">8947</td>
+<td align="center">MA0157.1</td>
+<td align="center">0</td>
+<td align="center">0.2508</td>
+</tr>
+<tr class="even">
+<td align="center">1420</td>
+<td align="center">4177</td>
+<td align="center">2367</td>
+<td align="center">3230</td>
+<td align="center">PBM0013</td>
+<td align="center">0</td>
+<td align="center">0.6248</td>
+</tr>
+<tr class="odd">
+<td align="center">3332</td>
+<td align="center">14931</td>
+<td align="center">13657</td>
+<td align="center">4606</td>
+<td align="center">PBM0022</td>
+<td align="center">0</td>
+<td align="center">0.6298</td>
+</tr>
+<tr class="even">
+<td align="center">1388</td>
+<td align="center">4517</td>
+<td align="center">3768</td>
+<td align="center">2137</td>
+<td align="center">PBM0031</td>
+<td align="center">0</td>
+<td align="center">0.6849</td>
+</tr>
+<tr class="odd">
+<td align="center">5493</td>
+<td align="center">19325</td>
+<td align="center">16863</td>
+<td align="center">7955</td>
+<td align="center">PBM0049</td>
+<td align="center">0</td>
+<td align="center">0.5898</td>
+</tr>
+<tr class="even">
+<td align="center">2579</td>
+<td align="center">6304</td>
+<td align="center">4560</td>
+<td align="center">4323</td>
+<td align="center">PBM0060</td>
+<td align="center">0</td>
+<td align="center">0.6366</td>
+</tr>
+<tr class="odd">
+<td align="center">4268</td>
+<td align="center">9716</td>
+<td align="center">7733</td>
+<td align="center">6251</td>
+<td align="center">PBM0066</td>
+<td align="center">0</td>
+<td align="center">0.6149</td>
+</tr>
+<tr class="even">
+<td align="center">4235</td>
+<td align="center">10043</td>
+<td align="center">7937</td>
+<td align="center">6341</td>
+<td align="center">PBM0072</td>
+<td align="center">0</td>
+<td align="center">0.6221</td>
+</tr>
+<tr class="odd">
+<td align="center">1995</td>
+<td align="center">12694</td>
+<td align="center">7995</td>
+<td align="center">6694</td>
+<td align="center">PBM0077</td>
+<td align="center">0</td>
+<td align="center">0.7124</td>
+</tr>
+<tr class="even">
+<td align="center">3772</td>
+<td align="center">9853</td>
+<td align="center">6953</td>
+<td align="center">6672</td>
+<td align="center">PBM0081</td>
+<td align="center">0</td>
+<td align="center">0.6667</td>
+</tr>
+<tr class="odd">
+<td align="center">4282</td>
+<td align="center">12446</td>
+<td align="center">9965</td>
+<td align="center">6763</td>
+<td align="center">PBM0082</td>
+<td align="center">0</td>
+<td align="center">0.6099</td>
+</tr>
+<tr class="even">
+<td align="center">3244</td>
+<td align="center">9236</td>
+<td align="center">8183</td>
+<td align="center">4297</td>
+<td align="center">PBM0083</td>
+<td align="center">0</td>
+<td align="center">0.6121</td>
+</tr>
+<tr class="odd">
+<td align="center">5219</td>
+<td align="center">12671</td>
+<td align="center">9813</td>
+<td align="center">8077</td>
+<td align="center">PBM0085</td>
+<td align="center">0</td>
+<td align="center">0.6225</td>
+</tr>
+<tr class="even">
+<td align="center">3297</td>
+<td align="center">18268</td>
+<td align="center">11951</td>
+<td align="center">9614</td>
+<td align="center">PBM0095</td>
+<td align="center">0</td>
+<td align="center">0.6727</td>
+</tr>
+<tr class="odd">
+<td align="center">1227</td>
+<td align="center">2521</td>
+<td align="center">1797</td>
+<td align="center">1951</td>
+<td align="center">PBM0140</td>
+<td align="center">0</td>
+<td align="center">0.6364</td>
+</tr>
+<tr class="even">
+<td align="center">1224</td>
+<td align="center">2519</td>
+<td align="center">1797</td>
+<td align="center">1946</td>
+<td align="center">PBM0156</td>
+<td align="center">0</td>
+<td align="center">0.6369</td>
+</tr>
+<tr class="odd">
+<td align="center">1500</td>
+<td align="center">3632</td>
+<td align="center">2790</td>
+<td align="center">2342</td>
+<td align="center">PBM0173</td>
+<td align="center">0</td>
+<td align="center">0.6784</td>
+</tr>
+<tr class="even">
+<td align="center">1895</td>
+<td align="center">8512</td>
+<td align="center">7516</td>
+<td align="center">2891</td>
+<td align="center">PBM0176</td>
+<td align="center">0</td>
+<td align="center">0.6553</td>
+</tr>
+<tr class="odd">
+<td align="center">1888</td>
+<td align="center">8509</td>
+<td align="center">7516</td>
+<td align="center">2881</td>
+<td align="center">PBM0191</td>
+<td align="center">0</td>
+<td align="center">0.6552</td>
 </tr>
 </tbody>
 </table>
