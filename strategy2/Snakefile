@@ -231,7 +231,7 @@ rule pile_postprocess_extract:
     output:
         temp('data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.bed.gz')
     shell:
-        'bedtools intersect -a {input.score} -b {input.extended_region} -wb | gzip > {output[0]}'
+        'bedtools intersect -a {input.score} -b <(zcat {input.extended_region}) -wb | gzip > {output[0]}'
 
 # rule pile_postprocess_merge:
 #     input:
