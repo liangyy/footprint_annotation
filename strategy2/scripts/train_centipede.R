@@ -61,26 +61,35 @@ pwm <- pwm.readin %>%
   group_by(id) %>%
   summarise(pwm.score = V5[1]) %>%
   ungroup()
-cutsite <- cutsite %>%
-  inner_join(pwm, by = 'id')
-# pwm <- pwm.readin$V6
+
+% check if window in complete (not hitting the boundary of the chromosome)
 cutsite$V6 <- as.character(cutsite$V6)
 cutsite.count <- strsplit(cutsite$V6, ',')
 n <- length(cutsite.count[[1]])
-cutsite.count <- unlist(cutsite.count)
-class(cutsite.count) <- 'numeric'
-cutsite.count <- t(matrix(cutsite.count, nrow = n))
+l <- lapply(cutsite.count, length)
+boundary.ind <- l != n
+cutsite.complete <- cutsite[!boundary.ind, ]
+cutsite.complete.count <- cutsite.count[!boundary.ind]
+cutsite.complete.count <- unlist(cutsite.complete.count)
+class(cutsite.complete.count) <- 'numeric'
+cutsite.complete.count <- t(matrix(cutsite.complete.count, nrow = n))
+
+
+cutsite.complete <- cutsite.complete %>%
+  inner_join(pwm, by = 'id')
+# pwm <- pwm.readin$V6
+
 
 model <- fitCentipede(
-  Xlist = list(Seq = cutsite.count),
-  Y = as.matrix(data.frame(Ict = 1,Pwm = cutsite$pwm.score)),
+  Xlist = list(Seq = cutsite.complete.count),
+  Y = as.matrix(data.frame(Ict = 1,Pwm = cutsite.complete$pwm.score)),
   DampLambda = 0.1,
   DampNegBin = 0.001,
   sweeps = 200)
 
-ct <- cor.test(jitter(cutsite$pwm.score), jitter(model$LogRatios), method = 'spearman')
+ct <- cor.test(jitter(cutsite.complete$pwm.score), jitter(model$LogRatios), method = 'spearman')
 cat("#Spearman_p.val = ", ct$p.value, "_rho = ", ct$estimate, "\n")
-out <- list(model = model, data = cutsite)
+out <- list(model = model, data = cutsite.complete)
 saveRDS(out, file = opt$output)
 
 signal <- out$data[out$model$PostPr > 0.9, ]
