@@ -62,7 +62,7 @@ pwm <- pwm.readin %>%
   summarise(pwm.score = V5[1]) %>%
   ungroup()
 
-% check if window in complete (not hitting the boundary of the chromosome)
+# check if window in complete (not hitting the boundary of the chromosome)
 cutsite$V6 <- as.character(cutsite$V6)
 cutsite.count <- strsplit(cutsite$V6, ',')
 n <- length(cutsite.count[[1]])
