@@ -5,39 +5,66 @@
 def get_input(config, title):
     string = []
     for i in config[title].keys():
-        string.append('temp/{title}__{pair_name}.txt'.format(pair_name = i, title = title))
+        string.append('temp/{title}__{motif}.txt'.format(motif = i, title = title))
+        string.append('temp/{title}__{motif}_second_fitness.txt'.format(motif = i, title = title))
     return string
-    
+
 
 rule all:
     input:
         'summary/{title}.html'.format(title = list(config.keys())[0])
 
+rule prepare_first:
+    input:
+        config[wildcards.title]['first']
+    output:
+        temp('temp/{title}__{motif}.bed.gz')
+    shell:
+        'cat {input[0]} | grep {wildcards.motif} | grep 0,0,0 > {output[0]}'
+
 rule compare:
     input:
-        first = lambda wildcards: config[wildcards.title][wildcards.pair_name]['first'],
-        second = lambda wildcards: config[wildcards.title][wildcards.pair_name]['second']
+        first = 'temp/{title}__{motif}.bed.gz',
+        second = config[wildcards.title]['second']
     output:
-        temp('temp/{title}__{pair_name}.txt')
+        temp('temp/{title}__{motif}.txt')
     shell:
         '''
         Rscript scripts/compare.R \
         --first {input.first} \
         --second {input.second} \
-        --out {output[0]}
+        --out {output[0]} \
+        --name {wildcards.motif}
+        '''
+
+rule extract_fitness:
+    input:
+        config[wildcards.title]['second_fitness']
+    output:
+        temp('temp/{title}__{motif}_second_fitness.txt')
+    shell:
+        '''
+        cat {input[0]} | grep '#' | tr -d '#' | awk '{print $3, $6} > {output[0]}'
         '''
 
 def get_all_txt_in_str(config, title):
     string = []
     for i in config[title].keys():
-        string.append('temp/{title}__{pair_name}.txt'.format(pair_name = i, title = title))
+        string.append('temp/{title}__{motif}.txt'.format(motif = i, title = title))
+    return ','.join(string)
+
+def get_all_txt_in_str_fitness(config, title):
+    string = []
+    for i in config[title].keys():
+        string.append('temp/{title}__{motif}_second_fitness.txt'.format(pair_name = i, title = title))
     return ','.join(string)
 
 rule summary_rmd:
     input:
         lambda wildcards: get_input(config, wildcards.title)
     params:
-        lambda wildcards: get_all_txt_in_str(config, wildcards.title)
+        txt = lambda wildcards: get_all_txt_in_str(config, wildcards.title),
+        fitness = lambda wildcards: get_all_txt_in_str_fitness(config, wildcards.title)
     output:
         temp('summary/{title}.Rmd')
     run:
@@ -51,20 +78,25 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 library(stringr)
 df <- data.frame()
 txts <- strsplit('{str}', ',')[[1]]
-for(t in txts) {{
+fits <- strsplit('{fit}', ',')[[1]]
+for(t in 1 : length(txts)) {{
+    f <- fits[t]
+    t <- txts[t]
     t <- paste0('../', t)
+    f <- paste0('../', f)
     e <- read.table(t, sep = '\t', header = F)
-    e <- c(e, str_match(t, '__(.*).txt')[2])
-    df <- rbind(df, e)
+    g <- read.table(f, sep = ' ', header = F)
+    e <- c(e, g)
+    df <- rbind(e)
 }}
-colnames(df) <- c('intersect', 'union', 'first', 'second', 'data')
+colnames(df) <- c('intersect', 'union', 'first', 'second', 'motif', 'p-val', 'rho')
 ```
 
 ```{{r, result='asis'}}
 library(pander)
 pander(df)
 ```
-'''.format(title = wildcards.title, str = params[0])
+'''.format(title = wildcards.title, str = params.txt, fit = params.fitness)
         o = open(output[0], 'w')
         o.write(rmd)
         o.close()

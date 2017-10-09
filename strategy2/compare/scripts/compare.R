@@ -9,6 +9,9 @@ option_list <- list(
                 metavar="character"),
     make_option(c("-o", "--out"), type="character", default=NULL,
                 help="Output file name",
+                metavar="character"),
+    make_option(c("-n", "--name"), type="character", default=NULL,
+                help="Name shown in the row",
                 metavar="character")
 )
 

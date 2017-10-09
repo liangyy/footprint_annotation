@@ -1,4 +1,0 @@
-test:
-  MA0100.1:
-    first: '/project2/xinhe/yanyul/repo/footprint_annotation/MA0100.1.SRX062364.bed'
-    second: '../footprint/recalMotifs_MA0100.1/MA0100.1__E081__window.100.bed.gz'
