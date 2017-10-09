@@ -124,7 +124,7 @@ $(document).ready(function () {
 
 
 <pre class="r"><code>library(stringr)
-df &lt;- data.frame()
+df &lt;- c()
 txts &lt;- strsplit('temp/SRX062364__M00001.txt,temp/SRX062364__M00008.txt', ',')[[1]]
 fits &lt;- strsplit('temp/SRX062364__M00001.second_fitness,temp/SRX062364__M00008.second_fitness', ',')[[1]]
 for(t in 1 : length(txts)) {
@@ -132,14 +132,14 @@ for(t in 1 : length(txts)) {
     t &lt;- txts[t]
     t &lt;- paste0('../', t)
     f &lt;- paste0('../', f)
-    e &lt;- read.table(t, sep = '  ', header = F)
+    e &lt;- read.table(t, sep = '\t', header = F)
     g &lt;- read.table(f, sep = ' ', header = F)
     e &lt;- c(e, g)
     df &lt;- rbind(df, e)
-}</code></pre>
-<pre><code>## Warning in `[&lt;-.factor`(`*tmp*`, ri, value = &quot;M00008&quot;): invalid factor
-## level, NA generated</code></pre>
-<pre class="r"><code>colnames(df) &lt;- c('intersect', 'union', 'first', 'second', 'motif', 'p-val', 'rho')</code></pre>
+    rownames(df) &lt;- NULL
+}
+df &lt;- as.data.frame(df)
+colnames(df) &lt;- c('intersect', 'union', 'first', 'second', 'motif', 'p-val', 'rho')</code></pre>
 <pre class="r"><code>library(pander)
 pander(df)</code></pre>
 <table>
@@ -148,9 +148,9 @@ pander(df)</code></pre>
 <col width="11%"></col>
 <col width="11%"></col>
 <col width="12%"></col>
-<col width="12%"></col>
 <col width="11%"></col>
 <col width="11%"></col>
+<col width="15%"></col>
 </colgroup>
 <thead>
 <tr class="header">
@@ -169,18 +169,18 @@ pander(df)</code></pre>
 <td align="center">6178</td>
 <td align="center">3366</td>
 <td align="center">4523</td>
-<td align="center">M00001</td>
+<td align="center">1</td>
 <td align="center">0</td>
-<td align="center">0.7256</td>
+<td align="center">0.7256399</td>
 </tr>
 <tr class="even">
 <td align="center">4927</td>
 <td align="center">89878</td>
 <td align="center">5013</td>
 <td align="center">89792</td>
-<td align="center">NA</td>
+<td align="center">1</td>
 <td align="center">0</td>
-<td align="center">0.6924</td>
+<td align="center">0.6923961</td>
 </tr>
 </tbody>
 </table>

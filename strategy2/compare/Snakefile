@@ -4,9 +4,10 @@
 
 def get_input(config, title):
     string = []
-    for i in config[title].keys():
+    motifs = config[title]['motif_list'].split(',')
+    for i in motifs:
         string.append('temp/{title}__{motif}.txt'.format(motif = i, title = title))
-        string.append('temp/{title}__{motif}_second_fitness.txt'.format(motif = i, title = title))
+        string.append('temp/{title}__{motif}.second_fitness'.format(motif = i, title = title))
     return string
 
 
@@ -16,16 +17,16 @@ rule all:
 
 rule prepare_first:
     input:
-        config[wildcards.title]['first']
+        lambda wildcards: config[wildcards.title]['first']
     output:
         temp('temp/{title}__{motif}.bed.gz')
     shell:
-        'cat {input[0]} | grep {wildcards.motif} | grep 0,0,0 > {output[0]}'
+        'zcat {input[0]} | grep {wildcards.motif} | grep 0,0,0 > {output[0]}'
 
 rule compare:
     input:
         first = 'temp/{title}__{motif}.bed.gz',
-        second = config[wildcards.title]['second']
+        second = lambda wildcards: config[wildcards.title]['second'].format(motif = wildcards.motif)
     output:
         temp('temp/{title}__{motif}.txt')
     shell:
@@ -39,24 +40,26 @@ rule compare:
 
 rule extract_fitness:
     input:
-        config[wildcards.title]['second_fitness']
+        lambda wildcards: config[wildcards.title]['second_fitness'].format(motif = wildcards.motif)
     output:
-        temp('temp/{title}__{motif}_second_fitness.txt')
+        temp('temp/{title}__{motif}.second_fitness')
     shell:
         '''
-        cat {input[0]} | grep '#' | tr -d '#' | awk '{print $3, $6} > {output[0]}'
+        cat {input[0]} | grep '#' | tr -d '#' | awk '{{print $3, $6}}' > {output[0]}
         '''
 
 def get_all_txt_in_str(config, title):
     string = []
-    for i in config[title].keys():
+    motifs = config[title]['motif_list'].split(',')
+    for i in motifs:
         string.append('temp/{title}__{motif}.txt'.format(motif = i, title = title))
     return ','.join(string)
 
 def get_all_txt_in_str_fitness(config, title):
     string = []
-    for i in config[title].keys():
-        string.append('temp/{title}__{motif}_second_fitness.txt'.format(pair_name = i, title = title))
+    motifs = config[title]['motif_list'].split(',')
+    for i in motifs:
+        string.append('temp/{title}__{motif}.second_fitness'.format(motif = i, title = title))
     return ','.join(string)
 
 rule summary_rmd:
@@ -76,7 +79,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 
 ```{{r}}
 library(stringr)
-df <- data.frame()
+df <- c()
 txts <- strsplit('{str}', ',')[[1]]
 fits <- strsplit('{fit}', ',')[[1]]
 for(t in 1 : length(txts)) {{
@@ -84,11 +87,13 @@ for(t in 1 : length(txts)) {{
     t <- txts[t]
     t <- paste0('../', t)
     f <- paste0('../', f)
-    e <- read.table(t, sep = '\t', header = F)
+    e <- read.table(t, sep = '\\t', header = F)
     g <- read.table(f, sep = ' ', header = F)
     e <- c(e, g)
-    df <- rbind(e)
+    df <- rbind(df, e)
+    rownames(df) <- NULL
 }}
+df <- as.data.frame(df)
 colnames(df) <- c('intersect', 'union', 'first', 'second', 'motif', 'p-val', 'rho')
 ```
 
@@ -103,9 +108,9 @@ pander(df)
 
 rule summary_html:
     input:
-        lambda wildcards: get_input(config, wildcards.title),
-        'summary/{title}.Rmd'
+        r = lambda wildcards: get_input(config, wildcards.title),
+        rmd = 'summary/{title}.Rmd'
     output:
         'summary/{title}.html'
     shell:
-        '''Rscript -e "rmarkdown::render('{input[1]}')"'''
+        '''Rscript -e "rmarkdown::render('{input.rmd}')"'''
