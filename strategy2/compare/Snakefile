@@ -90,6 +90,7 @@ for(t in 1 : length(txts)) {{
     e <- read.table(t, sep = '\\t', header = F)
     g <- read.table(f, sep = ' ', header = F)
     e <- c(e, g)
+    e <- as.data.frame(e)
     df <- rbind(df, e)
     rownames(df) <- NULL
 }}

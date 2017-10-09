@@ -135,6 +135,7 @@ for(t in 1 : length(txts)) {
     e &lt;- read.table(t, sep = '\t', header = F)
     g &lt;- read.table(f, sep = ' ', header = F)
     e &lt;- c(e, g)
+    e &lt;- as.data.frame(e)
     df &lt;- rbind(df, e)
     rownames(df) &lt;- NULL
 }
@@ -148,9 +149,9 @@ pander(df)</code></pre>
 <col width="11%"></col>
 <col width="11%"></col>
 <col width="12%"></col>
+<col width="12%"></col>
 <col width="11%"></col>
 <col width="11%"></col>
-<col width="15%"></col>
 </colgroup>
 <thead>
 <tr class="header">
@@ -169,18 +170,18 @@ pander(df)</code></pre>
 <td align="center">6178</td>
 <td align="center">3366</td>
 <td align="center">4523</td>
-<td align="center">1</td>
+<td align="center">M00001</td>
 <td align="center">0</td>
-<td align="center">0.7256399</td>
+<td align="center">0.7256</td>
 </tr>
 <tr class="even">
 <td align="center">4927</td>
 <td align="center">89878</td>
 <td align="center">5013</td>
 <td align="center">89792</td>
-<td align="center">1</td>
+<td align="center">M00008</td>
 <td align="center">0</td>
-<td align="center">0.6923961</td>
+<td align="center">0.6924</td>
 </tr>
 </tbody>
 </table>
