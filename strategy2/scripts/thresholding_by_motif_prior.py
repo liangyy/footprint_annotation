@@ -16,7 +16,7 @@ import footprint_lib
 
 motif = footprint_lib.get_motif(args.motif_dir, args.motif_name)
 for i in range(len(motif.priors)):
-    if motif.priors[i] == 0.1:
+    if motif.priors[i] == 0.05:
         llr = motif.llrs[i]
 cmd = '''
     zcat {input} | awk -F"\\t" '$5 > {llr}' | gzip > {output}

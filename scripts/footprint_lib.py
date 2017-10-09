@@ -39,7 +39,7 @@ def get_motif(dirname, motif_name):
     lines = f.readlines()
     priors = lines[1].strip().split('\t')[-9:]
     priors = [ float(i) for i in priors ]
-    llrs = lines[3].strip().split('\t')[-9:]
+    llrs = lines[2].strip().split('\t')[-9:]
     llrs = [ float(i) for i in llrs ]
     lines = lines[5:]
     pwm = []
