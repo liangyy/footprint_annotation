@@ -88,7 +88,7 @@ model <- fitCentipede(
   sweeps = 200)
 
 
-model$DataLogRatio <- new.fit$NegBinLogRatio + new.fit$MultiNomLogRatio
+model$DataLogRatio <- model$NegBinLogRatio + model$MultiNomLogRatio
 ct <- cor.test(jitter(cutsite.complete$pwm.score), jitter(model$DataLogRatio), method = 'spearman')
 cat("#Spearman_p.val = ", ct$p.value, "_rho = ", ct$estimate, "\n")
 out <- list(model = model, data = cutsite.complete)
