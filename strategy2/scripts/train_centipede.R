@@ -102,7 +102,12 @@ model <- fitCentipede(
   DampNegBin = 0.001,
   sweeps = 200)
 
+<<<<<<< HEAD
 model$DataLogRatio <- new.fit$NegBinLogRatio + new.fit$MultiNomLogRatio
+=======
+
+model$DataLogRatio <- model$NegBinLogRatio + model$MultiNomLogRatio
+>>>>>>> f4b578892f74cc26ff9a960ec683853fc888fc5c
 ct <- cor.test(jitter(cutsite.complete$pwm.score), jitter(model$DataLogRatio), method = 'spearman')
 cat("#Spearman_p.val = ", ct$p.value, "_rho = ", ct$estimate, "\n")
 out <- list(model = model, data = cutsite.complete)
