@@ -220,16 +220,20 @@ rule pile_do_pile:
     params:
         config['genome_assembly']['size']
     output:
-        'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.5_prime_count.bed.gz'
+        'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.5_prime_count_forward.bed.gz',
+        'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.5_prime_count_backward.bed.gz'
     shell:
-        'bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} | gzip > {output[0]}'
+        '''
+        bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand + | awk -F"\\t" '{{print $1"\\t"$2"\\t"$3"\\t"+"\\t"$4}}' | gzip > {output[0]}
+        bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand - | awk -F"\\t" '{{print $1"\\t"$2"\\t"$3"\\t"-"\\t"$4}}' | gzip > {output[1]}
+        '''
 
 rule pile_postprocess_extract:
     input:
         extended_region = 'data/scan/{motif_dir}/{motif_name}__genome__window.{win_size}.active_region.gz',
-        score = 'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.5_prime_count.bed.gz'
+        score = 'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.5_prime_count_{direction}.bed.gz'
     output:
-        temp('data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.bed.gz')
+        temp('data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count_{direction}.bed.gz')
     shell:
         'bedtools intersect -a {input.score} -b <(zcat {input.extended_region}) -wb | gzip > {output[0]}'
 
@@ -243,32 +247,37 @@ rule pile_postprocess_extract:
 
 rule pile_postprocess_formatting:
     input:
-        'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.bed.gz'
+        'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count_{direction}.bed.gz'
     output:
-        'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.formatted.bed.gz'
+        'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count_{direction}.formatted.bed.gz'
     shell:
         'python scripts/prepare_pile_in_region.py --pilein {input[0]} --output {output[0]}'
 
 rule train_centipede:
     input:
         active_region = 'data/scan/{motif_dir}/{motif_name}__genome__window.{win_size}.active_region.gz',
-        five_prime_count = 'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count.formatted.bed.gz'
+        five_prime_count_f = 'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count_forward.formatted.bed.gz',
+        five_prime_count_b = 'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.active_5_prime_count_backward.formatted.bed.gz'
     params:
         window_size = lambda wildcards: int(int(wildcards.win_size) / 2),
         centipede = config['centipede']['script']
     output:
         'model/{motif_dir}/{motif_name}__{sample}__window.{win_size}.rds',
-        'footprint/{motif_dir}/{motif_name}__{sample}__window.{win_size}.bed.gz'
+        'footprint/{motif_dir}/{motif_name}__{sample}__window.{win_size}.bed.gz',
+        'plots/{motif_dir}/{motif_name}__{sample}__window.{win_size}_footprint.png',
+        'plots/{motif_dir}/{motif_name}__{sample}__window.{win_size}_cutsite.png'
     log:
         'logs/{motif_dir}/{motif_name}__{sample}__window.{win_size}.train.log'
     shell:
         'Rscript scripts/train_centipede.R \
         --active_region {input.active_region} \
-        --five_prime_count {input.five_prime_count} \
+        --five_prime_count_forward {input.five_prime_count_f} \
+        --five_prime_count_backward {input.five_prime_count_b} \
         --centipede_path {params.centipede} \
         --signal {output[1]} \
         --extend_win {params.window_size} \
-        --output {output[0]} > \
+        --plot_prefix plots/{wildcards.motif_dir}/{wildcards.motif_name}__{wildcards.sample}__window.{wildcards.win_size} \
+        --output {output[0]} >
         {log}'
 
 # rule predict_centipede:

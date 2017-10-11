@@ -18,6 +18,9 @@ option_list <- list(
                 metavar="character"),
     make_option(c('-c', '--centipede_path'), type='character', default=NULL,
                 help='The path of centipede script you want to use',
+                metavar="character"),
+    make_option(c('-p', '--plot_prefix'), type='character', default=NULL,
+                help='Prefix of the output plot',
                 metavar="character")
 )
 
@@ -47,38 +50,50 @@ if (opt$centipede_path == 'NO') {
   fitCentipede <- fitCentipede3
 }
 
-cutsite.readin <- read.table(opt$five_prime_count, sep = '\t', header = F)
-cutsite <- cutsite.readin %>%
-  mutate(id = paste(V1, V2, V3, V4, V5))  # %>%
-# cutsite <- strsplit(cutsite.readin, ';')
-# cutsite <- unlist(cutsite)
-# n <- length(cutsite[[1]])
-# class(cutsite) <- 'numeric'
-# cutsite <- t(matrix(cutsite, nrow = n))
+readCutSite <- function(filename) {
+  cutsite.readin <- read.table(filename, sep = '\t', header = F)
+  cutsite <- cutsite.readin %>%
+    mutate(id = paste(V1, V2, V3, V4, V5))
+  cutsite$V6 <- as.character(cutsite$V6)
+  cutsite.count <- strsplit(cutsite$V6, ',')
+  n <- length(cutsite.count[[1]])
+  l <- lapply(cutsite.count, length)
+  boundary.ind <- l != n
+  cutsite.complete <- cutsite[!boundary.ind, ]
+  cutsite.complete <- cutsite.complete %>%
+    mutate(count.str = V6) %>%
+    select(id, count.str)
+  return(cutsite.complete)
+}
+
+doUnlist <- function(input) {
+  n <- length(input[[1]])
+  input <- unlist(input)
+  class(input) <- 'numeric'
+  input <- t(matrix(input, nrow = n))
+  return(input)
+}
+
 pwm.readin <- read.table(opt$active_region, sep = '\t', header = F)
 pwm <- pwm.readin %>%
   mutate(id = paste(V1, V2, V3, V4, V7)) %>%
   group_by(id) %>%
   summarise(pwm.score = V5[1]) %>%
   ungroup()
+cutsite.forward <- readCutSite(opt$five_prime_count_f)
+cutsite.backward <- readCutSite(opt$five_prime_count_b)
+cutsite.backward <- cutsite.backward %>%
+  mutate(count.str.back = count.str) %>%
+  select(id, count.str.back)
+cutsite.complete <- cutsite.forward %>%
+  inner_join(pwm, by = 'id') %>%
+  inner_join(cutsite.backward, by = 'id')
 
-# check if window in complete (not hitting the boundary of the chromosome)
-cutsite$V6 <- as.character(cutsite$V6)
-cutsite.count <- strsplit(cutsite$V6, ',')
-n <- length(cutsite.count[[1]])
-l <- lapply(cutsite.count, length)
-boundary.ind <- l != n
-cutsite.complete <- cutsite[!boundary.ind, ]
-cutsite.complete.count <- cutsite.count[!boundary.ind]
-cutsite.complete.count <- unlist(cutsite.complete.count)
-class(cutsite.complete.count) <- 'numeric'
-cutsite.complete.count <- t(matrix(cutsite.complete.count, nrow = n))
-
-
-cutsite.complete <- cutsite.complete %>%
-  inner_join(pwm, by = 'id')
-# pwm <- pwm.readin$V6
-
+cutsite.complete.count.f <- strsplit(cutsite.complete$count.str, ',')
+cutsite.complete.count.f <- doUnlist(cutsite.complete.count.f)
+cutsite.complete.count.b <- strsplit(cutsite.complete$count.str.backward, ',')
+cutsite.complete.count.b <- doUnlist(cutsite.complete.count.b)
+cutsite.complete.count <- cbind(cutsite.complete.count.f, cutsite.complete.count.b)
 
 model <- fitCentipede(
   Xlist = list(Seq = cutsite.complete.count),
@@ -86,7 +101,6 @@ model <- fitCentipede(
   DampLambda = 0.1,
   DampNegBin = 0.001,
   sweeps = 200)
-
 
 model$DataLogRatio <- new.fit$NegBinLogRatio + new.fit$MultiNomLogRatio
 ct <- cor.test(jitter(cutsite.complete$pwm.score), jitter(model$DataLogRatio), method = 'spearman')
@@ -104,3 +118,11 @@ signal.info$score <- signal$pwm.score
 gz1 <- gzfile(opt$signal, "w")
 write.table(signal.info, gz1, sep = '\t', col.names = F, row.names = F, quote = F)
 close(gz1)
+
+png(paste0(opt$plot_prefix, '_cutsite.png'))
+imageCutSites(cutsite.complete.count[ order(model$PostPr),][c(1 : 100, (dim(cutsite.complete.count)[1] - 100) : (dim(cutsite.complete.count)[1])),])
+dev.off()
+
+png(paste0(opt$plot_prefix, '_footprint.png'))
+plotProfile(model$LambdaParList[[1]], Mlen = dim(cutsite.complete.count)[1] / 2 - opt$extend_win)
+dev.off()
