@@ -95,6 +95,12 @@ rule summary_rmd:
     run:
         rmd = '''---
 title: "Summary of comparison in {title}"
+output:
+    html_document:
+        number_sections: true
+            toc: true
+            toc_depth: 3
+            toc_float: true
 author: Yanyu Liang
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---

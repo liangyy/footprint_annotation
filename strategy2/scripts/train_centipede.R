@@ -123,7 +123,7 @@ signal$PostPr <- model$PostPr
 signal$PostLogOdds <- model$LogRatios
 signal$DataLogRatio <- model$NegBinLogRatio + model$MultiNomLogRatio
 signal$PriorLogRatio <- model$PriorLogRatio
-signal <- signal[out$model$PostPr > 0.9, ]
+signal <- signal[signal$PostPr > 0.9, ]
 signal.info <- unlist(strsplit(signal$id, ' '))
 signal.info <- t(matrix(signal.info, nrow = 5))
 signal.info <- data.frame(signal.info)
