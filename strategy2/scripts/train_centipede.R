@@ -128,5 +128,5 @@ imageCutSites(cutsite.complete.count[ order(model$PostPr),][c(1 : 100, (dim(cuts
 dev.off()
 
 png(paste0(opt$plot_prefix, '_footprint.png'))
-plotProfile(model$LambdaParList[[1]], Mlen = dim(cutsite.complete.count)[1] / 2 - opt$extend_win)
+plotProfile(model$LambdaParList[[1]], Mlen = dim(cutsite.complete.count)[1] / 2 - opt$extend_win * 2)
 dev.off()
