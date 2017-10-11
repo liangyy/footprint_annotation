@@ -4,8 +4,11 @@ option_list <- list(
     make_option(c("-r", "--active_region"), type="character", default=NULL,
                 help="Regions of interest along with motif name and score",
                 metavar="character"),
-    make_option(c("-f", "--five_prime_count"), type="character", default=NULL,
-                help="Five prime count from sequencing experiment",
+    make_option(c("-f", "--five_prime_count_forward"), type="character", default=NULL,
+                help="Five prime count from sequencing experiment, forward",
+                metavar="character"),
+    make_option(c("-b", "--five_prime_count_backward"), type="character", default=NULL,
+                help="Five prime count from sequencing experiment, backward",
                 metavar="character"),
     make_option(c("-o", "--output"), type="character", default=NULL,
                 help="Name of output RDS file",
@@ -29,6 +32,7 @@ opt <- parse_args(opt_parser)
 
 library(dplyr)
 library(tidyr)
+library(CENTIPEDE)
 convertSignalToScore <- function(start, end, score) {
   out <- c()
   dup.ind <- duplicated(start)
@@ -91,7 +95,7 @@ cutsite.complete <- cutsite.forward %>%
 
 cutsite.complete.count.f <- strsplit(cutsite.complete$count.str, ',')
 cutsite.complete.count.f <- doUnlist(cutsite.complete.count.f)
-cutsite.complete.count.b <- strsplit(cutsite.complete$count.str.backward, ',')
+cutsite.complete.count.b <- strsplit(cutsite.complete$count.str.back, ',')
 cutsite.complete.count.b <- doUnlist(cutsite.complete.count.b)
 cutsite.complete.count <- cbind(cutsite.complete.count.f, cutsite.complete.count.b)
 
@@ -102,12 +106,7 @@ model <- fitCentipede(
   DampNegBin = 0.001,
   sweeps = 200)
 
-<<<<<<< HEAD
-model$DataLogRatio <- new.fit$NegBinLogRatio + new.fit$MultiNomLogRatio
-=======
-
 model$DataLogRatio <- model$NegBinLogRatio + model$MultiNomLogRatio
->>>>>>> f4b578892f74cc26ff9a960ec683853fc888fc5c
 ct <- cor.test(jitter(cutsite.complete$pwm.score), jitter(model$DataLogRatio), method = 'spearman')
 cat("#Spearman_p.val = ", ct$p.value, "_rho = ", ct$estimate, "\n")
 out <- list(model = model, data = cutsite.complete)

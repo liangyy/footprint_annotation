@@ -224,8 +224,8 @@ rule pile_do_pile:
         'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.5_prime_count_backward.bed.gz'
     shell:
         '''
-        bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand + | awk -F"\\t" '{{print $1"\\t"$2"\\t"$3"\\t"+"\\t"$4}}' | gzip > {output[0]}
-        bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand - | awk -F"\\t" '{{print $1"\\t"$2"\\t"$3"\\t"-"\\t"$4}}' | gzip > {output[1]}
+        bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand + | gzip > {output[0]}
+        bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand - | gzip > {output[1]}
         '''
 
 rule pile_postprocess_extract:
@@ -277,7 +277,7 @@ rule train_centipede:
         --signal {output[1]} \
         --extend_win {params.window_size} \
         --plot_prefix plots/{wildcards.motif_dir}/{wildcards.motif_name}__{wildcards.sample}__window.{wildcards.win_size} \
-        --output {output[0]} >
+        --output {output[0]} > \
         {log}'
 
 # rule predict_centipede:
