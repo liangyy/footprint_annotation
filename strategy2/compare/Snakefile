@@ -8,6 +8,8 @@ def get_input(config, title):
     for i in motifs:
         string.append('temp/{title}__{motif}.txt'.format(motif = i, title = title))
         string.append('temp/{title}__{motif}.second_fitness'.format(motif = i, title = title))
+        string.append(config[title]['plot_cutsite'].format(motif = i))
+        string.append(config[title]['plot_footprint'].format(motif = i)
     return string
 
 
@@ -62,12 +64,29 @@ def get_all_txt_in_str_fitness(config, title):
         string.append('temp/{title}__{motif}.second_fitness'.format(motif = i, title = title))
     return ','.join(string)
 
+def get_all_plots_cutsite(config, title):
+    string = []
+    motifs = config[title]['motif_list'].split(',')
+    for i in motifs:
+        string.append(config[title]['plot_cutsite'].format(motif = i))
+    return ','.join(string)
+
+def get_all_plots_footprint(config, title):
+    string = []
+    motifs = config[title]['motif_list'].split(',')
+    for i in motifs:
+        string.append(config[title]['plot_footprint'].format(motif = i))
+    return ','.join(string)
+
 rule summary_rmd:
     input:
         lambda wildcards: get_input(config, wildcards.title)
     params:
         txt = lambda wildcards: get_all_txt_in_str(config, wildcards.title),
-        fitness = lambda wildcards: get_all_txt_in_str_fitness(config, wildcards.title)
+        fitness = lambda wildcards: get_all_txt_in_str_fitness(config, wildcards.title),
+        cutsite = lambda wildcards: get_all_plots_cutsite(config, wildcards.title),
+        footprint = lambda wildcards: get_all_plots_footprint(config, wildcards.title),
+        motif = lambda wildcards: config[wildcards.title]['motif_list']
     output:
         temp('summary/{title}.Rmd')
     run:
@@ -77,13 +96,35 @@ author: Yanyu Liang
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
 
+<style>
+  .col2 {
+    columns: 2 200px;         /* number of columns and width in pixels*/
+    -webkit-columns: 2 200px; /* chrome, safari */
+    -moz-columns: 2 200px;    /* firefox */
+  }
+  .col3 {
+    columns: 3 100px;
+    -webkit-columns: 3 100px;
+    -moz-columns: 3 100px;
+  }
+</style>
+
+# Load data
+
 ```{{r}}
 library(stringr)
 df <- c()
 txts <- strsplit('{str}', ',')[[1]]
 fits <- strsplit('{fit}', ',')[[1]]
+cuts <- strsplit('{cut}', ',')[[1]]
+foots <- strsplit('{foot}', ',')[[1]]
+motifs <- strsplit('{motif}', ',')[[1]]
+plot.cut <- list()
+plot.foot <- list()
 for(t in 1 : length(txts)) {{
     f <- fits[t]
+    plot.cut[[motifs[t]]] <- paste0('../', cuts[t])
+    plot.foot[[motifs[t]]] <- paste0('../', foots[t])
     t <- txts[t]
     t <- paste0('../', t)
     f <- paste0('../', f)
@@ -98,11 +139,33 @@ df <- as.data.frame(df)
 colnames(df) <- c('intersect', 'union', 'first', 'second', 'motif', 'p-val', 'rho')
 ```
 
+# Consistency
+
 ```{{r, result='asis'}}
 library(pander)
 pander(df)
 ```
-'''.format(title = wildcards.title, str = params.txt, fit = params.fitness)
+
+# Cutsite and footprint
+
+<div class="col2">
+```{{r, echo=FALSE, warning=FALSE}}
+bsselect(plot.cut, type = "img", selected = names(plot.cut)[1],
+        live_search = TRUE, show_tick = TRUE, height = 3, width = 3,
+        frame_height = 300, frame_width = 300)
+bsselect(plot.foot, type = "img", selected = names(plot.foot)[1],
+        live_search = TRUE, show_tick = TRUE, height = 3, width = 3,
+        frame_height = 300, frame_width = 300)
+```
+</div>
+
+'''.format(title = wildcards.title,
+            str = params.txt,
+            fit = params.fitness,
+            cut = params.cutsite,
+            foot = params.footprint,
+            motif = params.motif
+            )
         o = open(output[0], 'w')
         o.write(rmd)
         o.close()
