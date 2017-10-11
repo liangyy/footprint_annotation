@@ -107,20 +107,33 @@ model <- fitCentipede(
   sweeps = 200)
 
 model$DataLogRatio <- model$NegBinLogRatio + model$MultiNomLogRatio
+save.model <- list(LambdaParList=model$LambdaParList,
+                    BetaLogit=model$BetaLogit,
+                    NegBinParList=model$NegBinParList)
+
+
 ct <- cor.test(jitter(cutsite.complete$pwm.score), jitter(model$DataLogRatio), method = 'spearman')
 cat("#Spearman_p.val = ", ct$p.value, "_rho = ", ct$estimate, "\n")
-out <- list(model = model, data = cutsite.complete)
-saveRDS(out, file = opt$output)
+# out <- list(model = save.model, data = cutsite.complete)
+saveRDS(save.model, file = opt$output)
 
-signal <- out$data[out$model$PostPr > 0.9, ]
+
+signal <- cutsite.complete
+signal$PostPr <- model$PostPr
+signal$PostLogOdds <- model$LogRatios
+signal$DataLogRatio <- model$NegBinLogRatio + model$MultiNomLogRatio
+signal$PriorLogRatio <- model$PriorLogRatio
+signal <- signal[out$model$PostPr > 0.9, ]
 signal.info <- unlist(strsplit(signal$id, ' '))
 signal.info <- t(matrix(signal.info, nrow = 5))
 signal.info <- data.frame(signal.info)
 signal.info$X2 <- as.numeric(as.character(signal.info$X2)) + opt$extend_win
 signal.info$X3 <- as.numeric(as.character(signal.info$X3)) - opt$extend_win
-signal.info$score <- signal$pwm.score
+signal.save <- signal %>%
+  select(PostPr, PostLogOdds, DataLogRatio, PriorLogRatio)
+signal.save <- cbind(signal.info, signal.save)
 gz1 <- gzfile(opt$signal, "w")
-write.table(signal.info, gz1, sep = '\t', col.names = F, row.names = F, quote = F)
+write.table(signal.info, gz1, sep = '\t', col.names = T, row.names = F, quote = F)
 close(gz1)
 
 png(paste0(opt$plot_prefix, '_cutsite.png'))
