@@ -133,7 +133,7 @@ signal.save <- signal %>%
   select(PostPr, PostLogOdds, DataLogRatio, PriorLogRatio)
 signal.save <- cbind(signal.info, signal.save)
 gz1 <- gzfile(opt$signal, "w")
-write.table(signal.info, gz1, sep = '\t', col.names = T, row.names = F, quote = F)
+write.table(signal.save, gz1, sep = '\t', col.names = T, row.names = F, quote = F)
 close(gz1)
 
 png(paste0(opt$plot_prefix, '_cutsite.png'))
