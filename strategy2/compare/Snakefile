@@ -9,7 +9,8 @@ def get_input(config, title):
         string.append('temp/{title}__{motif}.txt'.format(motif = i, title = title))
         string.append('temp/{title}__{motif}.second_fitness'.format(motif = i, title = title))
         string.append(config[title]['plot_cutsite'].format(motif = i))
-        string.append(config[title]['plot_footprint'].format(motif = i)
+        string.append(config[title]['plot_footprint'].format(motif = i))
+        # print(config[title]['plot_cutsite'])
     return string
 
 
@@ -69,6 +70,7 @@ def get_all_plots_cutsite(config, title):
     motifs = config[title]['motif_list'].split(',')
     for i in motifs:
         string.append(config[title]['plot_cutsite'].format(motif = i))
+        # print(config[title]['plot_cutsite'])
     return ','.join(string)
 
 def get_all_plots_footprint(config, title):
@@ -76,6 +78,7 @@ def get_all_plots_footprint(config, title):
     motifs = config[title]['motif_list'].split(',')
     for i in motifs:
         string.append(config[title]['plot_footprint'].format(motif = i))
+        # print(config[title]['plot_cutsite'])
     return ','.join(string)
 
 rule summary_rmd:
@@ -97,16 +100,16 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
 
 <style>
-  .col2 {
+  .col2 {{
     columns: 2 200px;         /* number of columns and width in pixels*/
     -webkit-columns: 2 200px; /* chrome, safari */
     -moz-columns: 2 200px;    /* firefox */
-  }
-  .col3 {
+  }}
+  .col3 {{
     columns: 3 100px;
     -webkit-columns: 3 100px;
     -moz-columns: 3 100px;
-  }
+  }}
 </style>
 
 # Load data
@@ -150,6 +153,7 @@ pander(df)
 
 <div class="col2">
 ```{{r, echo=FALSE, warning=FALSE}}
+library(bsselectR)
 bsselect(plot.cut, type = "img", selected = names(plot.cut)[1],
         live_search = TRUE, show_tick = TRUE, height = 3, width = 3,
         frame_height = 300, frame_width = 300)
