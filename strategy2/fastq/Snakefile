@@ -1,6 +1,7 @@
 rule all:
     input:
-        expand('{out_dir}/{{data}}.fastq.gz'.format(out_dir=config['out_dir']), data=config['SRR_id'])
+        p1 = expand('{out_dir}/{{data}}_1.trimed.fastq.gz'.format(out_dir=config['out_dir']), data=config['SRR_id']),
+        p2 = expand('{out_dir}/{{data}}_2.trimed.fastq.gz'.format(out_dir=config['out_dir']), data=config['SRR_id']),
 
 rule fetch:
     params:
@@ -26,4 +27,4 @@ rule trim:
         '{out_dir}/{data}_1.trimed.fastq.gz',
         '{out_dir}/{data}_2.trimed.fastq.gz'
     shell:
-        'bash do_trim.sh {params.trim_cmd} {input} {output} {params.trim_param}'
+        'bash do_trim.sh "{params.trim_cmd}" {input} {output} "{params.trim_param}"'

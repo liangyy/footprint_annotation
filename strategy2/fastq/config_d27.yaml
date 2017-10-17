@@ -2,4 +2,4 @@ out_dir: '1835_cortical_d27'
 SRR_id:
   SRR2097505: 'SRR2097505'
 trim_cmd: 'java -jar /project2/xinhe/yanyul/softwares/Trimmomatic-0.36/trimmomatic-0.36.jar PE -phred33'
-trim_param: 'ILLUMINACLIP: NexteraPE-PE.fa:2:30:7, SLIDINGWINDOW:3:18, MINLENGTH:26'
+trim_param: 'ILLUMINACLIP:/project2/xinhe/yanyul/softwares/Trimmomatic-0.36/adapters/NexteraPE-PE.fa:2:30:7 SLIDINGWINDOW:3:18 MINLEN:26'
