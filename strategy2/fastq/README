@@ -1,1 +1,14 @@
 Currently this module only works for paired end data.
+
+Memo:
+
+FastQC can be done via
+
+```
+module load fastqc
+fastqc seq1 seq2
+```
+
+You may need phred encoding to run trim step correctly.
+To determine Phred, use fastQC result.
+See [here](https://en.wikipedia.org/wiki/FASTQ_format#Encoding) for more information.

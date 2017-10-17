@@ -14,3 +14,16 @@ rule fetch:
     shell:
         # 'fastq-dump -O {params.dir} --gzip {params.srr} 2> {log}'
         'bash download_srr.sh {params.srr} {params.dir} {log[0]}'
+
+rule trim:
+    params:
+        trim_cmd = config['trim_cmd'],
+        trim_param = config['trim_param']
+    input:
+        '{out_dir}/{data}_1.fastq.gz',
+        '{out_dir}/{data}_2.fastq.gz'
+    output:
+        '{out_dir}/{data}_1.trimed.fastq.gz',
+        '{out_dir}/{data}_2.trimed.fastq.gz'
+    shell:
+        'bash do_trim.sh {params.trim_cmd} {input} {output} {params.trim_param}'
