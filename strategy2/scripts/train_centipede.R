@@ -99,6 +99,26 @@ cutsite.complete.count.b <- strsplit(cutsite.complete$count.str.back, ',')
 cutsite.complete.count.b <- doUnlist(cutsite.complete.count.b)
 cutsite.complete.count <- cbind(cutsite.complete.count.f, cutsite.complete.count.b)
 
+model <- tryCatch(
+  {
+    model <- fitCentipede(
+      Xlist = list(Seq = cutsite.complete.count),
+      Y = as.matrix(data.frame(Ict = 1,Pwm = cutsite.complete$pwm.score)),
+      DampLambda = 0.1,
+      DampNegBin = 0.001,
+      sweeps = 200)
+  },
+  error = function(cond) {
+    return(NA)
+  }
+)
+
+if (is.na(model)) {  # If it throws an error
+  cat('Error in FitCentipede')
+  saveRDS(model, file = opt$output)
+  quit()
+}
+
 model <- fitCentipede(
   Xlist = list(Seq = cutsite.complete.count),
   Y = as.matrix(data.frame(Ict = 1,Pwm = cutsite.complete$pwm.score)),
@@ -117,7 +137,9 @@ cat("#Spearman_p.val = ", ct$p.value, "_rho = ", ct$estimate, "\n")
 # out <- list(model = save.model, data = cutsite.complete)
 saveRDS(save.model, file = opt$output)
 
-
+if(sum(model$PostPr > 0.9) == 0) {
+  quit()
+}
 signal <- cutsite.complete
 signal$PostPr <- model$PostPr
 signal$PostLogOdds <- model$LogRatios

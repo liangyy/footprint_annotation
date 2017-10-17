@@ -30,13 +30,14 @@ def get_test(config, motif_dic):
     # motif_name = 'MA0100.1'
     names = config['test_motifs'].split(',')
     for i in names:
-        o = 'model/{motif_dir}/{motif_name}__{sample}__window.{win_size}.rds'.format(
-            motif_dir = list(config['motifs'].keys())[0],
-            motif_name = i,
-            sample = list(config['experiments'].keys())[0],
-            win_size = config['centipede']['window_size']
-        )
-        out.append(o)
+        for sample in config['experiments'].keys():
+            o = 'model/{motif_dir}/{motif_name}__{sample}__window.{win_size}.rds'.format(
+                motif_dir = list(config['motifs'].keys())[0],
+                motif_name = i,
+                sample = sample,  # list(config['experiments'].keys())[0],
+                win_size = config['centipede']['window_size']
+            )
+            out.append(o)
     return out
 
 rule test:
@@ -146,7 +147,7 @@ rule scan_motif_score_in_genome:
     input:
         motif_in_meme = 'data/motif_in_meme/{motif_dir}/{motif_name}.meme'
     params:
-        genome = config['genome_assembly']['fasta'],
+        genome = config['genome_assembly']['fasta_upper'],
         threshold = config['active_motifs']['fimo_threshold']
     output:
         temp('data/scan/{motif_dir}/{motif_name}__genome.active_region.bed')
@@ -263,9 +264,9 @@ rule train_centipede:
         centipede = config['centipede']['script']
     output:
         'model/{motif_dir}/{motif_name}__{sample}__window.{win_size}.rds',
-        'footprint/{motif_dir}/{motif_name}__{sample}__window.{win_size}.bed.gz',
-        'plots/{motif_dir}/{motif_name}__{sample}__window.{win_size}_footprint.png',
-        'plots/{motif_dir}/{motif_name}__{sample}__window.{win_size}_cutsite.png'
+        # 'footprint/{motif_dir}/{motif_name}__{sample}__window.{win_size}.bed.gz',
+        # 'plots/{motif_dir}/{motif_name}__{sample}__window.{win_size}_footprint.png',
+        # 'plots/{motif_dir}/{motif_name}__{sample}__window.{win_size}_cutsite.png'
     log:
         'logs/{motif_dir}/{motif_name}__{sample}__window.{win_size}.train.log'
     shell:
@@ -274,7 +275,7 @@ rule train_centipede:
         --five_prime_count_forward {input.five_prime_count_f} \
         --five_prime_count_backward {input.five_prime_count_b} \
         --centipede_path {params.centipede} \
-        --signal {output[1]} \
+        --signal footprint/{wildcards.motif_dir}/{wildcards.motif_name}__{wildcards.sample}__window.{wildcards.win_size}.bed.gz \
         --extend_win {params.window_size} \
         --plot_prefix plots/{wildcards.motif_dir}/{wildcards.motif_name}__{wildcards.sample}__window.{wildcards.win_size} \
         --output {output[0]} > \
