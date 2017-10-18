@@ -73,11 +73,17 @@ rule fastq2sam:
     output:
         sam = temp('temp/align/{sample}.sam')
     params:
-        ref = config['genome_assembly']['fasta'],
+        ref = config['genome_assembly']['for_align'],
         cmd = config['alignment_params']['cmd']
     threads: config['alignment_params']['ncpus']
     shell:
-        '{params.cmd}'
+        'python scripts/do_align.py \
+        --cmd {params.cmd} \
+        --reference {params.ref} \
+        --threads {threads} \
+        --o {output.sam} \
+        --i1 {input.fastq1} \
+        --i2 {input.fastq2}'
 
 rule align_sam2bam:
     input:
@@ -112,7 +118,10 @@ rule remove_duplicated_reads:
     params:
         config['alignment_params']['clean_cmd']
     shell:
-        '{params[0]}'
+        'python do_remove_dup_reads.py \
+        -i {input[0]} \
+        -o {output[0]} \
+        -cmd {params[0]}'
 
 rule align_cleaned_bam_sort_index:
     input:
