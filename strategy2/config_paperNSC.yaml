@@ -27,7 +27,7 @@ centipede:
   window_size: 200
 alignment_params:
   ncpus: 1
-  cmd: 'bowtie {params.genome} -p {threads} -m 1 -X 2000 -chunkmbs 2000 -1 {input.fastq1} -2 {input.fastq2} -sam {output.sam}'
+  cmd: 'bowtie {params.genome} -p {threads[0]} -m 1 -X 2000 -chunkmbs 2000 -1 {input.fastq1} -2 {input.fastq2} -sam {output.sam}'
   # cmd: for your reference {input.fastq1} {input.fastq2} {output.sam} {params.ref} {threads}
   clean_cmd: 'java -jar /project2/xinhe/yanyul/softwares/picard.jar \
   I={input.bam} \

@@ -108,7 +108,7 @@ rule remove_duplicated_reads:
     input:
         'data/align/{sample}.sorted.bam'
     output:
-        'data/align/{sample}.cleaned.bam'
+        'data/align/{sample}.cleaned_bam'
     params:
         config['alignment_params']['clean_cmd']
     shell:
@@ -116,7 +116,7 @@ rule remove_duplicated_reads:
 
 rule align_cleaned_bam_sort_index:
     input:
-        'temp/align/{sample}.cleaned.bam'
+        'data/align/{sample}.cleaned_bam'
     output:
         'data/align/{sample}.cleaned_sorted.bam',
         'data/align/{sample}.cleaned_sorted.bam.bai'
