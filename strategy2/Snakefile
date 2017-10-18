@@ -259,8 +259,14 @@ rule pile_do_pile:
         'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.5_prime_count_backward.bed.gz'
     shell:
         '''
-        bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand + | gzip > {output[0]}
-        bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand - | gzip > {output[1]}
+        samtools view -uf 0x2 {input[0]} | \
+        genomeCoverageBed -ibam - -g {params[0]} -5 -bga -strand + | \
+        gzip > {output[0]}
+        samtools view -uf 0x2 {input[1]} | \
+        genomeCoverageBed -ibam - -g {params[0]} -5 -bga -strand - | \
+        gzip > {output[1]}
+        # bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand + | gzip > {output[0]}
+        # bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand - | gzip > {output[1]}
         '''
 
 rule pile_postprocess_extract:
