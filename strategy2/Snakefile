@@ -44,27 +44,40 @@ rule test:
     input:
         get_test(config, motif_dic)
 
-rule align_fastq2sai:
+# rule align_fastq2sai:
+#     input:
+#         fastq = lambda wildcards: config['experiments'][wildcards.sample]['fastq']
+#     output:
+#         sai = temp('temp/align/{sample}.sai')
+#     params:
+#         ref = config['genome_assembly']['fasta'],
+#     threads: config['ncpus']
+#     shell:
+#         'bwa aln -Y -l 32 -n 0.04 -k 2 -t {threads} {params.ref} {input.fastq} > {output.sai}'
+#
+# rule align_sai2sam:
+#     input:
+#         'temp/align/{sample}.sai',
+#         lambda wildcards: config['experiments'][wildcards.sample]['fastq']
+#     output:
+#         temp('temp/align/{sample}.sam')
+#     params:
+#         ref = config['genome_assembly']['fasta']
+#     shell:
+#         'bwa samse -n 10 {params.ref} {input[0]} {input[1]} > {output[0]}'
+
+rule fastq2sam:
     input:
-        fastq = lambda wildcards: config['experiments'][wildcards.sample]['fastq']
+        fastq1 = lambda wildcards: config['experiments'][wildcards.sample]['fastq1'],
+        fastq2 = lambda wildcards: config['experiments'][wildcards.sample]['fastq2']
     output:
-        sai = temp('temp/align/{sample}.sai')
+        sam = temp('temp/align/{sample}.sam')
     params:
         ref = config['genome_assembly']['fasta'],
-    threads: config['ncpus']
+        cmd = config['alignment_params']['cmd']
+    threads: config['alignment_params']['ncpus']
     shell:
-        'bwa aln -Y -l 32 -n 0.04 -k 2 -t {threads} {params.ref} {input.fastq} > {output.sai}'
-
-rule align_sai2sam:
-    input:
-        'temp/align/{sample}.sai',
-        lambda wildcards: config['experiments'][wildcards.sample]['fastq']
-    output:
-        temp('temp/align/{sample}.sam')
-    params:
-        ref = config['genome_assembly']['fasta']
-    shell:
-        'bwa samse -n 10 {params.ref} {input[0]} {input[1]} > {output[0]}'
+        '{params.cmd}'
 
 rule align_sam2bam:
     input:
@@ -79,7 +92,7 @@ rule align_bam_sort:
         'temp/align/{sample}.bam'
     output:
         'data/align/{sample}.sorted.bam'
-    threads: config['ncpus']
+    threads: config['alignment_params']['ncpus']
     shell:
         'samtools sort -@ {threads} -m 4G -o {output[0]} {input[0]}'
 
@@ -89,6 +102,27 @@ rule align_bam_index:
     output:
         'data/align/{sample}.sorted.bam.bai'
     shell:
+        'samtools index {input[0]}'
+
+rule remove_duplicated_reads:
+    input:
+        'data/align/{sample}.sorted.bam'
+    output:
+        'data/align/{sample}.cleaned.bam'
+    params:
+        config['alignment_params']['clean_cmd']
+    shell:
+        '{params[0]}'
+
+rule align_cleaned_bam_sort_index:
+    input:
+        'temp/align/{sample}.cleaned.bam'
+    output:
+        'data/align/{sample}.cleaned_sorted.bam',
+        'data/align/{sample}.cleaned_sorted.bam.bai'
+    threads: config['alignment_params']['ncpus']
+    shell:
+        'samtools sort -@ {threads} -m 4G -o {output[0]} {input[0]}'
         'samtools index {input[0]}'
 
 rule scan_prepare_get_fasta:
@@ -206,8 +240,8 @@ rule scan_summarize:
 
 rule pile_prepare:
     input:
-        'data/align/{sample}.sorted.bam',
-        'data/align/{sample}.sorted.bam.bai',
+        'data/align/{sample}.cleaned_sorted.bam',
+        'data/align/{sample}.cleaned_sorted.bam.bai',
         'data/scan/{motif_dir}/{motif_name}__genome__window.{win_size}.active_region.gz'
     output:
         temp('data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.extracted_for_pile.bam')
