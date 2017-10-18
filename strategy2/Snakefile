@@ -262,7 +262,7 @@ rule pile_do_pile:
         samtools view -uf 0x2 {input[0]} | \
         genomeCoverageBed -ibam - -g {params[0]} -5 -bga -strand + | \
         gzip > {output[0]}
-        samtools view -uf 0x2 {input[1]} | \
+        samtools view -uf 0x2 {input[0]} | \
         genomeCoverageBed -ibam - -g {params[0]} -5 -bga -strand - | \
         gzip > {output[1]}
         # bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand + | gzip > {output[0]}
