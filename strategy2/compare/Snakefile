@@ -92,7 +92,7 @@ rule summary_rmd:
         motif = lambda wildcards: config[wildcards.title]['motif_list']
     output:
         temp('summary/{title}.Rmd'),
-        'summary/{title}.summary.txt'
+        'summary/{title}.summary.txt.gz'
     run:
         rmd = '''---
 title: "Summary of comparison in {title}"

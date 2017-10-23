@@ -4,14 +4,17 @@
 
 def get_all(config):
     out = []
-    for i in config.keys():
+    for i in config['experiments'].keys():
         out.append('output/{e}.combined.bed.gz'.format(e = i))
     return out
 
 def get_input(config, experiment):
+    import pandas as pd
     out = []
-    motifs = config[experiment]['motifs'].split(',')
-    pattern = config[experiment]['path']
+    # motifs = config[experiment]['motifs'].split(',')
+    df = pd.read_table(config['experiments']['motifs'], compression = 'gzip', header = 0)
+    motifs = df[df['p-val'] > config['threshold']]['motif']
+    pattern = config['experiments'][experiment]['path']
     for m in motifs:
         out.append(pattern.format(motif = m))
     return out
