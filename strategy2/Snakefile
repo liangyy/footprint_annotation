@@ -78,7 +78,7 @@ rule fastq2sam:
     threads: config['alignment_params']['ncpus']
     shell:
         'python scripts/do_align.py \
-        --cmd {params.cmd} \
+        --cmd "{params.cmd}" \
         --reference {params.ref} \
         --threads {threads} \
         --o {output.sam} \
@@ -118,10 +118,10 @@ rule remove_duplicated_reads:
     params:
         config['alignment_params']['clean_cmd']
     shell:
-        'python do_remove_dup_reads.py \
-        -i {input[0]} \
-        -o {output[0]} \
-        -cmd {params[0]}'
+        'python scripts/do_remove_dup_reads.py \
+        --i {input[0]} \
+        --o {output[0]} \
+        --cmd "{params[0]}"'
 
 rule align_cleaned_bam_sort_index:
     input:
@@ -131,8 +131,10 @@ rule align_cleaned_bam_sort_index:
         'data/align/{sample}.cleaned_sorted.bam.bai'
     threads: config['alignment_params']['ncpus']
     shell:
-        'samtools sort -@ {threads} -m 4G -o {output[0]} {input[0]}'
-        'samtools index {input[0]}'
+        '''
+        samtools sort -@ {threads} -m 4G -o {output[0]} {input[0]}
+        samtools index {output[0]}
+        '''
 
 rule scan_prepare_get_fasta:
     input:

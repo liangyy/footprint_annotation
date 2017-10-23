@@ -10,8 +10,8 @@ parser.add_argument('--i1')
 parser.add_argument('--i2')
 args = parser.parse_args()
 
-import os
+import os, re
 
-cmd = args.cmd
+cmd = re.sub('\\\\', '', args.cmd)
 cmd = cmd.format(ref = args.reference, threads = args.threads, sam = args.o, fastq1 = args.i1, fastq2 = args.i2)
 os.system(cmd)

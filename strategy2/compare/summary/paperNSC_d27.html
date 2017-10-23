@@ -263,7 +263,11 @@ for(t in 1 : length(txts)) {
     rownames(df) &lt;- NULL
 }
 df &lt;- as.data.frame(df)
-colnames(df) &lt;- c('intersect', 'union', 'first', 'second', 'motif', 'p-val', 'rho')</code></pre>
+colnames(df) &lt;- c('intersect', 'union', 'first', 'second', 'motif', 'p-val', 'rho')
+gz1 &lt;- gzfile('../summary/paperNSC_d27.summary.txt.gz', 'w')
+write.table(df, gz1, quote = F, sep = '\t', row.names = F)
+close(gz1)
+# write.table(file = , data = df, quote = F, sep = '\t', row.names = F)</code></pre>
 </div>
 <div id="consistency" class="section level1">
 <h1><span class="header-section-number">2</span> Consistency</h1>
@@ -2792,7 +2796,7 @@ pander(df)</code></pre>
 <div class="col2">
 <p>
 <html>
-<select id="jBOMjZF6or" class="selectpicker" data-dropdown-align-right="false" data-dropup-auto="true" data-header="false" data-live-search="true" data-live-search-style="contains" data-show-tick="true" data-width="false" data-size="auto"><option value="../../plots/recalMotifs/M00001__paperNSC_d27__window.200_cutsite.png" selected>M00001</option>
+<select id="WKirFflv3S" class="selectpicker" data-dropdown-align-right="false" data-dropup-auto="true" data-header="false" data-live-search="true" data-live-search-style="contains" data-show-tick="true" data-width="false" data-size="auto"><option value="../../plots/recalMotifs/M00001__paperNSC_d27__window.200_cutsite.png" selected>M00001</option>
 <option value="../../plots/recalMotifs/M00008__paperNSC_d27__window.200_cutsite.png">M00008</option>
 <option value="../../plots/recalMotifs/M00017__paperNSC_d27__window.200_cutsite.png">M00017</option>
 <option value="../../plots/recalMotifs/M00024__paperNSC_d27__window.200_cutsite.png">M00024</option>
@@ -3069,19 +3073,19 @@ pander(df)</code></pre>
 <option value="../../plots/recalMotifs/PBM0173__paperNSC_d27__window.200_cutsite.png">PBM0173</option>
 <option value="../../plots/recalMotifs/PBM0176__paperNSC_d27__window.200_cutsite.png">PBM0176</option>
 <option value="../../plots/recalMotifs/PBM0191__paperNSC_d27__window.200_cutsite.png">PBM0191</option></select>
-<img src="../../plots/recalMotifs/M00001__paperNSC_d27__window.200_cutsite.png" name="SCG6Uhqj7e" height="300" width="300"/>
+<img src="../../plots/recalMotifs/M00001__paperNSC_d27__window.200_cutsite.png" name="fAR4Hc6WaI" height="300" width="300"/>
 <script>$(document).ready(function(){
-                 $("#jBOMjZF6or").change(function(){
-                 $("img[name=SCG6Uhqj7e]").attr("src",$(this).val());
+                 $("#WKirFflv3S").change(function(){
+                 $("img[name=fAR4Hc6WaI]").attr("src",$(this).val());
 
                  });
 
   });</script>
 </html>
-<div id="htmlwidget-f6be90cad824a0ab9e85" style="width:3px;height:3px;" class="bsselect html-widget" width="3" height="3"></div>
-<script type="application/json" data-for="htmlwidget-f6be90cad824a0ab9e85">{"x":[],"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-d3887e873d0509e56f42" style="width:3px;height:3px;" class="bsselect html-widget" width="3" height="3"></div>
+<script type="application/json" data-for="htmlwidget-d3887e873d0509e56f42">{"x":[],"evals":[],"jsHooks":[]}</script>
 <html>
-<select id="xkZmq8cfcW" class="selectpicker" data-dropdown-align-right="false" data-dropup-auto="true" data-header="false" data-live-search="true" data-live-search-style="contains" data-show-tick="true" data-width="false" data-size="auto"><option value="../../plots/recalMotifs/M00001__paperNSC_d27__window.200_footprint.png" selected>M00001</option>
+<select id="pWUWE12tRG" class="selectpicker" data-dropdown-align-right="false" data-dropup-auto="true" data-header="false" data-live-search="true" data-live-search-style="contains" data-show-tick="true" data-width="false" data-size="auto"><option value="../../plots/recalMotifs/M00001__paperNSC_d27__window.200_footprint.png" selected>M00001</option>
 <option value="../../plots/recalMotifs/M00008__paperNSC_d27__window.200_footprint.png">M00008</option>
 <option value="../../plots/recalMotifs/M00017__paperNSC_d27__window.200_footprint.png">M00017</option>
 <option value="../../plots/recalMotifs/M00024__paperNSC_d27__window.200_footprint.png">M00024</option>
@@ -3358,17 +3362,17 @@ pander(df)</code></pre>
 <option value="../../plots/recalMotifs/PBM0173__paperNSC_d27__window.200_footprint.png">PBM0173</option>
 <option value="../../plots/recalMotifs/PBM0176__paperNSC_d27__window.200_footprint.png">PBM0176</option>
 <option value="../../plots/recalMotifs/PBM0191__paperNSC_d27__window.200_footprint.png">PBM0191</option></select>
-<img src="../../plots/recalMotifs/M00001__paperNSC_d27__window.200_footprint.png" name="xeW0JKWteJ" height="300" width="300"/>
+<img src="../../plots/recalMotifs/M00001__paperNSC_d27__window.200_footprint.png" name="5asYcSVZOF" height="300" width="300"/>
 <script>$(document).ready(function(){
-                 $("#xkZmq8cfcW").change(function(){
-                 $("img[name=xeW0JKWteJ]").attr("src",$(this).val());
+                 $("#pWUWE12tRG").change(function(){
+                 $("img[name=5asYcSVZOF]").attr("src",$(this).val());
 
                  });
 
   });</script>
 </html>
-<div id="htmlwidget-f4a888004e5685e3a751" style="width:3px;height:3px;" class="bsselect html-widget" width="3" height="3"></div>
-<script type="application/json" data-for="htmlwidget-f4a888004e5685e3a751">{"x":[],"evals":[],"jsHooks":[]}</script></p>
+<div id="htmlwidget-1695e290a0768292643f" style="width:3px;height:3px;" class="bsselect html-widget" width="3" height="3"></div>
+<script type="application/json" data-for="htmlwidget-1695e290a0768292643f">{"x":[],"evals":[],"jsHooks":[]}</script></p>
 </div>
 </div>
 

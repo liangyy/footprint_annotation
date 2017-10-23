@@ -263,7 +263,11 @@ for(t in 1 : length(txts)) {
     rownames(df) &lt;- NULL
 }
 df &lt;- as.data.frame(df)
-colnames(df) &lt;- c('intersect', 'union', 'first', 'second', 'motif', 'p-val', 'rho')</code></pre>
+colnames(df) &lt;- c('intersect', 'union', 'first', 'second', 'motif', 'p-val', 'rho')
+gz1 &lt;- gzfile('../summary/paperNeuron_d41_2.summary.txt.gz', 'w')
+write.table(df, gz1, quote = F, sep = '\t', row.names = F)
+close(gz1)
+# write.table(file = , data = df, quote = F, sep = '\t', row.names = F)</code></pre>
 </div>
 <div id="consistency" class="section level1">
 <h1><span class="header-section-number">2</span> Consistency</h1>
@@ -2792,7 +2796,7 @@ pander(df)</code></pre>
 <div class="col2">
 <p>
 <html>
-<select id="Pgzv43WTUn" class="selectpicker" data-dropdown-align-right="false" data-dropup-auto="true" data-header="false" data-live-search="true" data-live-search-style="contains" data-show-tick="true" data-width="false" data-size="auto"><option value="../../plots/recalMotifs/M00001__paperNeuron_d41_2__window.200_cutsite.png" selected>M00001</option>
+<select id="OAGPhTdyXi" class="selectpicker" data-dropdown-align-right="false" data-dropup-auto="true" data-header="false" data-live-search="true" data-live-search-style="contains" data-show-tick="true" data-width="false" data-size="auto"><option value="../../plots/recalMotifs/M00001__paperNeuron_d41_2__window.200_cutsite.png" selected>M00001</option>
 <option value="../../plots/recalMotifs/M00008__paperNeuron_d41_2__window.200_cutsite.png">M00008</option>
 <option value="../../plots/recalMotifs/M00017__paperNeuron_d41_2__window.200_cutsite.png">M00017</option>
 <option value="../../plots/recalMotifs/M00024__paperNeuron_d41_2__window.200_cutsite.png">M00024</option>
@@ -3069,19 +3073,19 @@ pander(df)</code></pre>
 <option value="../../plots/recalMotifs/PBM0173__paperNeuron_d41_2__window.200_cutsite.png">PBM0173</option>
 <option value="../../plots/recalMotifs/PBM0176__paperNeuron_d41_2__window.200_cutsite.png">PBM0176</option>
 <option value="../../plots/recalMotifs/PBM0191__paperNeuron_d41_2__window.200_cutsite.png">PBM0191</option></select>
-<img src="../../plots/recalMotifs/M00001__paperNeuron_d41_2__window.200_cutsite.png" name="V0kmqwwoEg" height="300" width="300"/>
+<img src="../../plots/recalMotifs/M00001__paperNeuron_d41_2__window.200_cutsite.png" name="Ru5APDiCJ2" height="300" width="300"/>
 <script>$(document).ready(function(){
-                 $("#Pgzv43WTUn").change(function(){
-                 $("img[name=V0kmqwwoEg]").attr("src",$(this).val());
+                 $("#OAGPhTdyXi").change(function(){
+                 $("img[name=Ru5APDiCJ2]").attr("src",$(this).val());
 
                  });
 
   });</script>
 </html>
-<div id="htmlwidget-e3f27d3c62270d191fa6" style="width:3px;height:3px;" class="bsselect html-widget" width="3" height="3"></div>
-<script type="application/json" data-for="htmlwidget-e3f27d3c62270d191fa6">{"x":[],"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-d5b470145b7dac96d7a0" style="width:3px;height:3px;" class="bsselect html-widget" width="3" height="3"></div>
+<script type="application/json" data-for="htmlwidget-d5b470145b7dac96d7a0">{"x":[],"evals":[],"jsHooks":[]}</script>
 <html>
-<select id="twUEN9367e" class="selectpicker" data-dropdown-align-right="false" data-dropup-auto="true" data-header="false" data-live-search="true" data-live-search-style="contains" data-show-tick="true" data-width="false" data-size="auto"><option value="../../plots/recalMotifs/M00001__paperNeuron_d41_2__window.200_footprint.png" selected>M00001</option>
+<select id="phR4MUfaqc" class="selectpicker" data-dropdown-align-right="false" data-dropup-auto="true" data-header="false" data-live-search="true" data-live-search-style="contains" data-show-tick="true" data-width="false" data-size="auto"><option value="../../plots/recalMotifs/M00001__paperNeuron_d41_2__window.200_footprint.png" selected>M00001</option>
 <option value="../../plots/recalMotifs/M00008__paperNeuron_d41_2__window.200_footprint.png">M00008</option>
 <option value="../../plots/recalMotifs/M00017__paperNeuron_d41_2__window.200_footprint.png">M00017</option>
 <option value="../../plots/recalMotifs/M00024__paperNeuron_d41_2__window.200_footprint.png">M00024</option>
@@ -3358,17 +3362,17 @@ pander(df)</code></pre>
 <option value="../../plots/recalMotifs/PBM0173__paperNeuron_d41_2__window.200_footprint.png">PBM0173</option>
 <option value="../../plots/recalMotifs/PBM0176__paperNeuron_d41_2__window.200_footprint.png">PBM0176</option>
 <option value="../../plots/recalMotifs/PBM0191__paperNeuron_d41_2__window.200_footprint.png">PBM0191</option></select>
-<img src="../../plots/recalMotifs/M00001__paperNeuron_d41_2__window.200_footprint.png" name="upsWBvwviE" height="300" width="300"/>
+<img src="../../plots/recalMotifs/M00001__paperNeuron_d41_2__window.200_footprint.png" name="2HmSSTpo8W" height="300" width="300"/>
 <script>$(document).ready(function(){
-                 $("#twUEN9367e").change(function(){
-                 $("img[name=upsWBvwviE]").attr("src",$(this).val());
+                 $("#phR4MUfaqc").change(function(){
+                 $("img[name=2HmSSTpo8W]").attr("src",$(this).val());
 
                  });
 
   });</script>
 </html>
-<div id="htmlwidget-ebd4e2852eeef1edb63c" style="width:3px;height:3px;" class="bsselect html-widget" width="3" height="3"></div>
-<script type="application/json" data-for="htmlwidget-ebd4e2852eeef1edb63c">{"x":[],"evals":[],"jsHooks":[]}</script></p>
+<div id="htmlwidget-0a49c977777ad2d02287" style="width:3px;height:3px;" class="bsselect html-widget" width="3" height="3"></div>
+<script type="application/json" data-for="htmlwidget-0a49c977777ad2d02287">{"x":[],"evals":[],"jsHooks":[]}</script></p>
 </div>
 </div>
 

@@ -7,8 +7,10 @@ parser.add_argument('--o')
 parser.add_argument('--i')
 args = parser.parse_args()
 
-import os
+import os, re
 
-cmd = args.cmd
+cmd = re.sub('\\\\', '', args.cmd)
+
 cmd = cmd.format(input = args.i, output = args.o)
+# print(cmd)
 os.system(cmd)
