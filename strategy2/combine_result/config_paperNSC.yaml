@@ -1,0 +1,9 @@
+paperNSC_d27:
+  motifs: ''
+  path: '../footprint/recalMotifs/{motif}__paperNSC_d27__window.200.bed.gz'
+paperNeuron_d41_1:
+  motifs: ''
+  path: '../footprint/recalMotifs/{motif}__paperNeuron_d41_1__window.200.bed.gz'
+paperNeuron_d41_2:
+  motifs:
+  path: '../footprint/recalMotifs/{motif}__paperNeuron_d41_2__window.200.bed.gz'

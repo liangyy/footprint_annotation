@@ -1,0 +1,29 @@
+# This module combine the result generated in strategy2. Namely combine all
+# footprint regions with posterior probability greater than 0.9 in motif with p-value
+# greater than the threshold set in config.
+
+def get_all(config):
+    out = []
+    for i in config.keys():
+        out.append('output/{e}.combined.bed.gz'.format(e = i))
+    return out
+
+def get_input(config, experiment):
+    out = []
+    motifs = config[experiment]['motifs'].split(',')
+    pattern = config[experiment]['path']
+    for m in motifs:
+        out.append(pattern.format(motif = m))
+    return out
+
+rule all:
+    input:
+        get_all(config)
+
+rule combine:
+    input:
+        footprints = lambda wildcards: get_input(config, wildcards.experiment)
+    output:
+        bed = 'output/{experiment}.combined.bed.gz'
+    shell:
+        'sortBed -i <(zcat {input.footprints}) | gzip > {output.bed}'

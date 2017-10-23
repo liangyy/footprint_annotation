@@ -91,7 +91,8 @@ rule summary_rmd:
         footprint = lambda wildcards: get_all_plots_footprint(config, wildcards.title),
         motif = lambda wildcards: config[wildcards.title]['motif_list']
     output:
-        temp('summary/{title}.Rmd')
+        temp('summary/{title}.Rmd'),
+        'summary/{title}.summary.txt'
     run:
         rmd = '''---
 title: "Summary of comparison in {title}"
@@ -146,6 +147,10 @@ for(t in 1 : length(txts)) {{
 }}
 df <- as.data.frame(df)
 colnames(df) <- c('intersect', 'union', 'first', 'second', 'motif', 'p-val', 'rho')
+gz1 <- gzfile('{out}', 'w')
+write.table(df, gz1, )
+close(gz1)
+write.table(file = , data = df, quote = F, sep = '\\t', row.names = F)
 ```
 
 # Consistency
@@ -174,7 +179,8 @@ bsselect(plot.foot, type = "img", selected = names(plot.foot)[1],
             fit = params.fitness,
             cut = params.cutsite,
             foot = params.footprint,
-            motif = params.motif
+            motif = params.motif,
+            out = output[1]
             )
         o = open(output[0], 'w')
         o.write(rmd)
