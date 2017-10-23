@@ -12,8 +12,8 @@ def get_input(config, experiment):
     import pandas as pd
     out = []
     # motifs = config[experiment]['motifs'].split(',')
-    df = pd.read_table(config['experiments']['motifs'], compression = 'gzip', header = 0)
-    motifs = df[df['p-val'] > config['threshold']]['motif']
+    df = pd.read_table(config['experiments'][experiment]['motifs'], compression = 'gzip', header = 0)
+    motifs = df[df['p-val'] > float(config['threshold'])]['motif']
     pattern = config['experiments'][experiment]['path']
     for m in motifs:
         out.append(pattern.format(motif = m))
@@ -23,9 +23,17 @@ rule all:
     input:
         get_all(config)
 
-rule combine:
+rule combine_prepare:
     input:
         footprints = lambda wildcards: get_input(config, wildcards.experiment)
+    output:
+        temp('temp/{experiment}.prepare.bed.gz')
+    shell:
+        'bash remove_header_and_combine.sh {output[0]} {input.footprints}'
+
+rule combine:
+    input:
+        footprints = 'temp/{experiment}.prepare.bed.gz'  # lambda wildcards: get_input(config, wildcards.experiment)
     output:
         bed = 'output/{experiment}.combined.bed.gz'
     shell:
