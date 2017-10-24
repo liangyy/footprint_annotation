@@ -35,8 +35,18 @@ rule combine:
     input:
         footprints = 'temp/{experiment}.prepare.bed.gz'  # lambda wildcards: get_input(config, wildcards.experiment)
     output:
-        bed = 'output/{experiment}.combined.bed.gz'
+        bed = temp('output/{experiment}.combined.bed.gz')
     shell:
         '''
         sortBed -i <(zcat {input.footprints} | awk '{{$2=sprintf("%d",$2)}}7'|awk -v OFS='\\t' '{{$3=sprintf("%d",$3)}}7') | gzip > {output.bed}
+        '''
+
+rule postprocess:
+    input:
+        'output/{experiment}.combined.bed.gz'
+    output:
+        'output/{experiment}.final.bed.gz'
+    shell:
+        '''
+        zcat {input[0]} | awk -v OFS='\\t' '{{$1,$2,$3,$5,"1000",$4,"-",$2,$3,"0,0,0","0","-","-",$6,$6}}' | gzip > {output[0]}
         '''
