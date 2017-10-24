@@ -48,5 +48,5 @@ rule postprocess:
         'output/{experiment}.final.bed.gz'
     shell:
         '''
-        zcat {input[0]} | awk -v OFS='\\t' '{{$1,$2,$3,$5,"1000",$4,"-",$2,$3,"0,0,0","0","-","-",$6,$6}}' | gzip > {output[0]}
+        zcat {input[0]} | awk -v OFS='\\t' '{{print $1,$2,$3,$5,"1000",$4,"-",$2,$3,"0,0,0","0","-","-",$6,$6}}' | gzip > {output[0]}
         '''
