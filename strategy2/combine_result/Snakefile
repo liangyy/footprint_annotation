@@ -37,4 +37,6 @@ rule combine:
     output:
         bed = 'output/{experiment}.combined.bed.gz'
     shell:
-        'sortBed -i <(zcat {input.footprints}) | gzip > {output.bed}'
+        '''
+        sortBed -i <(zcat {input.footprints} | awk '{{$2=sprintf("%d",$2)}}7'|awk -v OFS='\\t' '{{$3=sprintf("%d",$3)}}7') | gzip > {output.bed}
+        '''
