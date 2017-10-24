@@ -5,7 +5,7 @@
 def get_all(config):
     out = []
     for i in config['experiments'].keys():
-        out.append('output/{e}.combined.bed.gz'.format(e = i))
+        out.append('output/{e}.final.bed.gz'.format(e = i))
     return out
 
 def get_input(config, experiment):
