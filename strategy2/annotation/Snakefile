@@ -56,15 +56,18 @@ rule get_score_with_fimo:
         footprint_snp = 'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz',
         footprint_seq = 'data/seq.{footprint_name}.{snp_name}.tab'
     params:
-        config['motif_folder']
+        out = config['motif_folder'],
+        model_str = config['model_str']
     output:
         'data/fasta.{footprint_name}.{snp_name}.fa.gz'
     shell:
         'python scripts/get_score_with_fimo.py \
         --snp {input.footprint_snp} \
         --seq {input.footprint_seq} \
-        --out {output[0]} \
+        --out {output.out} \
         --motif_folder {params[0]} \
+        --model_file {params.model_str} \
+        --model_data {wildcards.footprint_name}
         '
 
 # rule get_motif_scores:
