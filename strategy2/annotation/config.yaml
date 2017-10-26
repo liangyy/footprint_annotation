@@ -1,0 +1,13 @@
+footprint_bed:
+  test_bed: '../combine_result/output/paperNSC_d27.final.bed.gz.temp'
+  end_include: 0 # 1 for include ; 0 for not include (in original input bed file)
+  view: 'zcat'
+snp_list:
+  test:
+    path: '/project2/xinhe/yanyul/scratch/genomewide_annotation//input2score-footprint_annotation/formatted_input/promoter_upstream_downstream_1kb/chunk_10.finput.gz'
+    ncol_of_snp_list: 6
+    snp_view_method: 'zcat'
+    read_first_line: '' # If you do not want to include the first line, set it to '|tail -n +2'
+    check_ref: '0'  # Set it to '1' if you want to check if the listed ref allele matches the extracted sequence from genome assembly
+motif_folder: '../data/motif_in_meme/recalMotifs/'
+genome: '/project2/xinhe/yanyul/databases/hg19_complete/hg19.fa'

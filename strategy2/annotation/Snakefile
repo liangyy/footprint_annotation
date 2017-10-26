@@ -1,0 +1,84 @@
+# This module annotate SNVs with prior probability
+# This is roughly the same as ../strategy1/ but it contains two changes: 1) compute motif score using fimo instead of
+# self-made LLR score; 2) use the model learned from strategy2 to compute prior probability using motif score instead
+# of report motif score
+
+def get_all_footprint_data(config):
+    out = []
+    for i in config['footprint_bed'].keys():
+        if i in ['view', 'end_include']:
+            continue
+        out.append('data/output.{footprint_name}.{snp_name}.bed'.format(footprint_name=i, snp_name=str(list(config['snp_list'].keys())[0])))
+    print(out)
+    return out
+
+rule run_all_footprint:
+    input:
+        get_all_footprint_data(config)
+
+rule preprocess_footprint:
+    input:
+        lambda wildcards: config['footprint_bed'][wildcards.footprint_name]
+    params:
+        i = config['footprint_bed']['end_include'],
+        tool = config['footprint_bed']['view']
+    output:
+        'data/preprocess.{footprint_name}.{snp_name}.bed.gz'
+    shell:
+        '''{params.tool} {input[0]} | awk -F"\\t" '{{print $1"\\t"$2"\\t"$3+{params.i}"\\t"$4"\\t"$6"\\t"$13}}' | gzip > {output[0]}'''
+
+rule get_footprint_snp:
+    input:
+        footprint_bed = 'data/preprocess.{footprint_name}.{snp_name}.bed.gz',
+        snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['path']
+    output:
+        'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz'
+    params:
+        snp_view_method = lambda wildcards: config['snp_list'][wildcards.snp_name]['snp_view_method'],
+        read_first_line = lambda wildcards: config['snp_list'][wildcards.snp_name]['read_first_line']
+    shell:
+        '''bedtools intersect -a <({params.snp_view_method} {input.snp_list} {params.read_first_line} | awk -F"\\t" '{{print $1"\\t"$2-1"\\t"$3"\\t"$4"\\t"$5"\\t"$7}}') -b <(zcat < {input.footprint_bed}) -wb | gzip > {output[0]}'''
+
+rule get_seq:
+    input:
+        footprint_snp = 'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz' # ATTENTION! in input footprinting region file, both start and end are included (0-based)!
+    params:
+        genome_fasta = config['genome'],
+        ncol_of_snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['ncol_of_snp_list'],
+        check_ref = lambda wildcards: config['snp_list'][wildcards.snp_name]['check_ref']
+    output:
+        'data/seq.{footprint_name}.{snp_name}.tab'
+    shell:
+        '''bedtools getfasta -fi {params.genome_fasta} -bed <(zcat {input.footprint_snp} | awk -F"\\t" '{{print $(1+{params.ncol_of_snp_list})"\\t"$(2+{params.ncol_of_snp_list})"\\t"$(3+{params.ncol_of_snp_list})"\\t"$(5+{params.ncol_of_snp_list})}}') -s -tab -fo {output[0]}'''
+
+rule get_score_with_fimo:
+    input:
+        footprint_snp = 'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz',
+        footprint_seq = 'data/seq.{footprint_name}.{snp_name}.tab'
+    params:
+        config['motif_folder']
+    output:
+        'data/fasta.{footprint_name}.{snp_name}.fa.gz'
+    shell:
+        'python scripts/get_score_with_fimo.py \
+        --snp {input.footprint_snp} \
+        --seq {input.footprint_seq} \
+        --out {output[0]} \
+        --motif_folder {params[0]} \
+        '
+
+# rule get_motif_scores:
+#     input:
+#         footprint_snp = 'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz',
+#         footprint_seq = 'data/seq.{footprint_name}.{snp_name}.tab'
+#     params:
+#         motif_folder = config['motif_folder'],
+#         ncol_of_snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['ncol_of_snp_list']
+#     output:
+#         'data/output.{footprint_name}.{snp_name}.bed'
+#     shell:
+#         'python scripts/get_motif_scores.py --motif_folder {params.motif_folder} \
+#         --footprint_snp {input.footprint_snp} \
+#         --footprint_seq {input.footprint_seq} \
+#         --ncol {params.ncol_of_snp_list} \
+#         --out {output[0]}'
