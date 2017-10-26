@@ -49,7 +49,7 @@ rule get_seq:
     output:
         'data/seq.{footprint_name}.{snp_name}.tab'
     shell:
-        '''bedtools getfasta -fi {params.genome_fasta} -bed <(zcat {input.footprint_snp} | awk -F"\\t" '{{print $(1+{params.ncol_of_snp_list})"\\t"$(2+{params.ncol_of_snp_list})"\\t"$(3+{params.ncol_of_snp_list})"\\t"$(5+{params.ncol_of_snp_list})}}') -s -tab -fo {output[0]}'''
+        '''bedtools getfasta -fi {params.genome_fasta} -bed <(zcat {input.footprint_snp} | awk -F"\\t" '{{print $(1+{params.ncol_of_snp_list})"\\t"$(2+{params.ncol_of_snp_list})"\\t"$(3+{params.ncol_of_snp_list})"\\t1\\t1\\t"$(5+{params.ncol_of_snp_list})}}') -s -tab -fo {output[0]}'''
 
 rule get_score_with_fimo:
     input:
@@ -67,7 +67,7 @@ rule get_score_with_fimo:
         --out {output.out} \
         --motif_folder {params[0]} \
         --model_file {params.model_str} \
-        --model_data {wildcards.footprint_name}
+        --model_data {wildcards.footprint_name} \
         '
 
 # rule get_motif_scores:
