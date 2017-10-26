@@ -44,27 +44,46 @@ rule test:
     input:
         get_test(config, motif_dic)
 
-rule align_fastq2sai:
-    input:
-        fastq = lambda wildcards: config['experiments'][wildcards.sample]['fastq']
-    output:
-        sai = temp('temp/align/{sample}.sai')
-    params:
-        ref = config['genome_assembly']['fasta'],
-    threads: config['ncpus']
-    shell:
-        'bwa aln -Y -l 32 -n 0.04 -k 2 -t {threads} {params.ref} {input.fastq} > {output.sai}'
+# rule align_fastq2sai:
+#     input:
+#         fastq = lambda wildcards: config['experiments'][wildcards.sample]['fastq']
+#     output:
+#         sai = temp('temp/align/{sample}.sai')
+#     params:
+#         ref = config['genome_assembly']['fasta'],
+#     threads: config['ncpus']
+#     shell:
+#         'bwa aln -Y -l 32 -n 0.04 -k 2 -t {threads} {params.ref} {input.fastq} > {output.sai}'
+#
+# rule align_sai2sam:
+#     input:
+#         'temp/align/{sample}.sai',
+#         lambda wildcards: config['experiments'][wildcards.sample]['fastq']
+#     output:
+#         temp('temp/align/{sample}.sam')
+#     params:
+#         ref = config['genome_assembly']['fasta']
+#     shell:
+#         'bwa samse -n 10 {params.ref} {input[0]} {input[1]} > {output[0]}'
 
-rule align_sai2sam:
+rule fastq2sam:
     input:
-        'temp/align/{sample}.sai',
-        lambda wildcards: config['experiments'][wildcards.sample]['fastq']
+        fastq1 = lambda wildcards: config['experiments'][wildcards.sample]['fastq1'],
+        fastq2 = lambda wildcards: config['experiments'][wildcards.sample]['fastq2']
     output:
-        temp('temp/align/{sample}.sam')
+        sam = temp('temp/align/{sample}.sam')
     params:
-        ref = config['genome_assembly']['fasta']
+        ref = config['genome_assembly']['for_align'],
+        cmd = config['alignment_params']['cmd']
+    threads: config['alignment_params']['ncpus']
     shell:
-        'bwa samse -n 10 {params.ref} {input[0]} {input[1]} > {output[0]}'
+        'python scripts/do_align.py \
+        --cmd "{params.cmd}" \
+        --reference {params.ref} \
+        --threads {threads} \
+        --o {output.sam} \
+        --i1 {input.fastq1} \
+        --i2 {input.fastq2}'
 
 rule align_sam2bam:
     input:
@@ -79,7 +98,7 @@ rule align_bam_sort:
         'temp/align/{sample}.bam'
     output:
         'data/align/{sample}.sorted.bam'
-    threads: config['ncpus']
+    threads: config['alignment_params']['ncpus']
     shell:
         'samtools sort -@ {threads} -m 4G -o {output[0]} {input[0]}'
 
@@ -90,6 +109,32 @@ rule align_bam_index:
         'data/align/{sample}.sorted.bam.bai'
     shell:
         'samtools index {input[0]}'
+
+rule remove_duplicated_reads:
+    input:
+        'data/align/{sample}.sorted.bam'
+    output:
+        'data/align/{sample}.cleaned_bam'
+    params:
+        config['alignment_params']['clean_cmd']
+    shell:
+        'python scripts/do_remove_dup_reads.py \
+        --i {input[0]} \
+        --o {output[0]} \
+        --cmd "{params[0]}"'
+
+rule align_cleaned_bam_sort_index:
+    input:
+        'data/align/{sample}.cleaned_bam'
+    output:
+        'data/align/{sample}.cleaned_sorted.bam',
+        'data/align/{sample}.cleaned_sorted.bam.bai'
+    threads: config['alignment_params']['ncpus']
+    shell:
+        '''
+        samtools sort -@ {threads} -m 4G -o {output[0]} {input[0]}
+        samtools index {output[0]}
+        '''
 
 rule scan_prepare_get_fasta:
     input:
@@ -206,8 +251,8 @@ rule scan_summarize:
 
 rule pile_prepare:
     input:
-        'data/align/{sample}.sorted.bam',
-        'data/align/{sample}.sorted.bam.bai',
+        'data/align/{sample}.cleaned_sorted.bam',
+        'data/align/{sample}.cleaned_sorted.bam.bai',
         'data/scan/{motif_dir}/{motif_name}__genome__window.{win_size}.active_region.gz'
     output:
         temp('data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.extracted_for_pile.bam')
@@ -225,8 +270,14 @@ rule pile_do_pile:
         'data/pile/{motif_dir}/{motif_name}__{sample}__window.{win_size}.5_prime_count_backward.bed.gz'
     shell:
         '''
-        bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand + | gzip > {output[0]}
-        bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand - | gzip > {output[1]}
+        samtools view -uf 0x2 {input[0]} | \
+        genomeCoverageBed -ibam - -g {params[0]} -5 -bga -strand + | \
+        gzip > {output[0]}
+        samtools view -uf 0x2 {input[0]} | \
+        genomeCoverageBed -ibam - -g {params[0]} -5 -bga -strand - | \
+        gzip > {output[1]}
+        # bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand + | gzip > {output[0]}
+        # bedtools genomecov -ibam {input[0]} -5 -bga -g {params[0]} -strand - | gzip > {output[1]}
         '''
 
 rule pile_postprocess_extract:

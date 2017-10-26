@@ -89,9 +89,11 @@ rule summary_rmd:
         fitness = lambda wildcards: get_all_txt_in_str_fitness(config, wildcards.title),
         cutsite = lambda wildcards: get_all_plots_cutsite(config, wildcards.title),
         footprint = lambda wildcards: get_all_plots_footprint(config, wildcards.title),
-        motif = lambda wildcards: config[wildcards.title]['motif_list']
+        motif = lambda wildcards: config[wildcards.title]['motif_list'],
+        out = lambda wildcards: '../summary/{title}.summary.txt.gz'.format(title = wildcards.title)
     output:
-        temp('summary/{title}.Rmd')
+        temp('summary/{title}.Rmd'),
+        # 'summary/{title}.summary.txt.gz'
     run:
         rmd = '''---
 title: "Summary of comparison in {title}"
@@ -146,6 +148,10 @@ for(t in 1 : length(txts)) {{
 }}
 df <- as.data.frame(df)
 colnames(df) <- c('intersect', 'union', 'first', 'second', 'motif', 'p-val', 'rho')
+gz1 <- gzfile('{out}', 'w')
+write.table(df, gz1, quote = F, sep = '\\t', row.names = F)
+close(gz1)
+# write.table(file = , data = df, quote = F, sep = '\\t', row.names = F)
 ```
 
 # Consistency
@@ -174,7 +180,8 @@ bsselect(plot.foot, type = "img", selected = names(plot.foot)[1],
             fit = params.fitness,
             cut = params.cutsite,
             foot = params.footprint,
-            motif = params.motif
+            motif = params.motif,
+            out = params.out
             )
         o = open(output[0], 'w')
         o.write(rmd)
@@ -185,6 +192,7 @@ rule summary_html:
         r = lambda wildcards: get_input(config, wildcards.title),
         rmd = 'summary/{title}.Rmd'
     output:
-        'summary/{title}.html'
+        'summary/{title}.html',
+        'summary/{title}.summary.txt.gz'
     shell:
         '''Rscript -e "rmarkdown::render('{input.rmd}')"'''

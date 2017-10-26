@@ -1,0 +1,11 @@
+experiments:
+  paperNSC_d27:
+    motifs: '../compare/summary/paperNSC_d27.summary.txt.gz'
+    path: '../footprint/recalMotifs/{motif}__paperNSC_d27__window.200.bed.gz'
+  paperNeuron_d41_1:
+    motifs: '../compare/summary/paperNeuron_d41_1.summary.txt.gz'
+    path: '../footprint/recalMotifs/{motif}__paperNeuron_d41_1__window.200.bed.gz'
+  paperNeuron_d41_2:
+    motifs: '../compare/summary/paperNeuron_d41_2.summary.txt.gz'
+    path: '../footprint/recalMotifs/{motif}__paperNeuron_d41_2__window.200.bed.gz'
+threshold: 6e-7

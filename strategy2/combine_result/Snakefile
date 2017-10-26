@@ -1,0 +1,52 @@
+# This module combine the result generated in strategy2. Namely combine all
+# footprint regions with posterior probability greater than 0.9 in motif with p-value
+# greater than the threshold set in config.
+
+def get_all(config):
+    out = []
+    for i in config['experiments'].keys():
+        out.append('output/{e}.final.bed.gz'.format(e = i))
+    return out
+
+def get_input(config, experiment):
+    import pandas as pd
+    out = []
+    # motifs = config[experiment]['motifs'].split(',')
+    df = pd.read_table(config['experiments'][experiment]['motifs'], compression = 'gzip', header = 0)
+    motifs = df[df['p-val'] > float(config['threshold'])]['motif']
+    pattern = config['experiments'][experiment]['path']
+    for m in motifs:
+        out.append(pattern.format(motif = m))
+    return out
+
+rule all:
+    input:
+        get_all(config)
+
+rule combine_prepare:
+    input:
+        footprints = lambda wildcards: get_input(config, wildcards.experiment)
+    output:
+        temp('temp/{experiment}.prepare.bed.gz')
+    shell:
+        'bash remove_header_and_combine.sh {output[0]} {input.footprints}'
+
+rule combine:
+    input:
+        footprints = 'temp/{experiment}.prepare.bed.gz'  # lambda wildcards: get_input(config, wildcards.experiment)
+    output:
+        bed = temp('output/{experiment}.combined.bed.gz')
+    shell:
+        '''
+        sortBed -i <(zcat {input.footprints} | awk '{{$2=sprintf("%d",$2)}}7'|awk -v OFS='\\t' '{{$3=sprintf("%d",$3)}}7') | gzip > {output.bed}
+        '''
+
+rule postprocess:
+    input:
+        'output/{experiment}.combined.bed.gz'
+    output:
+        'output/{experiment}.final.bed.gz'
+    shell:
+        '''
+        zcat {input[0]} | awk -v OFS='\\t' '{{print $1,$2,$3,$5,"1000",$4,$2,$3,"0,0,0","0","-","-",$6,$6}}' | gzip > {output[0]}
+        '''
