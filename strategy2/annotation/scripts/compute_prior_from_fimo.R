@@ -24,9 +24,9 @@ library(dplyr)
 snvs <- read.table(opt$input, sep = '\t', header = FALSE)
 snvs$id <- 1 : nrow(snvs)
 snvs$prior1 <- NaN
-model_path <- str_replace(e, '\\{data_name\\}', opt$data_name)
+model_path <- str_replace(opt$model_str, '\\{data_name\\}', opt$data_name)
 for(motif in unique(snvs$V7)) {
-  model <- str_replace(e, '\\{motif\\}', motif)
+  model <- str_replace(model_path, '\\{motif\\}', motif)
   model.param <- readRDS(model)
   snvs.subset <- snvs %>%
     filter(V7 == motif) %>%
@@ -39,5 +39,6 @@ for(motif in unique(snvs$V7)) {
   snvs[snvs.subset$id, 'prior2'] <- prior2.y
 }
 gz <- gzfile(opt$out, 'w')
-write.table(snvs[, c('V1', 'V2', 'V3', 'V4', 'V5', 'prior1', 'prior2', 'V7')], gz)
+write.table(snvs[, c('V1', 'V2', 'V3', 'V4', 'V5', 'prior1', 'prior2', 'V7')], gz,
+            quote = F, col.names = F, row.names = F, sep = '\t')
 close(gz)

@@ -18,7 +18,7 @@ rule run_all_footprint:
 
 rule preprocess_footprint:
     input:
-        lambda wildcards: config['footprint_bed'][wildcards.footprint_name]
+        lambda wildcards: config['footprint_bed'][wildcards.footprint_name]['path']
     params:
         i = config['footprint_bed']['end_include'],
         tool = config['footprint_bed']['view']
@@ -75,13 +75,16 @@ rule get_prior:
         'data/fimo.{footprint_name}.{snp_name}.tab.gz'
     output:
         'data/prior.{footprint_name}.{snp_name}.tab.gz'
+    params:
+        config['model_str'],
+        lambda wildcards: config['footprint_bed'][wildcards.footprint_name]['name']
     log:
         'logs/prior.{footprint_name}.{snp_name}.log'
     shell:
-        'Rscripts scripts/compute_prior_from_fimo.R \
+        'Rscript scripts/compute_prior_from_fimo.R \
         --input {input[0]} \
         --model_str {params[0]} \
-        --data_name {wildcards.footprint_name} \
+        --data_name {params[1]} \
         --out {output[0]} > {log}'
 
 # rule get_motif_scores:
