@@ -13,7 +13,7 @@ parser.add_argument('--ncol_of_snp_list', type = int, help = '''
     skip ncol_of_snp_list columns to read motif information in footprint_snp
 ''')
 parser.add_argument('--out')
-parser.add_argument('--motif_folder', type=int, help='''
+parser.add_argument('--motif_folder', help='''
     motif folder
 ''')
 args = parser.parse_args()
@@ -21,6 +21,7 @@ args = parser.parse_args()
 import sys
 import os
 import pandas as pd
+import numpy as np
 import gzip
 
 def change_allele(seq, strand, allele_start, region_start, to_char):
@@ -63,6 +64,7 @@ variants['score1'] = np.nan
 variants['score2'] = np.nan
 for motif in variants.motif.unique():
     print(motif)
+    print(variants)
     motif_file = '{motif_folder}/{motif_name}.meme'.format(motif_folder = args.motif_folder, motif_name = motif)
     subset = variants.loc[variants.motif == motif]
     temp_in_name = '{out}.fimo_temp.in'.format(out = args.out)
@@ -84,4 +86,5 @@ for motif in variants.motif.unique():
     os.system(command)
     command = 'rm {temp_out}'.format(temp_out = temp_out_name)
     os.system(command)
-variants.to_csv(args.out, sep = '\t', header = False, index = False, columns = [0, 1, 2, 3, 4, 9, 8, 15, 16])
+print(variants)
+variants.iloc[:, [0, 1, 2, 3, 4, 9, 8, 14, 15]].to_csv(args.out, sep = '\t', header = False, index = False, compression = 'gzip')

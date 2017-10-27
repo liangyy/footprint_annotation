@@ -56,19 +56,21 @@ rule get_score_with_fimo:
         footprint_snp = 'data/footprint_snp.{footprint_name}.{snp_name}.bed.gz',
         footprint_seq = 'data/seq.{footprint_name}.{snp_name}.tab'
     params:
-        out = config['motif_folder'],
-        ncol_of_snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['ncol_of_snp_list']
+        config['motif_folder'],
+        lambda wildcards: config['snp_list'][wildcards.snp_name]['ncol_of_snp_list']
+    log: 
+        'logs/fimo.{footprint_name}.{snp_name}.log'
     output:
-        'data/fasta.{footprint_name}.{snp_name}.fa.gz'
+        'data/fimo.{footprint_name}.{snp_name}.tab.gz'
     shell:
         'python scripts/get_score_with_fimo.py \
         --snp {input.footprint_snp} \
         --seq {input.footprint_seq} \
-        --out {output.out} \
+        --out {output[0]} \
         --motif_folder {params[0]} \
-        --ncol_of_snp_list {params.ncol_of_snp_list}'
+        --ncol_of_snp_list {params[1]} > {log}'
         
-rule get_prior:
+# rule get_prior:
 
 # rule get_motif_scores:
 #     input:
