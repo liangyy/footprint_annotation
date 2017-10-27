@@ -58,7 +58,7 @@ rule get_score_with_fimo:
     params:
         config['motif_folder'],
         lambda wildcards: config['snp_list'][wildcards.snp_name]['ncol_of_snp_list']
-    log: 
+    log:
         'logs/fimo.{footprint_name}.{snp_name}.log'
     output:
         'data/fimo.{footprint_name}.{snp_name}.tab.gz'
@@ -69,8 +69,20 @@ rule get_score_with_fimo:
         --out {output[0]} \
         --motif_folder {params[0]} \
         --ncol_of_snp_list {params[1]} > {log}'
-        
-# rule get_prior:
+
+rule get_prior:
+    input:
+        'data/fimo.{footprint_name}.{snp_name}.tab.gz'
+    output:
+        'data/prior.{footprint_name}.{snp_name}.tab.gz'
+    log:
+        'logs/prior.{footprint_name}.{snp_name}.log'
+    shell:
+        'Rscripts scripts/compute_prior_from_fimo.R \
+        --input {input[0]} \
+        --model_str {params[0]} \
+        --data_name {wildcards.footprint_name} \
+        --out {output[0]} > {log}'
 
 # rule get_motif_scores:
 #     input:
