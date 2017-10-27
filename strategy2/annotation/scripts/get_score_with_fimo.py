@@ -55,6 +55,16 @@ def split_output(df):
 useful_cols = [ i for i in range(5) ] + [ j for j in range(args.ncol_of_snp_list, args.ncol_of_snp_list + 5) ]
 variants = pd.read_table(args.snp, sep = '\t', compression = 'gzip', usecols = useful_cols,
     header = None, names = ['chr', 'start', 'end', 'ref', 'alt', 'chr.motif', 'start.motif', 'end.motif', 'motif', 'strand'])
+
+if variants.shape[0] == 0:
+    temp = pd.DataFrame([])
+    temp.to_csv(args.out,
+        sep='\t',
+        compression='gzip',
+        header=False, 
+        index=False)
+    sys.exit()
+
 sequences = pd.read_table(args.seq, sep = '\t', header = None, names = ['info', 'seq'])
 variants['seq'] = sequences['seq']
 variants['seq1'] = variants.apply(lambda row: change_allele(row['seq'], row['strand'], row['start'], row['start.motif'], row['ref']), axis = 1)
@@ -80,8 +90,8 @@ for motif in variants.motif.unique():
     os.system(command)
     temp_out_df = pd.read_table(temp_out_name, sep = '\t', header = None, skiprows = 1, usecols = [0, 2, 5, 6], names = ['motif', 'seqid', 'strand', 'score'])
     id1, id2, s1, s2 = split_output(temp_out_df)
-    variants.ix[variants.id == id1, 'score1'] = s1
-    variants.ix[variants.id == id2, 'score2'] = s2
+    variants.ix[id1, 'score1'] = s1
+    variants.ix[id2, 'score2'] = s2
     command = 'rm {temp_in}'.format(temp_in = temp_in_name)
     os.system(command)
     command = 'rm {temp_out}'.format(temp_out = temp_out_name)
