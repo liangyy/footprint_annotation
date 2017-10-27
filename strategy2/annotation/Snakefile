@@ -57,7 +57,6 @@ rule get_score_with_fimo:
         footprint_seq = 'data/seq.{footprint_name}.{snp_name}.tab'
     params:
         out = config['motif_folder'],
-        model_str = config['model_str'],
         ncol_of_snp_list = lambda wildcards: config['snp_list'][wildcards.snp_name]['ncol_of_snp_list']
     output:
         'data/fasta.{footprint_name}.{snp_name}.fa.gz'
@@ -67,10 +66,9 @@ rule get_score_with_fimo:
         --seq {input.footprint_seq} \
         --out {output.out} \
         --motif_folder {params[0]} \
-        --model_str {params.model_str} \
-        --model_data {wildcards.footprint_name} \
-        --ncol_of_snp_list {params.ncol_of_snp_list}
-        '
+        --ncol_of_snp_list {params.ncol_of_snp_list}'
+        
+rule get_prior:
 
 # rule get_motif_scores:
 #     input:
