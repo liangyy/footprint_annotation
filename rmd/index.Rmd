@@ -6,7 +6,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 
 * [Motif Visualization](http://htmlpreview.github.io/?https://github.com/liangyy/footprint_annotation/blob/master/motif_visualization/report/visualize.recalibratedMotifs.html)
 * [Strategy1](https://liangyy.github.io/footprint_annotation/footprint_snp_strategy1.html)
-* Strategy2 using Neuronal PSC and Neuron DHS: data is from [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE70823)
+* Strategy2 using Neuronal stem cell and Neuron DHS: data is from [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE70823)
     - [d27-NSC](http://htmlpreview.github.io/?https://github.com/liangyy/footprint_annotation/blob/master/strategy2/compare/summary/paperNSC_d27.html)
     - [d41-neuron replicate1](http://htmlpreview.github.io/?https://github.com/liangyy/footprint_annotation/blob/master/strategy2/compare/summary/paperNeuron_d41_1.html)
     - [d41-neuron replicate2](http://htmlpreview.github.io/?https://github.com/liangyy/footprint_annotation/blob/master/strategy2/compare/summary/paperNeuron_d41_2.html)
