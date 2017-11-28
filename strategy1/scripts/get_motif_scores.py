@@ -42,12 +42,12 @@ for i in file_content:
     i = i.strip().upper()
     ref_seqs.append(i.split('\t')[-1])
 
-o = open(args.out, 'w')
+o = gzip.open(args.out, 'wt')
 o.write('\t'.join(['SNP.ID', 'LLR.Ref', 'LLR.Alt', 'Motif.ID', 'Motif.Chr', 'Motif.Start', 'Motif.End', 'Relative.Pos', 'LogRatioPrior.Ref', 'LogRatioPrior.Alt']) + '\n')
-with gzip.open(args.footprint_snp,'rb') as f:
+with gzip.open(args.footprint_snp,'rt') as f:
     counter = 0
     for line in f:
-        snp, region = footprint_lib.read_bed_line(line.decode(), args.ncol)
+        snp, region = footprint_lib.read_bed_line(line, args.ncol)
         ref, alt, relative_pos = footprint_lib.get_seq(snp, region, ref_seqs[counter], args.check_ref)
         counter += 1
         if ref is None:
