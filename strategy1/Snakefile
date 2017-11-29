@@ -24,7 +24,7 @@ rule preprocess_footprint:
     output:
         'data/preprocess.{footprint_name}.{snp_name}.bed.gz'
     shell:
-        '''{params.tool} {input[0]} | awk -F"\\t" '{{print $1"\\t"$2"\\t"$3+{params.i}"\\t"$4"\\t"$6"\\t"$13}}' | gzip > {output[0]}'''
+        '''{params.tool} {input[0]} | awk -F"\\t" '{{print $1"\\t"$2"\\t"$3+{params.i}"\\t"$4"\\t"$6"\\t"$13}}' | awk '!seen[$0]++' | gzip > {output[0]}'''
 
 rule get_footprint_snp:
     input:
