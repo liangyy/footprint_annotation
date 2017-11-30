@@ -61,7 +61,7 @@ if variants.shape[0] == 0:
     temp.to_csv(args.out,
         sep='\t',
         compression='gzip',
-        header=False, 
+        header=False,
         index=False)
     sys.exit()
 
@@ -97,4 +97,4 @@ for motif in variants.motif.unique():
     command = 'rm {temp_out}'.format(temp_out = temp_out_name)
     os.system(command)
 print(variants)
-variants.iloc[:, [0, 1, 2, 3, 4, 9, 8, 14, 15]].to_csv(args.out, sep = '\t', header = False, index = False, compression = 'gzip')
+variants.iloc[:, [0, 1, 2, 3, 4, 9, 8, 6, 7, 14, 15]].to_csv(args.out, sep = '\t', header = False, index = False, compression = 'gzip')
