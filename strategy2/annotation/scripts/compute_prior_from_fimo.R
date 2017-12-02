@@ -56,6 +56,6 @@ for(motif in unique(snvs$V7)) {
   snvs[snvs.subset$id, 'prior2'] <- prior2.y
 }
 gz <- gzfile(opt$out, 'w')
-write.table(snvs[, c('V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'prior1', 'prior2', 'V7', 'V8', 'V9')], gz,
+write.table(snvs[, c('V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'prior1', 'prior2', 'V7', 'V8')], gz,
             quote = F, col.names = F, row.names = F, sep = '\t')
 close(gz)
