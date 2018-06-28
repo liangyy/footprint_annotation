@@ -1,0 +1,238 @@
+# This module is strategy3/, which is almost the same as strategy2/ but work with BAM file. Also, it explicitely output a footprint file (in BED format)
+
+# This module implements the strategy2 for footprint annotation task.
+# Recall that footprint annotation takes a list of variants and predicts whether
+# it locates in footprint regions and whether it alters binding affinity
+
+# In strategy3, we takes an experiment and learns a CENTIPEDE model for each
+# motif-experiment pair. Motifs are taken from recalibrated one in the paper
+# Which genetic variants in DNase-seq footprints are more likely to alter binding?
+
+import glob
+import ntpath
+import re
+
+def get_motif_files(motifs):
+    out = {}
+    for name in motifs.keys():
+        out[name] = {}
+        files = glob.glob('{name}/*'.format(name = motifs[name]))
+        for f in files:
+            fname = ntpath.basename(f)
+            out[name][fname] = f
+    return out
+
+motif_dic = get_motif_files(config['motifs'])
+
+def get_test(config, motif_dic):
+    out = []
+    motif_dir_name = list(motif_dic.keys())[0]
+    # motif_name = list(motif_dic[motif_dir_name].keys())[0]
+    # motif_name = re.sub('.pwm', '', motif_name)
+    # motif_name = 'MA0100.1'
+    names = config['test_motifs'].split(',')
+    for i in names:
+        for sample in config['experiments'].keys():
+            o = 'model/{motif_dir}/{motif_name}__{sample}__window.{win_size}.rds'.format(
+                motif_dir = list(config['motifs'].keys())[0],
+                motif_name = i,
+                sample = sample,  # list(config['experiments'].keys())[0],
+                win_size = config['centipede']['window_size']
+            )
+            out.append(o)
+    return out
+
+rule test:
+    input:
+        get_test(config, motif_dic)
+
+
+rule align_bam_sort:
+    input:
+        config['experiment'][wildcards.sample]['bam']
+    output:
+        'data/align/{sample}.sorted.bam'
+    threads: config['alignment_params']['ncpus']
+    shell:
+        'samtools sort -@ {threads} -m 4G -o {output[0]} {input[0]}'
+
+rule align_bam_index:
+    input:
+        'data/align/{sample}.sorted.bam'
+    output:
+        'data/align/{sample}.sorted.bam.bai'
+    shell:
+        'samtools index {input[0]}'
+
+rule remove_duplicated_reads:
+    input:
+        'data/align/{sample}.sorted.bam'
+    output:
+        'data/align/{sample}.cleaned_bam'
+    params:
+        config['alignment_params']['clean_cmd']
+    shell:
+        'python scripts/do_remove_dup_reads.py \
+        --i {input[0]} \
+        --o {output[0]} \
+        --cmd "{params[0]}"'
+
+rule align_cleaned_bam_sort_index:
+    input:
+        'data/align/{sample}.cleaned_bam'
+    output:
+        'data/align/{sample}.cleaned_sorted.bam',
+        'data/align/{sample}.cleaned_sorted.bam.bai'
+    threads: config['alignment_params']['ncpus']
+    shell:
+        '''
+        samtools sort -@ {threads} -m 4G -o {output[0]} {input[0]}
+        samtools index {output[0]}
+        '''
+
+rule scan_motif_score_in_genome_prepare:
+    params:
+        motif_dir = lambda wildcards: config['motifs'][wildcards.motif_dir]
+    output:
+        'data/motif_in_meme/{motif_dir}/{motif_name}.meme'
+    shell:
+        'python scripts/pwm2meme.py \
+        --motif_dir_in_pwm {params.motif_dir} \
+        --motif_name_in_pwm {wildcards.motif_name} \
+        --output_in_meme {output[0]}'
+
+rule genome_upper:
+    input:
+        lambda wildcards: config['genome_assembly'][wildcards.genome]['fasta_upper']
+    output:
+        temp('data/genome/{genome}/upper.fa')
+    shell:
+        "cat {input[0]} | tr '[:lower:]' '[:upper:]' > {output[0]}"
+
+rule scan_motif_score_in_genome:
+    input:
+        motif_in_meme = 'data/motif_in_meme/{motif_dir}/{motif_name}.meme'
+    params:
+        genome = 'data/genome/{genome}/upper.fa',
+        threshold = config['active_motifs']['fimo_threshold']
+    output:
+        temp('data/scan/{motif_dir}/{motif_name}__genome_{genome}.active_region.bed')
+    shell:
+        'fimo \
+        --skip-matched-sequence \
+        --text \
+        --thresh {params.threshold} \
+        {input.motif_in_meme} \
+        {params.genome} > \
+        {output[0]}'
+
+rule scan_motif_score_in_genome_gzip:
+    input:
+        'data/scan/{motif_dir}/{motif_name}__genome_{genome}.active_region.bed'
+    output:
+        'data/scan/{motif_dir}/{motif_name}__genome_{genome}.active_region.bed.gz'
+    shell:
+        '''cat {input[0]} | tail -n +2 | awk '{{print $2"\\t"$3-1"\\t"$4"\\t"$5"\\t"$6"\\t"$7"\\t"$1}}' | gzip > {output[0]}'''
+
+rule scan_post_filtering:
+    input:
+        'data/scan/{motif_dir}/{motif_name}__genome_{genome}.active_region.bed.gz'
+    output:
+        'data/scan/{motif_dir}/{motif_name}__genome_{genome}.active_region_prior0.1.bed.gz'
+    params:
+        motif_dir = lambda wildcards: config['motifs'][wildcards.motif_dir]
+    shell:
+        'python scripts/thresholding_by_motif_prior.py \
+        --input {input[0]} \
+        --motif_dir {params.motif_dir} \
+        --motif_name {wildcards.motif_name} \
+        --output {output[0]}'
+
+
+rule scan_motif_score_in_genome_extend:
+    input:
+        'data/scan/{motif_dir}/{motif_name}__genome_{genome}.active_region_prior0.1.bed.gz'
+    params:
+        window_size = lambda wildcards: int(int(wildcards.win_size) / 2),
+        genome_size = lambda wildcards: config['genome_assembly'][wildcards.genome]['size']
+    output:
+        'data/scan/{motif_dir}/{motif_name}__genome_{genome}__window.{win_size}.active_region.gz'
+    shell:
+        'bedtools slop -i <(zcat {input[0]}) -g {params.genome_size} -b {params.window_size} | gzip > {output[0]}'
+
+rule pile_prepare:
+    input:
+        'data/align/{sample}.cleaned_sorted.bam',
+        'data/align/{sample}.cleaned_sorted.bam.bai',
+        'data/scan/{motif_dir}/{motif_name}__genome_{genome}__window.{win_size}.active_region.gz'
+    output:
+        temp('data/pile/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.extracted_for_pile.bam')
+    shell:
+        'bedtools intersect -a {input[0]} -b <(zcat {input[2]}) -wa > {output[0]}'
+
+rule pile_do_pile:
+    input:
+        'data/pile/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.extracted_for_pile.bam',
+    params:
+        lambda wildcards: config['genome_assembly'][wildcards.genome]['size']
+    output:
+        'data/pile/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.5_prime_count_forward.bed.gz',
+        'data/pile/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.5_prime_count_backward.bed.gz'
+    shell:
+        '''
+        samtools view -uf 0x2 {input[0]} | \
+        genomeCoverageBed -ibam - -g {params[0]} -5 -bga -strand + | \
+        gzip > {output[0]}
+        samtools view -uf 0x2 {input[0]} | \
+        genomeCoverageBed -ibam - -g {params[0]} -5 -bga -strand - | \
+        gzip > {output[1]}
+        '''
+
+rule pile_postprocess_extract:
+    input:
+        extended_region = 'data/scan/{motif_dir}/{motif_name}__genome_{genome}__window.{win_size}.active_region.gz',
+        score = 'data/pile/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.5_prime_count_{direction}.bed.gz'
+    output:
+        temp('data/pile/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.active_5_prime_count_{direction}.bed.gz')
+    shell:
+        'bedtools intersect -a {input.score} -b <(zcat {input.extended_region}) -wb | gzip > {output[0]}'
+
+rule pile_postprocess_formatting:
+    input:
+        'data/pile/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.active_5_prime_count_{direction}.bed.gz'
+    output:
+        'data/pile/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.active_5_prime_count_{direction}.formatted.bed.gz'
+    shell:
+        'python scripts/prepare_pile_in_region.py --pilein {input[0]} --output {output[0]}'
+
+rule train_centipede:
+    input:
+        active_region = 'data/scan/{motif_dir}/{motif_name}__genome_{genome}__window.{win_size}.active_region.gz',
+        five_prime_count_f = 'data/pile/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.active_5_prime_count_forward.formatted.bed.gz',
+        five_prime_count_b = 'data/pile/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.active_5_prime_count_backward.formatted.bed.gz'
+    params:
+        window_size = lambda wildcards: int(int(wildcards.win_size) / 2),
+        centipede = config['centipede']['script']
+    output:
+        'model/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.rds',
+        # 'footprint/{motif_dir}/{motif_name}__{sample}__window.{win_size}.bed.gz',
+        # 'plots/{motif_dir}/{motif_name}__{sample}__window.{win_size}_footprint.png',
+        # 'plots/{motif_dir}/{motif_name}__{sample}__window.{win_size}_cutsite.png'
+    log:
+        'logs/{motif_dir}/{motif_name}__{sample}__window.{win_size}.train.log'
+    shell:
+        'Rscript scripts/train_centipede.R \
+        --active_region {input.active_region} \
+        --five_prime_count_forward {input.five_prime_count_f} \
+        --five_prime_count_backward {input.five_prime_count_b} \
+        --centipede_path {params.centipede} \
+        --signal footprint/{wildcards.motif_dir}/{wildcards.motif_name}__{wildcards.sample}__window.{wildcards.win_size}.bed.gz \
+        --extend_win {params.window_size} \
+        --plot_prefix plots/{wildcards.motif_dir}/{wildcards.motif_name}__{wildcards.sample}__window.{wildcards.win_size} \
+        --output {output[0]} > \
+        {log}'
+
+# rule predict_centipede:
+#
+#
+# rule variant_in_bed:
