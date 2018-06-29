@@ -93,18 +93,18 @@ rule scan_motif_score_in_genome_prepare:
         --motif_name_in_pwm {wildcards.motif_name} \
         --output_in_meme {output[0]}'
 
-rule genome_upper:
-    input:
-        lambda wildcards: config['genome_assembly'][wildcards.genome]['fasta']
-    output:
-        temp('data/genome/{genome}/upper.fa')
-    shell:
-        "cat {input[0]} | tr '[:lower:]' '[:upper:]' > {output[0]}"
+# rule genome_upper:
+#     input:
+#         lambda wildcards: config['genome_assembly'][wildcards.genome]['fasta']
+#     output:
+#         temp('data/genome/{genome}/upper.fa')
+#     shell:
+#         "cat {input[0]} | tr '[:lower:]' '[:upper:]' > {output[0]}"
 
 rule scan_motif_score_in_genome:
     input:
         motif_in_meme = 'data/motif_in_meme/{motif_dir}/{motif_name}.meme',
-        genome = 'data/genome/{genome}/upper.fa'
+        genome = lambda wildcards: config['genome_assembly'][wildcards.genome]['fasta']  # 'data/genome/{genome}/upper.fa'
     params:
         threshold = config['active_motifs']['fimo_threshold']
     output:
@@ -219,7 +219,7 @@ rule train_centipede:
         --centipede_path {params.centipede} \
         --signal {output[1]} \
         --extend_win {params.window_size} \
-        --plot_prefix plots/{wildcards.motif_dir}/{wildcards.motif_name}__{wildcards.sample}__window.{wildcards.win_size} \
+        --plot_prefix plots/{wildcards.motif_dir}/{wildcards.motif_name}__{wildcards.sample}__genome_{wildcards.genome}__window.{wildcards.win_size} \
         --output {output[0]} > \
         {output[2]}'
 
