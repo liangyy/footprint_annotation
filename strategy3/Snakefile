@@ -314,20 +314,22 @@ foots <- strsplit('{foot}', ',')[[1]]
 motifs <- strsplit('{motif}', ',')[[1]]
 plot.cut <- list()
 plot.foot <- list()
-for(t in 1 : length(txts)) {{
+for(t in 1 : length(fits)) {{
     f <- fits[t]
     plot.cut[[motifs[t]]] <- paste0('../../', cuts[t])
     plot.foot[[motifs[t]]] <- paste0('../../', foots[t])
-    f <- paste0('../', f)
+    f <- paste0('../../', f)
     g <- read.table(f, sep = ' ', header = F)
     e <- g
     e <- as.data.frame(e)
+    e$motif <- motifs[t]
     df <- rbind(df, e)
     rownames(df) <- NULL
 }}
 df <- as.data.frame(df)
-colnames(df) <- c('intersect', 'union', 'first', 'second', 'motif', 'p-val', 'rho')
-gz1 <- gzfile('{out}', 'w')
+colnames(df) <- c('p-val', 'rho', 'motif')
+df <- df[, c('motif', 'p-val', 'rho')]
+gz1 <- gzfile('../../{out}', 'w')
 write.table(df, gz1, quote = F, sep = '\\t', row.names = F)
 close(gz1)
 # write.table(file = , data = df, quote = F, sep = '\\t', row.names = F)
@@ -354,7 +356,10 @@ bsselect(plot.foot, type = "img", selected = names(plot.foot)[1],
 ```
 </div>
 
-'''.format(title = wildcards.title,
+'''.format(genome = wildcards.genome,
+            sample = wildcards.sample,
+            win_size = wildcards.win_size,
+            motif_dir = wildcards.motif_dir,
             fit = params.fit,
             cut = params.plot2,
             foot = params.plot1,
@@ -384,18 +389,18 @@ rule extract_significant_motifs:
     output:
         temp('output/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.significant_motifs')
     run:
-        def get_input(config, experiment):
+        def get_input(config, experiment, summary_file):
             import pandas as pd
             out = []
-            df = pd.read_table(config['experiments'][experiment]['motifs'], compression = 'gzip', header = 0)
-            motifs = df[df['p-val'] > float(config['active_motifs'])]['output_threshold']
-            pattern = 'footprint/{{motif_dir}}/{motif_name}__{sample}__genome_{{genome}}__window.{{win_size}}.bed.gz'
+            df = pd.read_table(summary_file, compression = 'gzip', header = 0)
+            motifs = df[df['p-val'] < float(config['active_motifs']['output_threshold'])]['motif']
+            pattern = 'footprint/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.bed.gz'
             for m in motifs:
-                out.append(pattern.format(motif_name = m, sample = experiment))
+                out.append(pattern.format(motif_name = m, sample = experiment, genome = wildcards.genome, motif_dir = wildcards.motif_dir, win_size = wildcards.win_size))
             return out
-        footprints = get_input(config, wildcards.sample)
+        footprints = get_input(config, wildcards.sample, input[0])
         o = open(output[0], 'w')
-        o.write(' '.footprints)
+        o.write(' '.join(footprints))
         o.close
 
 rule combine_prepare:
@@ -406,7 +411,7 @@ rule combine_prepare:
     shell:
         '''
         TEMP=$(cat {input[0]})
-        bash remove_header_and_combine.sh {output[0]} $TEMP
+        bash ../strategy2/combine_result/remove_header_and_combine.sh {output[0]} $TEMP
         '''
 
 rule combine:
