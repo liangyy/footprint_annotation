@@ -28,3 +28,4 @@ alignment_params:
   # clean_cmf: \{input\} \{output\}
 test_motifs: 'M00001,M00008'  # only for debugging
 debug: True
+sort_bam: True

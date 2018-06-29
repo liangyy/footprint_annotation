@@ -26,35 +26,48 @@ rule all:
         all_files(config, 'output/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.final.bed.gz'),
         all_files(config, 'summary/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.report.html')
 
-rule align_bam_sort:
-    input:
-        lambda wildcards: config['experiments'][wildcards.sample]['bam']
-    output:
-        'data/align/{sample}.sorted.bam'
-    threads: config['alignment_params']['ncpus']
-    shell:
-        'samtools sort -@ {threads} -m 4G -o {output[0]} {input[0]}'
+if config['sort_bam'] == False:
+    rule align_bam_sort:
+        input:
+            lambda wildcards: config['experiments'][wildcards.sample]['bam']
+        output:
+            'data/align/{sample}.sorted.bam'
+        threads: config['alignment_params']['ncpus']
+        shell:
+            'samtools sort -@ {threads} -m 4G -o {output[0]} {input[0]}'
 
-rule align_bam_index:
-    input:
-        'data/align/{sample}.sorted.bam'
-    output:
-        'data/align/{sample}.sorted.bam.bai'
-    shell:
-        'samtools index {input[0]}'
-
-rule remove_duplicated_reads:
-    input:
-        'data/align/{sample}.sorted.bam'
-    output:
-        'data/align/{sample}.cleaned_bam'
-    params:
-        config['alignment_params']['clean_cmd']
-    shell:
-        'python ../strategy2/scripts/do_remove_dup_reads.py \
-        --i {input[0]} \
-        --o {output[0]} \
-        --cmd "{params[0]}"'
+    rule align_bam_index:
+        input:
+            'data/align/{sample}.sorted.bam'
+        output:
+            'data/align/{sample}.sorted.bam.bai'
+        shell:
+            'samtools index {input[0]}'
+    rule remove_duplicated_reads:
+        input:
+            'data/align/{sample}.sorted.bam'
+        output:
+            'data/align/{sample}.cleaned_bam'
+        params:
+            config['alignment_params']['clean_cmd']
+        shell:
+            'python ../strategy2/scripts/do_remove_dup_reads.py \
+            --i {input[0]} \
+            --o {output[0]} \
+            --cmd "{params[0]}"'
+elif config['sort_bam'] == True:
+    rule remove_duplicated_reads_from_input:
+        input:
+            lambda wildcards: config['experiments'][wildcards.sample]['bam']
+        output:
+            'data/align/{sample}.cleaned_bam'
+        params:
+            config['alignment_params']['clean_cmd']
+        shell:
+            'python ../strategy2/scripts/do_remove_dup_reads.py \
+            --i {input[0]} \
+            --o {output[0]} \
+            --cmd "{params[0]}"'
 
 rule align_cleaned_bam_sort_index:
     input:
