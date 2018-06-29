@@ -10,7 +10,7 @@ genome_assembly: # only one genome assembly as well
     fasta: '/project2/xinhe/yifan/refGenome/hg38.fa'
     size: '/project2/xinhe/yanyul/databases/hg38/hg38.chrom.sizes'
 active_motifs:
-  fimo_threshold: 1e-4
+  fimo_threshold: 1e-1
   output_threshold: 1 # 6e-7
 centipede:
   script: '/scratch/midway2/xinhe/which_gen_vars/src/fitCentipedeV2.R'

@@ -82,7 +82,7 @@ rule scan_motif_score_in_genome_prepare:
 
 rule genome_upper:
     input:
-        lambda wildcards: config['genome_assembly'][wildcards.genome]['fasta_upper']
+        lambda wildcards: config['genome_assembly'][wildcards.genome]['fasta']
     output:
         temp('data/genome/{genome}/upper.fa')
     shell:
@@ -90,9 +90,9 @@ rule genome_upper:
 
 rule scan_motif_score_in_genome:
     input:
-        motif_in_meme = 'data/motif_in_meme/{motif_dir}/{motif_name}.meme'
+        motif_in_meme = 'data/motif_in_meme/{motif_dir}/{motif_name}.meme',
+        genome = 'data/genome/{genome}/upper.fa'
     params:
-        genome = 'data/genome/{genome}/upper.fa',
         threshold = config['active_motifs']['fimo_threshold']
     output:
         temp('data/scan/{motif_dir}/{motif_name}__genome_{genome}.active_region.bed')
@@ -102,7 +102,7 @@ rule scan_motif_score_in_genome:
         --text \
         --thresh {params.threshold} \
         {input.motif_in_meme} \
-        {params.genome} > \
+        {input.genome} > \
         {output[0]}'
 
 rule scan_motif_score_in_genome_gzip:
