@@ -51,7 +51,7 @@ rule remove_duplicated_reads:
     params:
         config['alignment_params']['clean_cmd']
     shell:
-        'python scripts/do_remove_dup_reads.py \
+        'python ../strategy2/scripts/do_remove_dup_reads.py \
         --i {input[0]} \
         --o {output[0]} \
         --cmd "{params[0]}"'
@@ -75,7 +75,7 @@ rule scan_motif_score_in_genome_prepare:
     output:
         'data/motif_in_meme/{motif_dir}/{motif_name}.meme'
     shell:
-        'python scripts/pwm2meme.py \
+        'python ../strategy2/scripts/pwm2meme.py \
         --motif_dir_in_pwm {params.motif_dir} \
         --motif_name_in_pwm {wildcards.motif_name} \
         --output_in_meme {output[0]}'
@@ -121,7 +121,7 @@ rule scan_post_filtering:
     params:
         motif_dir = lambda wildcards: config['motifs'][wildcards.motif_dir]
     shell:
-        'python scripts/thresholding_by_motif_prior.py \
+        'python ../strategy2/scripts/thresholding_by_motif_prior.py \
         --input {input[0]} \
         --motif_dir {params.motif_dir} \
         --motif_name {wildcards.motif_name} \
@@ -182,7 +182,7 @@ rule pile_postprocess_formatting:
     output:
         'data/pile/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}.active_5_prime_count_{direction}.formatted.bed.gz'
     shell:
-        'python scripts/prepare_pile_in_region.py --pilein {input[0]} --output {output[0]}'
+        'python ../strategy2/scripts/prepare_pile_in_region.py --pilein {input[0]} --output {output[0]}'
 
 rule train_centipede:
     input:
@@ -199,7 +199,7 @@ rule train_centipede:
         'plots/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}_footprint.png',
         'plots/{motif_dir}/{motif_name}__{sample}__genome_{genome}__window.{win_size}_cutsite.png'
     shell:
-        'Rscript scripts/train_centipede.R \
+        'Rscript ../strategy2/scripts/train_centipede.R \
         --active_region {input.active_region} \
         --five_prime_count_forward {input.five_prime_count_f} \
         --five_prime_count_backward {input.five_prime_count_b} \
@@ -303,8 +303,8 @@ plot.cut <- list()
 plot.foot <- list()
 for(t in 1 : length(txts)) {{
     f <- fits[t]
-    plot.cut[[motifs[t]]] <- paste0('../', cuts[t])
-    plot.foot[[motifs[t]]] <- paste0('../', foots[t])
+    plot.cut[[motifs[t]]] <- paste0('../../', cuts[t])
+    plot.foot[[motifs[t]]] <- paste0('../../', foots[t])
     f <- paste0('../', f)
     g <- read.table(f, sep = ' ', header = F)
     e <- g
@@ -416,4 +416,3 @@ rule postprocess:
         zcat {input[0]} | awk -v OFS='\\t' '{{print $1,$2,$3,$5,"1000",$4,$2,$3,"0,0,0","0","-","-",$6,$6}}' | gzip > {output[0]}
         '''
 # output END
-
