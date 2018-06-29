@@ -3,14 +3,15 @@ experiments:
     bam: '/project2/xinhe/yifan/Footprint/test/CN_18.bam'
     bed: '/project2/xinhe/yifan/Footprint/test/CN_uniq_peaks.bed'
     read_method: 'cat'  # how to view BED file (usually cat OR zcat)
-motifs:
+motifs:  # one motif database per config flie (the ones other than the first will be ignored)
   recalMotifs: '../recalibratedMotifs/'
-genome_assembly:
+genome_assembly: # only one genome assembly as well
   hg38:
     fasta: '/project2/xinhe/yifan/refGenome/hg38.fa'
     size: '/project2/xinhe/yanyul/databases/hg38/hg38.chrom.sizes'
 active_motifs:
   fimo_threshold: 1e-4
+  output_threshold: 1 # 6e-7
 centipede:
   script: '/scratch/midway2/xinhe/which_gen_vars/src/fitCentipedeV2.R'
   window_size: 200
@@ -26,3 +27,4 @@ alignment_params:
   REMOVE_DUPLICATES=true'
   # clean_cmf: \{input\} \{output\}
 test_motifs: 'M00001,M00008'  # only for debugging
+debug: True
