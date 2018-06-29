@@ -8,9 +8,27 @@
 # motif-experiment pair. Motifs are taken from recalibrated one in the paper
 # Which genetic variants in DNase-seq footprints are more likely to alter binding?
 
+
+def all_files(config, pattern):
+    motif_dir = list(config['motifs'])[0]
+    samples = list(config['experiments'])
+    win_size = config['centipede']['window_size']
+    genome = list(config['genome_assembly'])[0]
+    out = []
+    for sample in samples:
+        out.append(pattern.format(motif_dir = motif_dir, sample = sample, win_size = win_size, genome = genome))
+    print(out)
+    return out
+
+rule all:
+    input:
+        # 'summary/recalMotifs/mytest__genome_hg38__window.200.report.html'
+        all_files(config, 'output/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.final.bed.gz'),
+        all_files(config, 'summary/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.report.html')
+
 rule align_bam_sort:
     input:
-        config['experiment'][wildcards.sample]['bam']
+        lambda wildcards: config['experiments'][wildcards.sample]['bam']
     output:
         'data/align/{sample}.sorted.bam'
     threads: config['alignment_params']['ncpus']
@@ -229,8 +247,9 @@ def get_motif_list(config):
 def get_all_file(config, pattern):
     string = []
     motifs = get_motif_list(config)
+    motifs = motifs.split(',')
     for i in motifs:
-        string.append(pattern.format(motif = i, motif_name = i)
+        string.append(pattern.format(motif = i, motif_name = i))
     return string
 
 rule summary_rmd:
@@ -241,8 +260,8 @@ rule summary_rmd:
     output:
         'summary/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.report.Rmd'
     params:
-        fit = ','.join(get_all_file(config, 'temp/{{motif_dir}}/{motif_name}__{{sample}}__genome_{{genome}}__window.{{win_size}}.train.fit'),
-        plot1 = get_all_file(config, 'plots/{{motif_dir}}/{motif_name}__{{sample}}__genome_{{genome}}__window.{{win_size}}_footprint.png')),
+        fit = ','.join(get_all_file(config, 'temp/{{motif_dir}}/{motif_name}__{{sample}}__genome_{{genome}}__window.{{win_size}}.train.fit')),
+        plot1 = ','.join(get_all_file(config, 'plots/{{motif_dir}}/{motif_name}__{{sample}}__genome_{{genome}}__window.{{win_size}}_footprint.png')),
         plot2 = ','.join(get_all_file(config, 'plots/{{motif_dir}}/{motif_name}__{{sample}}__genome_{{genome}}__window.{{win_size}}_cutsite.png')),
         out = lambda wildcards: 'summary/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.summary.txt.gz'.format(motif_dir = wildcards.motif_dir, sample = wildcards.sample, genome = wildcards.genome, win_size = wildcards.win_size),
         motif = get_motif_list(config)
@@ -340,7 +359,7 @@ rule summary_html:
         'summary/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.report.html',
         'summary/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.summary.txt.gz'
     shell:
-        '''Rscript -e "rmarkdown::render('{input.rmd}')"'''
+        '''Rscript -e "rmarkdown::render('{input[0]}')"'''
 # summary END
 
 # adopted from strategy2/combine_result/
@@ -373,7 +392,7 @@ rule combine_prepare:
         temp('temp/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.prepare.bed.gz')
     shell:
         '''
-        TEMP=$(cat {input.footprints})
+        TEMP=$(cat {input[0]})
         bash remove_header_and_combine.sh {output[0]} $TEMP
         '''
 
@@ -398,16 +417,3 @@ rule postprocess:
         '''
 # output END
 
-def all_files(config, pattern):
-    motif_dir = list(config['motifs'])[0]
-    samples = list(config['experiments'])
-    win_size = config['centipede']['window_size']
-    out = []
-    for sample in samples:
-        out.append(pattern.format(motif_dir = motif_dir, sample = sample, win_size = win_size))
-    return out
-
-rule all:
-    input:
-        all_files(config, 'output/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.final.bed.gz'),
-        all_files(config, 'summary/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.report.html')
