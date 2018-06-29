@@ -26,36 +26,40 @@ snvs <- tryCatch(
     read.table(opt$input, sep = '\t', header = FALSE)
   },
   error = function(cond) {
-    return(NA)
+    gz <- gzfile(opt$out, 'w')
+    write.table(data.frame(), gz,
+            quote = F, col.names = F, row.names = F, sep = '\t')
+    close(gz)
+    quit()
   }
 )
 
 # snvs <- read.table(opt$input, sep = '\t', header = FALSE)
-if(is.na(snvs)) {
-  gz <- gzfile(opt$out, 'w')
-  write.table(data.frame(), gz,
-            quote = F, col.names = F, row.names = F, sep = '\t')
-  close(gz)
-  quit()
-}
+# if(is.na(snvs)) {
+#   gz <- gzfile(opt$out, 'w')
+#   write.table(data.frame(), gz,
+#             quote = F, col.names = F, row.names = F, sep = '\t')
+#   close(gz)
+#   quit()
+#  }
 snvs$id <- 1 : nrow(snvs)
 snvs$prior1 <- NaN
 snvs$prior2 <- NaN
 model_path <- str_replace(opt$model_str, '\\{data_name\\}', opt$data_name)
-for(motif in unique(snvs$V7)) {
+for(motif in unique(snvs$V8)) {
   model <- str_replace(model_path, '\\{motif\\}', motif)
   model.param <- readRDS(model)
   snvs.subset <- snvs %>%
-    filter(V7 == motif) %>%
-    select(V8, V9, id)
-  prior1.x <- data.frame(Ict = 1, Pwm = snvs.subset$V8)
+    filter(V8 == motif) %>%
+    select(V9, V10, id)
+  prior1.x <- data.frame(Ict = 1, Pwm = snvs.subset$V9)
   prior1.y <- as.matrix(prior1.x) %*% model.param$BetaLogit
-  prior2.x <- data.frame(Ict = 1, Pwm = snvs.subset$V9)
+  prior2.x <- data.frame(Ict = 1, Pwm = snvs.subset$V10)
   prior2.y <- as.matrix(prior2.x) %*% model.param$BetaLogit
   snvs[snvs.subset$id, 'prior1'] <- prior1.y
   snvs[snvs.subset$id, 'prior2'] <- prior2.y
 }
 gz <- gzfile(opt$out, 'w')
-write.table(snvs[, c('V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'prior1', 'prior2', 'V7', 'V8')], gz,
+write.table(snvs[, c('V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'prior1', 'prior2', 'V8', 'V7')], gz,
             quote = F, col.names = F, row.names = F, sep = '\t')
 close(gz)

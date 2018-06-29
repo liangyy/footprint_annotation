@@ -13,7 +13,7 @@ def get_input(config, experiment):
     out = []
     # motifs = config[experiment]['motifs'].split(',')
     df = pd.read_table(config['experiments'][experiment]['motifs'], compression = 'gzip', header = 0)
-    motifs = df[df['p-val'] > float(config['threshold'])]['motif']
+    motifs = df[df['p-val'] < float(config['threshold'])]['motif']  ## huge BUG
     pattern = config['experiments'][experiment]['path']
     for m in motifs:
         out.append(pattern.format(motif = m))

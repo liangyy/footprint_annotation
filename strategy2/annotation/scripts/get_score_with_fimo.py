@@ -54,8 +54,9 @@ def split_output(df):
     return i1, i2, s1, s2
 useful_cols = [ i for i in range(5) ] + [ j for j in range(args.ncol_of_snp_list, args.ncol_of_snp_list + 5) ]
 variants = pd.read_table(args.snp, sep = '\t', compression = 'gzip', usecols = useful_cols,
-    header = None, names = ['chr', 'start', 'end', 'ref', 'alt', 'start.motif', 'motif', 'strand'])
-
+    header = None, names = ['chr', 'start', 'end', 'ref', 'alt', 'chr.motif', 'start.motif', 'end.motif', 'motif', 'strand'])
+# print(variants.iloc[[1]])
+# print('sdsd')
 if variants.shape[0] == 0:
     temp = pd.DataFrame([])
     temp.to_csv(args.out,
@@ -97,4 +98,4 @@ for motif in variants.motif.unique():
     command = 'rm {temp_out}'.format(temp_out = temp_out_name)
     os.system(command)
 print(variants)
-variants.iloc[:, [0, 1, 2, 3, 4, 7, 6, 5, 12, 13]].to_csv(args.out, sep = '\t', header = False, index = False, compression = 'gzip')
+variants.iloc[:, [0, 1, 2, 3, 4, 9, 6, 8, 14, 15]].to_csv(args.out, sep = '\t', header = False, index = False, compression = 'gzip')
