@@ -1,4 +1,4 @@
-This module performs the same analysis as `strategy2/``
+This module performs the same analysis as `strategy2/`
 But it is designed for BAM inputs instead of FASTQ inputs
 
 ## Setup computing environment
