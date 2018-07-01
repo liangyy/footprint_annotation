@@ -3,9 +3,11 @@ But it is designed for BAM inputs instead of FASTQ inputs
 
 ## Setup computing environment
 
+```
 source /project2/xinhe/yanyul/setup.sh
 snmk  # activate a conda environment
 module load java
+```
 
 ## Steps in brief
 
