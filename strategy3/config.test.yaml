@@ -15,17 +15,18 @@ active_motifs:
 centipede:
   script: '/scratch/midway2/xinhe/repo/which_gen_vars/src/fitCentipedeV2.R'
   window_size: 200
+
+test_motifs: 'M00001,M00008'  # only for debugging
+debug: True
+sort_bam: True
+
+## DO NOT CHANGE IF UNNECESSARY
 alignment_params:
   ncpus: 1
-  cmd: 'bowtie \{ref\} -p \{threads\} -m 1 -X 2000 --chunkmbs 2000 -1 \{fastq1\} -2 \{fastq2\} --sam \{sam\}'
-  # cmd: for your reference \{fastq1\} \{fastq2\} \{sam\} \{ref\} \{threads\}
   clean_cmd: 'java -jar /project2/xinhe/yanyul/softwares/picard.jar \
   MarkDuplicates \
   I=\{input\} \
   O=\{output\} \
   M=\{output\}.metric.txt \
   REMOVE_DUPLICATES=true'
-  # clean_cmf: \{input\} \{output\}
-test_motifs: 'M00001,M00008'  # only for debugging
-debug: True
-sort_bam: True
+## END
