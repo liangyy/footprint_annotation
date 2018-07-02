@@ -170,3 +170,59 @@ alignment_params:
 ```
 
 Typically, do not change this part.
+
+## Output
+
+Using the `config.yaml`
+
+```
+sort_bam: False
+experiments:
+  my_test1:
+    bam: 'path_to_bam1'
+    read_method: 'cat'  # how to view BED file (usually cat OR zcat)
+  my_test2:
+    bam: 'path_to_bam2'
+    read_method: 'cat'
+motifs:  # one motif database per config flie (the ones other than the first will be ignored)
+  my_motif_db: 'path_to_motif_folder/'
+genome_assembly: # only one genome assembly as well
+  my_genome:
+    fasta: 'path_to_fasta'
+    size: 'path_to_chrom_sizes'
+active_motifs:
+  fimo_threshold: 1e-4
+  output_threshold: 6e-7
+centipede:
+  script: 'path_to_fitCentipedeV2.R'  # at https://github.com/piquelab/which_gen_vars/blob/master/src/fitCentipedeV2.R
+  window_size: 200
+test_motifs: 'M00001,M00008'  # only for debugging
+debug: True
+## DO NOT CHANGE IF UNNECESSARY
+alignment_params:
+  ncpus: 1
+  clean_cmd: 'java -jar /project2/xinhe/yanyul/softwares/picard.jar \
+  MarkDuplicates \
+  I=\{input\} \
+  O=\{output\} \
+  M=\{output\}.metric.txt \
+  REMOVE_DUPLICATES=true'
+## END
+```
+
+By running `snakemake --configfile config.yaml`, the output files are
+
+```
+# BED file indicating footprint location
+output/my_motif_db/my_test1__genome_my_genome__window.200.final.bed.gz
+output/my_motif_db/my_test2__genome_my_genome__window.200.final.bed.gz
+# HTML file reporting the training
+summary/my_motif_db/my_test1__genome_my_genome__window.200.report.html
+summary/my_motif_db/my_test2__genome_my_genome__window.200.report.html
+plots/my_motif_db/*__my_test1__genome_my_genome__window.200_cutsite.png
+plots/my_motif_db/*__my_test1__genome_my_genome__window.200_footprint.png
+plots/my_motif_db/*__my_test2__genome_my_genome__window.200_cutsite.png
+plots/my_motif_db/*__my_test2__genome_my_genome__window.200_footprint.png
+```
+
+The `plots/` contains the figures which are necessary for HTML to work properly. So, you need to download `plots/` along with HTML file.
