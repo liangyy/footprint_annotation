@@ -1,7 +1,7 @@
+sort_bam: False
 experiments:
   mytest:
     bam: '/project2/xinhe/yifan/Footprint/test/CN_18.bam'
-    bed: '/project2/xinhe/yifan/Footprint/test/CN_uniq_peaks.bed'
     read_method: 'cat'  # how to view BED file (usually cat OR zcat)
 motifs:  # one motif database per config flie (the ones other than the first will be ignored)
   recalMotifs: '../recalibratedMotifs/'
@@ -15,10 +15,8 @@ active_motifs:
 centipede:
   script: '/scratch/midway2/xinhe/repo/which_gen_vars/src/fitCentipedeV2.R'
   window_size: 200
-
 test_motifs: 'M00001,M00008'  # only for debugging
 debug: True
-sort_bam: True
 
 ## DO NOT CHANGE IF UNNECESSARY
 alignment_params:
