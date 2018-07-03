@@ -93,10 +93,8 @@ sort_bam: False
 experiments:
   my_test1:
     bam: 'path_to_bam1'
-    read_method: 'cat'  # how to view BED file (usually cat OR zcat)
   my_test2:
     bam: 'path_to_bam2'
-    read_method: 'cat'
 ```
 
 `mytest1` and `mytest2` determines the part of the name in output file. For sorted BAM, set `sort_bam: True`.
@@ -180,10 +178,8 @@ sort_bam: False
 experiments:
   my_test1:
     bam: 'path_to_bam1'
-    read_method: 'cat'  # how to view BED file (usually cat OR zcat)
   my_test2:
     bam: 'path_to_bam2'
-    read_method: 'cat'
 motifs:  # one motif database per config flie (the ones other than the first will be ignored)
   my_motif_db: 'path_to_motif_folder/'
 genome_assembly: # only one genome assembly as well
