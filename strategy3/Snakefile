@@ -372,12 +372,15 @@ bsselect(plot.foot, type = "img", selected = names(plot.foot)[1],
 
 rule summary_html:
     input:
-        'summary/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.report.Rmd'
+        rmd = 'summary/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.report.Rmd',
+        fit = get_all_file(config, 'temp/{{motif_dir}}/{motif_name}__{{sample}}__genome_{{genome}}__window.{{win_size}}.train.fit'),
+        plot1 = get_all_file(config, 'plots/{{motif_dir}}/{motif_name}__{{sample}}__genome_{{genome}}__window.{{win_size}}_footprint.png'),
+        plot2 = get_all_file(config, 'plots/{{motif_dir}}/{motif_name}__{{sample}}__genome_{{genome}}__window.{{win_size}}_cutsite.png')
     output:
         'summary/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.report.html',
         'summary/{motif_dir}/{sample}__genome_{genome}__window.{win_size}.summary.txt.gz'
     shell:
-        '''Rscript -e "rmarkdown::render('{input[0]}')"'''
+        '''Rscript -e "rmarkdown::render('{input.rmd}')"'''
 # summary END
 
 # adopted from strategy2/combine_result/
